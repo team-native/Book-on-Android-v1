@@ -1,4 +1,4 @@
-package com.example.bookon.ui.theme
+package com.example.bookon.theme
 
 import androidx.compose.material3.Typography as MaterialTypography
 import androidx.compose.material3.Typography
@@ -87,6 +87,7 @@ object BookOnTypography {
         lineHeight = 20.sp,
     )
     val bodySemiBold = bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+
     val caption = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.SemiBold,
