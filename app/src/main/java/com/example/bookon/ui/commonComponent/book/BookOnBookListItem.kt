@@ -20,20 +20,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.semantics.Role
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
-import androidx.compose.ui.unit.dp
-import com.example.bookon.ui.theme.AppComponentSize
-import com.example.bookon.ui.theme.AppElevation
-import com.example.bookon.ui.theme.AppRadius
-import com.example.bookon.ui.theme.AppSpacing
-import com.example.bookon.ui.theme.BookOnColor
-import com.example.bookon.ui.theme.BookOnTheme
-import com.example.bookon.ui.theme.BookOnTypography
-import com.example.bookon.uiState.book.BookOnBookDetailInfoItemUiState
-import com.example.bookon.uiState.book.BookOnBookDetailInfoRowUiState
+import com.example.bookon.theme.AppComponentSize
+import com.example.bookon.theme.AppElevation
+import com.example.bookon.theme.AppRadius
+import com.example.bookon.theme.AppSpacing
+import com.example.bookon.theme.BookOnColor
+import com.example.bookon.theme.BookOnTheme
+import com.example.bookon.theme.BookOnTypography
 import com.example.bookon.uiState.book.BookOnBookListItemUiState
 
 /**
@@ -138,104 +134,6 @@ fun BookOnBookListItem(
     }
 }
 
-/**
- * 상세 화면의 도서관 번호, 재고 수량, 대출 가능 여부 같은 정보를 같은 너비 타일로 표시한다.
- * items가 비어 있으면 아무것도 그리지 않는다.
- */
-@Composable
-fun BookOnBookDetailInfoRow(
-    uiState: BookOnBookDetailInfoRowUiState,
-    modifier: Modifier = Modifier,
-) {
-    BookOnBookDetailInfoRow(
-        items = uiState.items,
-        modifier = modifier,
-    )
-}
-
-/**
- * 상세 화면의 도서관 번호, 재고 수량, 대출 가능 여부 같은 정보를 같은 너비 타일로 표시한다.
- * items가 비어 있으면 아무것도 그리지 않는다.
- */
-@Composable
-fun BookOnBookDetailInfoRow(
-    items: List<BookOnBookDetailInfoItemUiState>,
-    modifier: Modifier = Modifier,
-) {
-    if (items.isEmpty()) {
-        return
-    }
-
-    Row(
-        modifier = modifier.fillMaxWidth(),
-        horizontalArrangement = Arrangement.spacedBy(AppSpacing.Item),
-    ) {
-        items.forEach { item ->
-            BookOnBookDetailInfoItem(
-                item = item,
-                modifier = Modifier.weight(1f),
-            )
-        }
-    }
-}
-
-/**
- * 상세 정보 행 내부의 단일 정보 타일이다.
- * highlighted는 대출 가능 여부처럼 주요 상태를 강조할 때 사용한다.
- */
-@Composable
-fun BookOnBookDetailInfoItem(
-    item: BookOnBookDetailInfoItemUiState,
-    modifier: Modifier = Modifier,
-) {
-    BookOnBookDetailInfoItem(
-        label = item.label,
-        value = item.value,
-        modifier = modifier,
-        highlighted = item.highlighted,
-    )
-}
-
-/**
- * 상세 정보 행 내부의 단일 정보 타일이다.
- * highlighted는 대출 가능 여부처럼 주요 상태를 강조할 때 사용한다.
- */
-@Composable
-fun BookOnBookDetailInfoItem(
-    label: String,
-    value: String,
-    modifier: Modifier = Modifier,
-    highlighted: Boolean = false,
-) {
-    Column(
-        modifier = modifier
-            .height(68.dp)
-            .clip(RoundedCornerShape(AppRadius.Small))
-            .background(BookOnColor.SurfaceAlt)
-            .padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Item),
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center,
-    ) {
-        Text(
-            text = label,
-            style = BookOnTypography.caption,
-            color = BookOnColor.TextSecondary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center,
-        )
-        Spacer(modifier = Modifier.height(AppSpacing.Tiny))
-        Text(
-            text = value,
-            style = BookOnTypography.bodySemiBold,
-            color = if (highlighted) BookOnColor.PrimaryPressed else BookOnColor.TextPrimary,
-            maxLines = 1,
-            overflow = TextOverflow.Ellipsis,
-            textAlign = TextAlign.Center,
-        )
-    }
-}
-
 @Composable
 private fun BookStatusBadge(
     text: String,
@@ -282,21 +180,6 @@ private fun BookOnBookListItemPreview() {
             title = "클린 코드",
             metaText = "로버트 C. 마틴 · 005.1",
             statusText = "재고 2권",
-            modifier = Modifier.padding(AppSpacing.ScreenHorizontal),
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun BookOnBookDetailInfoRowPreview() {
-    BookOnTheme {
-        BookOnBookDetailInfoRow(
-            items = listOf(
-                BookOnBookDetailInfoItemUiState("도서관 번호", "000"),
-                BookOnBookDetailInfoItemUiState("재고 수량", "2권"),
-                BookOnBookDetailInfoItemUiState("대출 여부", "가능", highlighted = true),
-            ),
             modifier = Modifier.padding(AppSpacing.ScreenHorizontal),
         )
     }
