@@ -1,4 +1,4 @@
-package com.example.bookon.ui.theme
+package com.example.bookon.theme
 
 import androidx.compose.ui.graphics.Color
 
