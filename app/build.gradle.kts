@@ -4,7 +4,7 @@ plugins {
 }
 
 android {
-    namespace = "com.example.bookon"
+    namespace = "com.teamnative.bookon"
     compileSdk {
         version = release(36) {
             minorApiLevel = 1
@@ -12,7 +12,7 @@ android {
     }
 
     defaultConfig {
-        applicationId = "com.example.bookon"
+        applicationId = "com.teamnative.bookon"
         minSdk = 34
         targetSdk = 36
         versionCode = 1
