@@ -1,7 +1,10 @@
-package com.example.bookon.ui.commonComponent
+package com.example.bookon.ui.commonComponent.textfield
 
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.foundation.border
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsFocusedAsState
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,30 +22,25 @@ import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.SolidColor
-import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.error
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.TextStyle
-import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.res.stringResource
-import com.example.bookon.R
-import com.example.bookon.ui.theme.AppComponentSize
-import com.example.bookon.ui.theme.AppElevation
-import com.example.bookon.ui.theme.AppIconSize
-import com.example.bookon.ui.theme.AppRadius
-import com.example.bookon.ui.theme.AppSpacing
-import com.example.bookon.ui.theme.BookOnColor
-import com.example.bookon.ui.theme.BookOnTheme
-import com.example.bookon.ui.theme.BookOnTypography
-import com.example.bookon.uiState.BookOnPasswordFieldUiState
+import com.example.bookon.theme.AppComponentSize
+import com.example.bookon.theme.AppElevation
+import com.example.bookon.theme.AppIconSize
+import com.example.bookon.theme.AppRadius
+import com.example.bookon.theme.AppSpacing
+import com.example.bookon.theme.BookOnColor
+import com.example.bookon.theme.BookOnTheme
+import com.example.bookon.theme.BookOnTypography
 import com.example.bookon.uiState.BookOnTextFieldUiState
 
 /**
@@ -99,6 +98,20 @@ fun BookOnTextField(
     leadingIcon: (@Composable () -> Unit)? = null,
     trailingIcon: (@Composable () -> Unit)? = null,
 ) {
+    val shape = RoundedCornerShape(AppRadius.Field)
+    val interactionSource = remember { MutableInteractionSource() }
+    val isFocused by interactionSource.collectIsFocusedAsState()
+    val borderColor by animateColorAsState(
+        targetValue = when {
+            isError -> BookOnColor.Error
+            isFocused -> BookOnColor.Primary
+            else -> BookOnColor.Surface
+        },
+    )
+    val containerColor by animateColorAsState(
+        targetValue = if (isError) BookOnColor.ErrorContainer else BookOnColor.Surface,
+    )
+
     Column(modifier = modifier.fillMaxWidth()) {
         if (label != null) {
             Text(
@@ -117,21 +130,30 @@ fun BookOnTextField(
                 .height(AppComponentSize.FieldHeight)
                 .shadow(
                     elevation = AppElevation.Field,
-                    shape = RoundedCornerShape(AppRadius.Field),
+                    shape = shape,
                 )
-                .clip(RoundedCornerShape(AppRadius.Field))
-                .background(if (isError) BookOnColor.ErrorContainer else BookOnColor.Surface),
+                .clip(shape)
+                .background(containerColor)
+                .border(
+                    width = AppComponentSize.FieldBorderWidth,
+                    color = borderColor,
+                    shape = shape,
+                )
+                .semantics {
+                    if (isError && errorText != null) error(errorText)
+                },
             enabled = enabled,
             singleLine = singleLine,
             textStyle = textStyle.copy(color = BookOnColor.TextPrimary),
             keyboardOptions = keyboardOptions,
             visualTransformation = visualTransformation,
             cursorBrush = SolidColor(BookOnColor.Primary),
+            interactionSource = interactionSource,
             decorationBox = { innerTextField ->
                 Row(
                     modifier = Modifier
                         .fillMaxSize()
-                        .padding(horizontal = AppSpacing.Content),
+                        .padding(horizontal = AppSpacing.FieldHorizontal),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (leadingIcon != null) {
@@ -141,7 +163,7 @@ fun BookOnTextField(
                         ) {
                             leadingIcon()
                         }
-                        Spacer(modifier = Modifier.width(AppSpacing.Item))
+                        Spacer(modifier = Modifier.width(AppSpacing.Content))
                     }
 
                     Box(modifier = Modifier.weight(1f)) {
@@ -158,7 +180,10 @@ fun BookOnTextField(
                     if (trailingIcon != null) {
                         Spacer(modifier = Modifier.width(AppSpacing.Item))
                         Box(
-                            modifier = Modifier.size(AppIconSize.Default),
+                            modifier = Modifier.sizeIn(
+                                minWidth = AppComponentSize.MinTouchTarget,
+                                minHeight = AppComponentSize.MinTouchTarget,
+                            ),
                             contentAlignment = Alignment.Center,
                         ) {
                             trailingIcon()
@@ -177,79 +202,6 @@ fun BookOnTextField(
             )
         }
     }
-}
-
-/**
- * 비밀번호 표시 전환을 포함한 입력 필드이다.
- * trailingIcon을 직접 넘기지 않아도 텍스트 토글로 표시 상태를 제어한다.
- */
-@Composable
-fun BookOnPasswordField(
-    uiState: BookOnPasswordFieldUiState,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    visibleLabel: String? = null,
-    hiddenLabel: String? = null,
-) {
-    BookOnPasswordField(
-        value = uiState.value,
-        onValueChange = onValueChange,
-        modifier = modifier,
-        label = uiState.label,
-        placeholder = uiState.placeholder,
-        errorText = uiState.errorText,
-        enabled = uiState.enabled,
-        visibleLabel = visibleLabel,
-        hiddenLabel = hiddenLabel,
-    )
-}
-
-/**
- * 비밀번호 표시 전환을 포함한 입력 필드이다.
- * trailingIcon을 직접 넘기지 않아도 텍스트 토글로 표시 상태를 제어한다.
- */
-@Composable
-fun BookOnPasswordField(
-    value: String,
-    onValueChange: (String) -> Unit,
-    modifier: Modifier = Modifier,
-    label: String? = null,
-    placeholder: String = "",
-    errorText: String? = null,
-    enabled: Boolean = true,
-    visibleLabel: String? = null,
-    hiddenLabel: String? = null,
-) {
-    var passwordVisible by rememberSaveable { mutableStateOf(false) }
-    val showPasswordText = hiddenLabel ?: stringResource(R.string.action_show_password)
-    val hidePasswordText = visibleLabel ?: stringResource(R.string.action_hide_password)
-
-    BookOnTextField(
-        value = value,
-        onValueChange = onValueChange,
-        modifier = modifier,
-        label = label,
-        placeholder = placeholder,
-        errorText = errorText,
-        enabled = enabled,
-        visualTransformation = if (passwordVisible) {
-            VisualTransformation.None
-        } else {
-            PasswordVisualTransformation()
-        },
-        trailingIcon = {
-            Text(
-                modifier = Modifier.clickable(
-                    enabled = enabled,
-                    role = Role.Button,
-                    onClick = { passwordVisible = !passwordVisible },
-                ),
-                text = if (passwordVisible) hidePasswordText else showPasswordText,
-                style = BookOnTypography.caption,
-                color = BookOnColor.TextPlaceholder,
-            )
-        },
-    )
 }
 
 @Preview(showBackground = true)
@@ -274,18 +226,6 @@ private fun BookOnTextFieldErrorPreview() {
             onValueChange = {},
             label = "학교 이메일",
             errorText = "올바른 이메일 형식이 아니에요",
-        )
-    }
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun BookOnPasswordFieldPreview() {
-    BookOnTheme {
-        BookOnPasswordField(
-            value = "password",
-            onValueChange = {},
-            label = "비밀번호",
         )
     }
 }

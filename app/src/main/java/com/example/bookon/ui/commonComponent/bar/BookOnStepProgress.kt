@@ -15,11 +15,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.bookon.ui.theme.AppRadius
-import com.example.bookon.ui.theme.AppSpacing
-import com.example.bookon.ui.theme.BookOnColor
-import com.example.bookon.ui.theme.BookOnTheme
-import com.example.bookon.ui.theme.BookOnTypography
+import com.example.bookon.theme.AppRadius
+import com.example.bookon.theme.AppSpacing
+import com.example.bookon.theme.BookOnColor
+import com.example.bookon.theme.BookOnTheme
+import com.example.bookon.theme.BookOnTypography
 import com.example.bookon.uiState.BookOnStepProgressUiState
 
 /**

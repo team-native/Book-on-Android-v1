@@ -18,12 +18,12 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.example.bookon.ui.theme.AppComponentSize
-import com.example.bookon.ui.theme.AppIconSize
-import com.example.bookon.ui.theme.AppRadius
-import com.example.bookon.ui.theme.BookOnColor
-import com.example.bookon.ui.theme.BookOnTheme
-import com.example.bookon.ui.theme.BookOnTypography
+import com.example.bookon.theme.AppComponentSize
+import com.example.bookon.theme.AppIconSize
+import com.example.bookon.theme.AppRadius
+import com.example.bookon.theme.BookOnColor
+import com.example.bookon.theme.BookOnTheme
+import com.example.bookon.theme.BookOnTypography
 import com.example.bookon.uiState.BookOnTopBarUiState
 
 /**

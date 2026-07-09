@@ -2,8 +2,8 @@ package com.example.bookon.uiState
 
 import androidx.compose.runtime.Immutable
 import androidx.compose.ui.graphics.Color
-import com.example.bookon.ui.commonComponent.BookOnStatItem
-import com.example.bookon.ui.theme.BookOnColor
+import com.example.bookon.ui.commonComponent.card.BookOnStatItem
+import com.example.bookon.theme.BookOnColor
 
 @Immutable
 data class BookOnStatSummaryCardUiState(
