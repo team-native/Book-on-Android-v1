@@ -25,12 +25,19 @@ fun BookOnSignupStepHeader(
     title: String,
     description: String,
     modifier: Modifier = Modifier,
+    animateProgress: Boolean = true,
+    onProgressAnimationRunningChange: (Boolean) -> Unit = {},
 ) {
     Column(
         modifier = modifier,
         verticalArrangement = Arrangement.spacedBy(AppSpacing.Content),
     ) {
-        BookOnStepProgress(currentStep = step, totalStep = SignupTotalStep)
+        BookOnStepProgress(
+            currentStep = step,
+            totalStep = SignupTotalStep,
+            animateProgress = animateProgress,
+            onAnimationRunningChange = onProgressAnimationRunningChange,
+        )
         Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Small)) {
             Text(
                 text = title,

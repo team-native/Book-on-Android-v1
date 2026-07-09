@@ -4,6 +4,7 @@ import androidx.compose.ui.unit.dp
 
 object AppSpacing {
     val ScreenHorizontal = 24.dp
+    val AuthHorizontal = 31.dp
     val HomeHorizontal = 28.dp
     val ScreenVertical = 24.dp
     val Section = 24.dp

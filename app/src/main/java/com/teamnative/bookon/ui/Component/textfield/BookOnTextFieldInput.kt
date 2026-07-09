@@ -65,6 +65,7 @@ fun BookOnTextField(
         modifier = modifier,
         label = uiState.label,
         placeholder = uiState.placeholder,
+        suffixText = uiState.suffixText,
         errorText = uiState.errorText,
         isError = uiState.isError,
         enabled = uiState.enabled,
@@ -88,6 +89,7 @@ fun BookOnTextField(
     modifier: Modifier = Modifier,
     label: String? = null,
     placeholder: String = "",
+    suffixText: String? = null,
     errorText: String? = null,
     isError: Boolean = errorText != null,
     enabled: Boolean = true,
@@ -175,6 +177,15 @@ fun BookOnTextField(
                             )
                         }
                         innerTextField()
+                    }
+
+                    if (suffixText != null) {
+                        Spacer(modifier = Modifier.width(AppSpacing.Item))
+                        Text(
+                            text = suffixText,
+                            style = BookOnTypography.fieldPlaceholder,
+                            color = BookOnColor.TextPlaceholder,
+                        )
                     }
 
                     if (trailingIcon != null) {

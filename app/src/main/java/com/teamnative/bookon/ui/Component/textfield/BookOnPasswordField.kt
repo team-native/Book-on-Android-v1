@@ -64,6 +64,7 @@ fun BookOnPasswordField(
     modifier: Modifier = Modifier,
     visibleLabel: String? = null,
     hiddenLabel: String? = null,
+    leadingIcon: (@Composable () -> Unit)? = null,
 ) {
     BookOnPasswordField(
         value = uiState.value,
@@ -75,6 +76,7 @@ fun BookOnPasswordField(
         enabled = uiState.enabled,
         visibleLabel = visibleLabel,
         hiddenLabel = hiddenLabel,
+        leadingIcon = leadingIcon,
     )
 }
 
@@ -93,6 +95,7 @@ fun BookOnPasswordField(
     enabled: Boolean = true,
     visibleLabel: String? = null,
     hiddenLabel: String? = null,
+    leadingIcon: (@Composable () -> Unit)? = null,
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val showPasswordText = hiddenLabel ?: stringResource(R.string.action_show_password)
@@ -170,6 +173,16 @@ fun BookOnPasswordField(
                         ),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
+                    if (leadingIcon != null) {
+                        Box(
+                            modifier = Modifier.size(AppIconSize.Small),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            leadingIcon()
+                        }
+                        Spacer(modifier = Modifier.width(AppSpacing.Content))
+                    }
+
                     Box(modifier = Modifier.weight(1f)) {
                         if (value.isEmpty()) {
                             Text(

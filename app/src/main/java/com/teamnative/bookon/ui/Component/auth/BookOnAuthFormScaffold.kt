@@ -28,7 +28,7 @@ fun BookOnAuthFormScaffold(
         modifier = modifier,
         containerColor = BookOnColor.Background,
         topBar = {
-            Column(modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal)) {
+            Column(modifier = Modifier.padding(horizontal = AppSpacing.AuthHorizontal)) {
                 topBar()
             }
         },
@@ -36,7 +36,7 @@ fun BookOnAuthFormScaffold(
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(horizontal = AppSpacing.ScreenHorizontal)
+                .padding(horizontal = AppSpacing.AuthHorizontal)
                 .fillMaxSize(),
         ) {
             Column(
@@ -44,7 +44,10 @@ fun BookOnAuthFormScaffold(
                 verticalArrangement = Arrangement.spacedBy(AppSpacing.Content),
                 content = content,
             )
-            Column(content = footer)
+            Column(
+                modifier = Modifier.padding(horizontal = AppSpacing.Small),
+                content = footer,
+            )
             Spacer(modifier = Modifier.height(AppSpacing.Section))
         }
     }

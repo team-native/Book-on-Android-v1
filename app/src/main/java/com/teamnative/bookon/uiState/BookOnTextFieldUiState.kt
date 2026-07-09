@@ -7,6 +7,7 @@ data class BookOnTextFieldUiState(
     val value: String,
     val label: String? = null,
     val placeholder: String = "",
+    val suffixText: String? = null,
     val errorText: String? = null,
     val isError: Boolean = errorText != null,
     val enabled: Boolean = true,
