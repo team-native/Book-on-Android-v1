@@ -1,17 +1,16 @@
 package com.teamnative.bookon.ui.Component.button
 
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.unit.dp
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.ui.draw.clip
+import com.teamnative.bookon.theme.AppRadius
 import com.teamnative.bookon.theme.BookOnColor
 import com.teamnative.bookon.theme.BookOnTheme
 import com.teamnative.bookon.theme.BookOnTypography
@@ -25,19 +24,14 @@ fun BookOnLogoutButton(
     onLogoutRequest: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    TextButton(
-        contentPadding = PaddingValues(0.dp),
+    Text(
         modifier = modifier
-            .clip(MaterialTheme.shapes.large),
-        onClick = onLogoutRequest,
-    ) {
-        Text(
-            textAlign = TextAlign.Start,
-            text = stringResource(R.string.action_logout),
-            style = BookOnTypography.bodySemiBold,
-            color = BookOnColor.Error,
-        )
-    }
+            .clip(RoundedCornerShape(AppRadius.Small))
+            .clickable(role = Role.Button, onClick = onLogoutRequest),
+        text = stringResource(R.string.action_logout),
+        style = BookOnTypography.bodySemiBold,
+        color = BookOnColor.Error,
+    )
 }
 
 @Preview(showBackground = true)
