@@ -22,28 +22,6 @@ import com.teamnative.bookon.theme.AppIconSize
 import com.teamnative.bookon.theme.BookOnColor
 import com.teamnative.bookon.theme.BookOnTheme
 import com.teamnative.bookon.theme.BookOnTypography
-import com.teamnative.bookon.uiState.BookOnMenuRowUiState
-
-/**
- * 마이페이지 설정 목록처럼 제목, 우측 액션, 하단 구분선을 가진 행이다.
- * onClick이 null이면 읽기 전용 행으로 표시한다.
- */
-@Composable
-fun BookOnMenuRow(
-    uiState: BookOnMenuRowUiState,
-    modifier: Modifier = Modifier,
-    onClick: (() -> Unit)? = null,
-    trailingContent: @Composable () -> Unit = { MenuChevron() },
-) {
-    BookOnMenuRow(
-        title = uiState.title,
-        modifier = modifier,
-        onClick = onClick,
-        destructive = uiState.destructive,
-        showDivider = uiState.showDivider,
-        trailingContent = trailingContent,
-    )
-}
 
 /**
  * 마이페이지 설정 목록처럼 제목, 우측 액션, 하단 구분선을 가진 행이다.

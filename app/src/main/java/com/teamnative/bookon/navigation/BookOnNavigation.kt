@@ -187,7 +187,10 @@ fun BookOnNavHost() {
                 bottomBar = bottomBar,
                 onLoanHistoryClick = { navController.navigate(BookOnDestination.LoanHistory.route) },
                 onFavoriteClick = { navController.navigate(BookOnDestination.Favorites.route) },
-                onLogoutClick = { navController.navigateToLoginAndClearBackStack() },
+                onLogoutRequest = {
+                    // TODO: 로그아웃 API와 토큰 저장소가 준비되면 서버에 토큰을 반납하고 로컬 세션을 정리한 뒤 이동한다.
+                    navController.navigateToLoginAndClearBackStack()
+                },
             )
         }
         composable(BookOnDestination.Search.route) {

@@ -42,7 +42,7 @@ fun BookOnMyRoute(
     uiState: BookOnMyScreenUiState = defaultBookOnMyScreenUiState(),
     onLoanHistoryClick: () -> Unit,
     onFavoriteClick: () -> Unit,
-    onLogoutClick: () -> Unit,
+    onLogoutRequest: () -> Unit,
 ) {
     BookOnMyScreen(
         uiState = uiState,
@@ -53,7 +53,7 @@ fun BookOnMyRoute(
                 2 -> onFavoriteClick()
             }
         },
-        onLogoutClick = onLogoutClick,
+        onLogoutRequest = onLogoutRequest,
         onNotificationChanged = { _, _ -> },
     )
 }
@@ -66,7 +66,7 @@ fun BookOnMyScreen(
     uiState: BookOnMyScreenUiState,
     bottomBar: @Composable () -> Unit,
     onMenuClick: (Int) -> Unit,
-    onLogoutClick: () -> Unit,
+    onLogoutRequest: () -> Unit,
     onNotificationChanged: (Int, Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -102,14 +102,16 @@ fun BookOnMyScreen(
                 Column {
                     uiState.menus.forEachIndexed { index, menu ->
                         BookOnMenuRow(
-                            uiState = menu,
+                            title = menu.title,
                             onClick = { onMenuClick(index) },
+                            destructive = menu.destructive,
+                            showDivider = menu.showDivider,
                         )
                     }
                 }
             }
             item {
-                BookOnLogoutButton(onClick = onLogoutClick)
+                BookOnLogoutButton(onLogoutRequest = onLogoutRequest)
             }
             item {
                 BookOnNotificationSettingsPanel(
@@ -271,7 +273,7 @@ private fun BookOnMyScreenPreview() {
             uiState = defaultBookOnMyScreenUiState(),
             bottomBar = {},
             onMenuClick = {},
-            onLogoutClick = {},
+            onLogoutRequest = {},
             onNotificationChanged = { _, _ -> },
         )
     }
