@@ -62,6 +62,7 @@
     <string name="privacy_required_agreement">개인정보 수집 및 이용에 동의합니다 (필수)</string>
     <string name="privacy_agreement_check_description">개인정보 수집 및 이용 동의 체크</string>
     <string name="privacy_policy_expand_description">개인정보 수집 및 이용 안내 펼치기</string>
+    <string name="privacy_policy_collapse_description">개인정보 수집 및 이용 안내 접기</string>
     <string name="privacy_collected_items_title">1. 수집 항목</string>
     <string name="privacy_collected_items">이름, 이메일 주소, 비밀번호</string>
     <string name="privacy_purpose_title">2. 수집 목적</string>
@@ -71,6 +72,7 @@
     <string name="privacy_retention_until_withdrawal">회원 탈퇴 시까지</string>
     <string name="terms_title">4.이용약관 안내</string>
     <string name="terms_service_interruption">서버 점검이나 업데이트 시\n      서비스가 일시 중단될 수 있음</string>
+    <string name="privacy_bullet_format">• %1$s</string>
     <string name="privacy_refusal_notice">이용자는 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있으\n며, 동의를  거부할 경우 회원가입이 제한될 수 있습니다.</string>
     <string name="signup_complete_title">가입 완료!</string>
     <string name="signup_complete_message">%1$s 님, 환영해요.\n이제 Book - on에서 마음껏 읽어보세요.</string>
