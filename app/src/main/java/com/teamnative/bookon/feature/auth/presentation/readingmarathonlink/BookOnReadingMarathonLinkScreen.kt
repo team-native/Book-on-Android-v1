@@ -10,11 +10,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupStepHeader
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnSkipTextButton
+import com.teamnative.bookon.feature.auth.presentation.component.skipReadingMarathonAnnotatedString
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnMarathonCircleAction
@@ -23,6 +25,8 @@ import com.teamnative.bookon.feature.auth.presentation.component.AuthOauthTopSpa
 import com.teamnative.bookon.feature.auth.presentation.component.AuthTitleTopSpacing
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthPasswordField
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnThirdPartyAgreementRow
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnPasswordPolicyTooltip
+import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 
 /**
  * 독서마라톤 계정 연동 화면은 아이디, 비밀번호, 개인정보 제공 동의를 받는다.
@@ -50,12 +54,13 @@ fun BookOnReadingMarathonLinkScreen(
             )
             Spacer(modifier = Modifier.height(AppSpacing.Item))
             BookOnSkipTextButton(
-                text = stringResource(R.string.skip_reading_marathon),
+                text = skipReadingMarathonAnnotatedString(),
                 onClick = onSkipClick,
             )
         },
     ) {
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
+
         BookOnSignupStepHeader(
             step = 3,
             title = uiState.title,
@@ -63,12 +68,16 @@ fun BookOnReadingMarathonLinkScreen(
             animateProgress = false,
         )
         BookOnTextField(uiState = uiState.marathonId, onValueChange = onIdChange)
+
         BookOnAuthPasswordField(uiState = uiState.password, onValueChange = onPasswordChange)
+        BookOnPasswordPolicyTooltip()
+
         BookOnThirdPartyAgreementRow(
             checked = uiState.agreement.checked,
             onCheckedChange = onAgreementChange,
         )
         Spacer(modifier = Modifier.height(AuthOauthTopSpacing))
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
@@ -92,5 +101,17 @@ fun BookOnReadingMarathonLinkScreen(
                 onSelected = onOauthClick,
             )
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BookOnReadingMarathonLinkScreenPreview() {
+    BookOnTheme {
+        BookOnReadingMarathonLinkScreen(
+            uiState = sampleReadingMarathonLinkUiState(),
+            onBackClick = {}, onIdChange = {}, onPasswordChange = {},
+            onAgreementChange = {}, onOauthClick = {}, onSkipClick = {}, onCompleteClick = {},
+        )
     }
 }

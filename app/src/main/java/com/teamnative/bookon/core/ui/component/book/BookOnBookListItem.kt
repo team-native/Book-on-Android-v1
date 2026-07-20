@@ -44,6 +44,7 @@ fun BookOnBookListItem(
     coverWidth: Dp = AppComponentSize.BookListCoverWidth,
     coverHeight: Dp = AppComponentSize.BookListCoverHeight,
     cover: @Composable () -> Unit = { BookListCoverPlaceholder() },
+    trailingContent: (@Composable () -> Unit)? = null,
 ) {
     BookOnBookListItem(
         title = uiState.title,
@@ -55,6 +56,7 @@ fun BookOnBookListItem(
         coverWidth = coverWidth,
         coverHeight = coverHeight,
         cover = cover,
+        trailingContent = trailingContent,
     )
 }
 
@@ -73,6 +75,7 @@ fun BookOnBookListItem(
     coverWidth: Dp = AppComponentSize.BookListCoverWidth,
     coverHeight: Dp = AppComponentSize.BookListCoverHeight,
     cover: @Composable () -> Unit = { BookListCoverPlaceholder() },
+    trailingContent: (@Composable () -> Unit)? = null,
 ) {
     Row(
         modifier = modifier
@@ -130,6 +133,10 @@ fun BookOnBookListItem(
                 text = statusText,
                 available = available,
             )
+        }
+        if (trailingContent != null) {
+            Spacer(modifier = Modifier.width(AppSpacing.Small))
+            trailingContent()
         }
     }
 }

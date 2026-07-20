@@ -7,6 +7,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.tooling.preview.Preview
+import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import androidx.compose.ui.Modifier
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnColor
@@ -57,5 +59,13 @@ fun BookOnPrivacyPolicyScreen(
                 )
             }
         }
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BookOnPrivacyPolicyScreenPreview() {
+    BookOnTheme {
+        BookOnPrivacyPolicyScreen(uiState = samplePrivacyPolicyUiState(), onBackClick = {})
     }
 }

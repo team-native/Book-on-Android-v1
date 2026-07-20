@@ -31,6 +31,7 @@ import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
 
 private const val ThirdPartyAgreementAnnotationTag = "third_party_agreement"
+private val ThirdPartyAgreementCheckIconSize = 16.dp
 
 @Composable
 internal fun BookOnThirdPartyAgreementRow(
@@ -44,7 +45,7 @@ internal fun BookOnThirdPartyAgreementRow(
     ) {
         Image(
             modifier = Modifier
-                .size(16.dp)
+                .size(ThirdPartyAgreementCheckIconSize)
                 .clip(RoundedCornerShape(AppRadius.Progress))
                 .clickable(role = Role.Checkbox, onClick = { onCheckedChange(!checked) }),
             painter = painterResource(if (checked) R.drawable.authority_check else R.drawable.authority_not_check),

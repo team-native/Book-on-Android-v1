@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupStepHeader
@@ -13,6 +14,7 @@ import com.teamnative.bookon.feature.auth.presentation.component.BookOnVerificat
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.auth.presentation.component.AuthTitleTopSpacing
+import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 
 /**
  * 인증번호 화면은 6자리 코드 입력과 만료/재전송 상태를 표시한다.
@@ -24,6 +26,7 @@ fun BookOnVerificationCodeScreen(
     onCodeChange: (String) -> Unit,
     onResendClick: () -> Unit,
     onConfirmClick: () -> Unit,
+    initialProgressStep: Int? = null,
     modifier: Modifier = Modifier,
 ) {
     BookOnAuthFormScaffold(
@@ -38,7 +41,12 @@ fun BookOnVerificationCodeScreen(
         },
     ) {
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
-        BookOnSignupStepHeader(step = 1, title = uiState.title, description = uiState.description)
+        BookOnSignupStepHeader(
+            step = 1,
+            title = uiState.title,
+            description = uiState.description,
+            initialProgressStep = initialProgressStep,
+        )
         BookOnVerificationCodeField(
             code = uiState.code,
             onCodeChange = onCodeChange,
@@ -49,6 +57,17 @@ fun BookOnVerificationCodeScreen(
             resendText = stringResource(R.string.verification_code_resend),
             onResendClick = onResendClick,
             errorText = uiState.errorText,
+        )
+    }
+}
+
+@Preview(showBackground = true)
+@Composable
+private fun BookOnVerificationCodeScreenPreview() {
+    BookOnTheme {
+        BookOnVerificationCodeScreen(
+            uiState = sampleVerificationCodeUiState(),
+            onBackClick = {}, onCodeChange = {}, onResendClick = {}, onConfirmClick = {},
         )
     }
 }

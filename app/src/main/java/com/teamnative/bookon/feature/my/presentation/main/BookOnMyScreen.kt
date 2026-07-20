@@ -20,16 +20,14 @@ import com.teamnative.bookon.core.ui.component.row.BookOnMenuRow
 import com.teamnative.bookon.feature.my.presentation.component.BookOnLogoutButton
 import com.teamnative.bookon.feature.my.presentation.component.BookOnMyMarathonCard
 import com.teamnative.bookon.feature.my.presentation.component.BookOnMyProfileHeader
-import com.teamnative.bookon.feature.my.presentation.component.BookOnNotificationSettingsPanel
+import com.teamnative.bookon.feature.my.presentation.component.BookOnMyUnlinkedMarathonCard
 
 /** 프로필, 통계, 독서마라톤, 메뉴와 알림 설정을 표시한다. */
 @Composable
 fun BookOnMyScreen(
     uiState: BookOnMyScreenUiState,
     bottomBar: @Composable () -> Unit,
-    onMenuClick: (Int) -> Unit,
-    onLogoutRequest: () -> Unit,
-    onNotificationChanged: (Int, Boolean) -> Unit,
+    onEvent: (BookOnMyScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -55,26 +53,29 @@ fun BookOnMyScreen(
                 )
             }
             item { BookOnStatSummaryCard(items = uiState.stats) }
-            item { BookOnMyMarathonCard(uiState = uiState.marathon) }
+            item {
+                if (uiState.marathon.linked) {
+                    BookOnMyMarathonCard(uiState = uiState.marathon)
+                } else {
+                    BookOnMyUnlinkedMarathonCard(
+                        uiState = uiState.marathon,
+                        onLinkRequest = { onEvent(BookOnMyScreenEvent.ReadingMarathonLinkRequested) },
+                    )
+                }
+            }
             item {
                 Column {
                     uiState.menus.forEachIndexed { index, menu ->
                         BookOnMenuRow(
                             title = menu.title,
-                            onClick = { onMenuClick(index) },
+                            onClick = { onEvent(BookOnMyScreenEvent.MenuClicked(index)) },
                             destructive = menu.destructive,
                             showDivider = menu.showDivider,
                         )
                     }
                 }
             }
-            item { BookOnLogoutButton(onLogoutRequest = onLogoutRequest) }
-            item {
-                BookOnNotificationSettingsPanel(
-                    uiState = uiState.notificationPanel,
-                    onCheckedChange = onNotificationChanged,
-                )
-            }
+            item { BookOnLogoutButton(onLogoutRequest = { onEvent(BookOnMyScreenEvent.LogoutClicked) }) }
         }
     }
 }
@@ -86,9 +87,7 @@ private fun BookOnMyScreenPreview() {
         BookOnMyScreen(
             uiState = sampleMyUiState(),
             bottomBar = {},
-            onMenuClick = {},
-            onLogoutRequest = {},
-            onNotificationChanged = { _, _ -> },
+            onEvent = {},
         )
     }
 }

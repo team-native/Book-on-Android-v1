@@ -8,4 +8,5 @@ data class BookOnBookListItemUiModel(
     val metaText: String,
     val statusText: String? = null,
     val available: Boolean = true,
+    val isFavorite: Boolean = false,
 )

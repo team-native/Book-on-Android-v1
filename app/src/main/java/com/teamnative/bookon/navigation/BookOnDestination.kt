@@ -7,9 +7,17 @@ internal sealed interface BookOnDestination {
     data object Signup : BookOnDestination { override val route = "signup" }
     data object VerificationCode : BookOnDestination { override val route = "verificationCode" }
     data object PasswordSetup : BookOnDestination { override val route = "passwordSetup" }
+    data object PasswordReset : BookOnDestination { override val route = "passwordReset" }
     data object ReadingMarathonSignup : BookOnDestination { override val route = "readingMarathonSignup" }
     data object ReadingMarathonLink : BookOnDestination { override val route = "readingMarathonLink" }
-    data object SignupComplete : BookOnDestination { override val route = "signupComplete" }
+    data object SignupComplete : BookOnDestination {
+        const val isReadingMarathonLinkedArgument = "isReadingMarathonLinked"
+        override val route = "signupComplete/{$isReadingMarathonLinkedArgument}"
+
+        /** 가입 완료 화면으로 독서마라톤 실제 연동 결과를 전달하는 경로를 만든다. */
+        fun createRoute(isReadingMarathonLinked: Boolean): String =
+            "signupComplete/$isReadingMarathonLinked"
+    }
     data object Home : BookOnDestination { override val route = "home" }
     data object Ranking : BookOnDestination { override val route = "ranking" }
     data object Library : BookOnDestination { override val route = "library" }

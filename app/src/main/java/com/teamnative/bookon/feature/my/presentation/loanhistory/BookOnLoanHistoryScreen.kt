@@ -25,9 +25,7 @@ import com.teamnative.bookon.core.ui.component.chip.BookOnFilterChip
 @Composable
 fun BookOnLoanHistoryScreen(
     uiState: BookOnLoanHistoryScreenUiState,
-    onBackClick: () -> Unit,
-    onFilterClick: (Int) -> Unit,
-    onBookClick: () -> Unit,
+    onEvent: (BookOnLoanHistoryScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -36,7 +34,7 @@ fun BookOnLoanHistoryScreen(
         topBar = {
             BookOnTopBar(
                 title = stringResource(R.string.loan_return_history),
-                onBackClick = onBackClick,
+                onBackClick = { onEvent(BookOnLoanHistoryScreenEvent.BackClicked) },
                 modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
             )
         },
@@ -49,17 +47,32 @@ fun BookOnLoanHistoryScreen(
             item {
                 Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Small)) {
                     uiState.filters.forEachIndexed { index, filter ->
-                        BookOnFilterChip(uiState = filter, onClick = { onFilterClick(index) })
+                        BookOnFilterChip(
+                            uiState = filter,
+                            onClick = {
+                                onEvent(BookOnLoanHistoryScreenEvent.FilterClicked(index))
+                            },
+                        )
                     }
                 }
             }
-            item { SectionTitle(text = uiState.currentTitle) }
-            items(uiState.currentLoans) { book ->
-                BookOnBookListItem(uiState = book, onClick = onBookClick)
+            if (uiState.currentLoans.isNotEmpty()) {
+                item { SectionTitle(text = uiState.currentTitle) }
+                items(uiState.currentLoans) { book ->
+                    BookOnBookListItem(
+                        uiState = book,
+                        onClick = { onEvent(BookOnLoanHistoryScreenEvent.BookClicked) },
+                    )
+                }
             }
-            item { SectionTitle(text = uiState.pastTitle) }
-            items(uiState.pastLoans) { book ->
-                BookOnBookListItem(uiState = book, onClick = onBookClick)
+            if (uiState.pastLoans.isNotEmpty()) {
+                item { SectionTitle(text = uiState.pastTitle) }
+                items(uiState.pastLoans) { book ->
+                    BookOnBookListItem(
+                        uiState = book,
+                        onClick = { onEvent(BookOnLoanHistoryScreenEvent.BookClicked) },
+                    )
+                }
             }
         }
     }
@@ -76,9 +89,7 @@ private fun BookOnLoanHistoryScreenPreview() {
     BookOnTheme {
         BookOnLoanHistoryScreen(
             uiState = sampleLoanHistoryUiState(),
-            onBackClick = {},
-            onFilterClick = {},
-            onBookClick = {},
+            onEvent = {},
         )
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,16 +18,16 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
+import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
 /**
  * 화면 상단 제목과 뒤로가기, 우측 액션 영역을 제공한다.
- * Android 시스템 status bar 영역은 앱 Scaffold나 WindowInsets 정책에 맡긴다.
+BookOnAuthTopBar * edge-to-edge 환경에서 상태 표시줄 인셋을 포함해 시스템 바와 겹치지 않게 배치한다.
  */
 @Composable
 fun BookOnTopBar(
@@ -38,6 +39,7 @@ fun BookOnTopBar(
 ) {
     Box(
         modifier = modifier
+            .statusBarsPadding()
             .fillMaxWidth()
             .height(AppComponentSize.TopBarHeight),
     ) {
@@ -45,7 +47,7 @@ fun BookOnTopBar(
             Box(
                 modifier = Modifier
                     .align(Alignment.CenterStart)
-                    .size(40.dp)
+                    .size(AppComponentSize.TopBarAction)
                     .clip(RoundedCornerShape(AppRadius.IconButton))
                     .background(BookOnColor.Background)
                     .clickable(
@@ -78,7 +80,7 @@ fun BookOnTopBar(
 @Composable
 private fun BackChevron() {
     Canvas(modifier = Modifier.size(AppIconSize.Small)) {
-        val strokeWidth = 2.dp.toPx()
+        val strokeWidth = AppStrokeWidth.BackChevron.toPx()
         val startX = size.width * 0.6f
         val centerX = size.width * 0.35f
         drawLine(

@@ -65,6 +65,7 @@ fun BookOnPasswordField(
     visibleLabel: String? = null,
     hiddenLabel: String? = null,
     leadingIcon: (@Composable () -> Unit)? = null,
+    maxLength: Int = Int.MAX_VALUE,
 ) {
     BookOnPasswordField(
         value = uiState.value,
@@ -77,6 +78,7 @@ fun BookOnPasswordField(
         visibleLabel = visibleLabel,
         hiddenLabel = hiddenLabel,
         leadingIcon = leadingIcon,
+        maxLength = maxLength,
     )
 }
 
@@ -96,6 +98,7 @@ fun BookOnPasswordField(
     visibleLabel: String? = null,
     hiddenLabel: String? = null,
     leadingIcon: (@Composable () -> Unit)? = null,
+    maxLength: Int = Int.MAX_VALUE,
 ) {
     var passwordVisible by rememberSaveable { mutableStateOf(false) }
     val showPasswordText = hiddenLabel ?: stringResource(R.string.action_show_password)
@@ -134,7 +137,7 @@ fun BookOnPasswordField(
 
         BasicTextField(
             value = value,
-            onValueChange = onValueChange,
+            onValueChange = { value -> onValueChange(value.take(maxLength)) },
             modifier = Modifier
                 .fillMaxWidth()
                 .height(AppComponentSize.FieldHeight)

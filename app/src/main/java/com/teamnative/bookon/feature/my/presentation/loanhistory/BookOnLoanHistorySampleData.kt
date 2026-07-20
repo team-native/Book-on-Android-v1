@@ -5,7 +5,7 @@ import com.teamnative.bookon.core.ui.model.BookOnFilterChipUiModel
 
 fun sampleLoanHistoryUiState() = BookOnLoanHistoryScreenUiState(
     filters = listOf(
-        BookOnFilterChipUiModel("대출 중 2", true),
+        BookOnFilterChipUiModel("대출 중", true),
         BookOnFilterChipUiModel("반납 완료", false),
         BookOnFilterChipUiModel("전체", false),
     ),

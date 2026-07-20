@@ -2,15 +2,14 @@ package com.teamnative.bookon.feature.auth.presentation.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -20,7 +19,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -33,6 +32,9 @@ import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
 import com.teamnative.bookon.feature.auth.presentation.model.BookOnDropdownFieldUiModel
+
+private val DropdownIndicatorWidth = 13.dp
+private val DropdownIndicatorHeight = 6.dp
 
 /**
  * 학과 선택처럼 클릭하면 외부 메뉴를 여는 드롭다운 형태 필드이다.
@@ -77,31 +79,39 @@ fun BookOnDropdownField(
             )
             .clip(RoundedCornerShape(AppRadius.Field))
             .background(BookOnColor.Surface)
-            .clickable(
-                enabled = enabled,
-                role = Role.Button,
-                onClick = onClick,
-            )
             .alpha(if (enabled) 1f else 0.55f)
             .padding(horizontal = AppSpacing.Content),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
-            modifier = Modifier.weight(1f),
             text = text.ifEmpty { placeholder },
             style = BookOnTypography.fieldText,
             color = if (text.isEmpty()) BookOnColor.TextPlaceholder else BookOnColor.TextPrimary,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
-        Spacer(modifier = Modifier.width(AppSpacing.Item))
-        Image(
-            modifier = Modifier
-                .size(width = 13.dp, height = 6.dp),
-            painter = painterResource(if (expanded) R.drawable.up_arrow else R.drawable.down_arrow),
-            contentDescription = null,
-            contentScale = ContentScale.Fit,
-        )
+        Spacer(modifier = Modifier.weight(1f))
+        IconButton(
+            modifier = Modifier.size(AppComponentSize.MinTouchTarget),
+            enabled = enabled,
+            onClick = onClick,
+        ) {
+            Image(
+                modifier = Modifier.size(
+                    width = DropdownIndicatorWidth,
+                    height = DropdownIndicatorHeight,
+                ),
+                painter = painterResource(if (expanded) R.drawable.up_arrow else R.drawable.down_arrow),
+                contentDescription = stringResource(
+                    if (expanded) {
+                        R.string.department_dropdown_collapse_description
+                    } else {
+                        R.string.department_dropdown_expand_description
+                    },
+                ),
+                contentScale = ContentScale.Fit,
+            )
+        }
     }
 }
 

@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -58,6 +59,7 @@ fun BookOnOptionButton(
     onSelected: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
+    selectedTextColor: Color = BookOnColor.PrimaryPressed,
 ) {
     Box(
         modifier = modifier
@@ -67,7 +69,7 @@ fun BookOnOptionButton(
                 shape = RoundedCornerShape(AppRadius.Chip),
             )
             .clip(RoundedCornerShape(AppRadius.Chip))
-            .background(if (selected) BookOnColor.PrimaryContainer else BookOnColor.Surface)
+            .background(BookOnColor.Surface)
             .selectable(
                 selected = selected,
                 enabled = enabled,
@@ -80,7 +82,7 @@ fun BookOnOptionButton(
         Text(
             text = text,
             style = BookOnTypography.bodySemiBold,
-            color = if (selected) BookOnColor.PrimaryPressed else BookOnColor.TextPlaceholder,
+            color = if (selected) selectedTextColor else BookOnColor.TextPlaceholder,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

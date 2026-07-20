@@ -24,7 +24,6 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
@@ -72,7 +71,7 @@ fun BookOnRankingPodium(
             member = second,
             pedestalRes = R.drawable.rank_2,
             pedestalHeight = AppComponentSize.RankingSecondPedestalHeight,
-            avatarSize = 52.dp,
+            avatarSize = AppIconSize.PodiumSecondaryAvatar,
             bookCountColor = BookOnColor.TextTertiary,
         )
         RankingPodiumPlace(
@@ -86,7 +85,7 @@ fun BookOnRankingPodium(
             member = third,
             pedestalRes = R.drawable.rank_3,
             pedestalHeight = AppComponentSize.RankingThirdPedestalHeight,
-            avatarSize = 52.dp,
+            avatarSize = AppIconSize.PodiumSecondaryAvatar,
             bookCountColor = BookOnColor.TextTertiary,
         )
     }

@@ -9,8 +9,11 @@ object AppSpacing {
     val ScreenVertical = 24.dp
     val Section = 24.dp
     val Content = 16.dp
+    val Medium = 20.dp
     val FieldHorizontal = 20.dp
     val Item = 12.dp
+    val Large = 28.dp
+    val XLarge = 32.dp
     val Small = 8.dp
     val Tiny = 4.dp
 }
@@ -38,6 +41,8 @@ object AppElevation {
 
 object AppAnimationDuration {
     const val Medium = 400
+    const val Navigation = 500
+    const val LoadingRotation = 2_500
 }
 
 object AppIconSize {
@@ -46,7 +51,9 @@ object AppIconSize {
     val Medium = 30.dp
     val Large = 32.dp
     val XLarge = 36.dp
+    val Loading = 64.dp
     val Avatar = 64.dp
+    val PodiumSecondaryAvatar = 52.dp
 }
 
 object AppComponentSize {
@@ -57,6 +64,9 @@ object AppComponentSize {
     val HomeSearchHeight = 42.dp
     val HomeActionButton = 36.dp
     val TopBarHeight = 56.dp
+    val TopBarAction = 40.dp
+    val BottomSheetHandleWidth = 40.dp
+    val MenuRowHeight = 51.dp
     val NavigationHeight = 89.dp
     val ChipHeight = 34.dp
     val SmallChipHeight = 24.dp
@@ -82,4 +92,12 @@ object AppComponentSize {
     val RankingListRowHeight = 64.dp
     val StatSummaryCardHeight = 76.dp
     val InfoCardIcon = 36.dp
+}
+
+object AppStrokeWidth {
+    val Divider = 1.dp
+    val SelectedBorder = 2.dp
+    val Progress = 4.dp
+    val BackChevron = 2.dp
+    val MenuChevron = 1.5.dp
 }

@@ -22,9 +22,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import androidx.compose.ui.res.stringResource
+import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
+import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
@@ -46,24 +48,25 @@ fun BookOnStepProgress(
     totalStep: Int,
     modifier: Modifier = Modifier,
     animateProgress: Boolean = true,
+    initialStep: Int? = null,
     onAnimationRunningChange: (Boolean) -> Unit = {},
 ) {
     val safeTotal = totalStep.coerceAtLeast(1)
     val safeCurrent = currentStep.coerceIn(1, safeTotal)
     val initialStackedStep = if (animateProgress) {
-        (safeCurrent - 1).coerceAtLeast(1)
+        initialStep?.coerceIn(1, safeTotal) ?: (safeCurrent - 1).coerceAtLeast(1)
     } else {
         safeCurrent
     }
-    val segmentProgresses = remember(safeTotal) {
+    val segmentProgresses = remember(safeTotal, initialStackedStep) {
         List(safeTotal) { index ->
             Animatable(if (index < initialStackedStep) 1f else 0f)
         }
     }
-    var stackedStep by remember(safeTotal) { mutableIntStateOf(initialStackedStep) }
+    var stackedStep by remember(safeTotal, initialStackedStep) { mutableIntStateOf(initialStackedStep) }
     val currentAnimationRunningChange by rememberUpdatedState(onAnimationRunningChange)
 
-    LaunchedEffect(safeCurrent, safeTotal, animateProgress) {
+    LaunchedEffect(safeCurrent, safeTotal, animateProgress, initialStackedStep) {
         if (!animateProgress || safeCurrent == stackedStep) {
             currentAnimationRunningChange(false)
             return@LaunchedEffect
@@ -72,10 +75,14 @@ fun BookOnStepProgress(
         currentAnimationRunningChange(true)
         try {
             if (safeCurrent < stackedStep) {
-                segmentProgresses.forEachIndexed { index, progress ->
-                    progress.snapTo(if (index < safeCurrent) 1f else 0f)
+                repeat(stackedStep - safeCurrent) { offset ->
+                    val segmentIndex = stackedStep - offset - 1
+                    segmentProgresses[segmentIndex].animateTo(
+                        targetValue = 0f,
+                        animationSpec = tween(durationMillis = StepProgressSegmentAnimationMillis),
+                    )
+                    stackedStep = segmentIndex
                 }
-                stackedStep = safeCurrent
                 return@LaunchedEffect
             }
 
@@ -104,14 +111,14 @@ fun BookOnStepProgress(
                 Box(
                     modifier = Modifier
                         .weight(1f)
-                        .height(4.dp)
+                        .height(AppStrokeWidth.Progress)
                         .clip(RoundedCornerShape(AppRadius.Progress))
                         .background(BookOnColor.SurfaceBorder),
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth(segmentProgresses[index].value)
-                            .height(4.dp)
+                            .height(AppStrokeWidth.Progress)
                             .background(BookOnColor.Primary),
                     )
                 }
@@ -119,7 +126,7 @@ fun BookOnStepProgress(
         }
         Spacer(modifier = Modifier.height(AppSpacing.Small))
         Text(
-            text = "STEP $stackedStep / $safeTotal",
+            text = stringResource(R.string.step_progress, stackedStep, safeTotal),
             style = BookOnTypography.caption,
             color = BookOnColor.TextTertiary,
         )

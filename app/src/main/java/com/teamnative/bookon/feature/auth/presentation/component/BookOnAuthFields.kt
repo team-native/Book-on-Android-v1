@@ -70,6 +70,7 @@ internal fun BookOnAuthPasswordField(
                 contentDescription = stringResource(R.string.password_icon_description),
             )
         },
+        maxLength = BookOnPasswordPolicy.MaxLength,
     )
 }
 

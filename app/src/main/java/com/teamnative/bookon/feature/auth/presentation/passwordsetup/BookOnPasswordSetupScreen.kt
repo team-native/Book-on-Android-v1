@@ -30,12 +30,12 @@ import com.teamnative.bookon.feature.auth.presentation.component.BookOnPrivacyAg
 fun BookOnPasswordSetupScreen(
     uiState: BookOnPasswordSetupUiState,
     onBackClick: () -> Unit,
-    onPasswordNoticeClick: () -> Unit,
     onPasswordChange: (String) -> Unit,
     onPasswordConfirmChange: (String) -> Unit,
     onPrivacyCheckedChange: (Boolean) -> Unit,
     onPrivacyPolicyExpandedChange: (Boolean) -> Unit,
     onNextClick: () -> Unit,
+    initialProgressStep: Int? = null,
     modifier: Modifier = Modifier,
 ) {
     var progressAnimating by remember { mutableStateOf(true) }
@@ -45,7 +45,6 @@ fun BookOnPasswordSetupScreen(
         topBar = {
             BookOnAuthTopBar(
                 onBackClick = onBackClick,
-                onPasswordNoticeClick = onPasswordNoticeClick,
             )
         },
         footer = {
@@ -69,6 +68,7 @@ fun BookOnPasswordSetupScreen(
                     step = 2,
                     title = uiState.title,
                     description = uiState.description,
+                    initialProgressStep = initialProgressStep,
                     onProgressAnimationRunningChange = { progressAnimating = it },
                 )
             }
@@ -103,7 +103,6 @@ private fun BookOnPasswordSetupScreenPreview() {
         BookOnPasswordSetupScreen(
             uiState = samplePasswordSetupUiState(),
             onBackClick = {},
-            onPasswordNoticeClick = {},
             onPasswordChange = {},
             onPasswordConfirmChange = {},
             onPrivacyCheckedChange = {},

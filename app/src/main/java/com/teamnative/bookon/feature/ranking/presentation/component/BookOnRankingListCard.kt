@@ -21,6 +21,8 @@ import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.feature.ranking.presentation.model.BookOnRankingListUiModel
 import com.teamnative.bookon.feature.ranking.presentation.model.BookOnRankingMemberUiModel
 
+private val RankingListDividerHeight = 1.dp
+
 /**
  * 4위 이후 랭킹 사용자를 카드 목록으로 표시한다.
  * 목록이 비어 있으면 카드 영역을 렌더링하지 않는다.
@@ -69,7 +71,7 @@ fun BookOnRankingListCard(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(1.dp)
+                        .height(RankingListDividerHeight)
                         .background(BookOnColor.Divider),
                 )
             }

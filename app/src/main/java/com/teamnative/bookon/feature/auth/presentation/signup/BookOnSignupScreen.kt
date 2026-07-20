@@ -28,13 +28,7 @@ import com.teamnative.bookon.feature.auth.presentation.component.BookOnNameField
 @Composable
 fun BookOnSignupScreen(
     uiState: BookOnSignupUiState,
-    onBackClick: () -> Unit,
-    onPasswordNoticeClick: () -> Unit,
-    onEmailChange: (String) -> Unit,
-    onNameChange: (String) -> Unit,
-    onGenderSelected: (Int) -> Unit,
-    onDepartmentClick: () -> Unit,
-    onNextClick: () -> Unit,
+    onEvent: (BookOnSignupScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     var progressAnimating by remember { mutableStateOf(true) }
@@ -43,14 +37,13 @@ fun BookOnSignupScreen(
         modifier = modifier,
         topBar = {
             BookOnAuthTopBar(
-                onBackClick = onBackClick,
-                onPasswordNoticeClick = onPasswordNoticeClick,
+                onBackClick = { onEvent(BookOnSignupScreenEvent.BackClicked) },
             )
         },
         footer = {
             BookOnPrimaryButton(
                 text = stringResource(R.string.action_next),
-                onClick = onNextClick,
+                onClick = { onEvent(BookOnSignupScreenEvent.NextClicked) },
                 enabled = uiState.nextEnabled && !progressAnimating,
             )
         },
@@ -62,10 +55,22 @@ fun BookOnSignupScreen(
             description = uiState.description,
             onProgressAnimationRunningChange = { progressAnimating = it },
         )
-        BookOnEmailField(uiState = uiState.email, onValueChange = onEmailChange)
-        BookOnNameField(uiState = uiState.name, onValueChange = onNameChange)
-        BookOnGenderSelector(options = uiState.genderOptions, onGenderSelected = onGenderSelected)
-        BookOnDropdownField(uiState = uiState.department, onClick = onDepartmentClick)
+        BookOnEmailField(
+            uiState = uiState.email,
+            onValueChange = { email -> onEvent(BookOnSignupScreenEvent.EmailChanged(email)) },
+        )
+        BookOnNameField(
+            uiState = uiState.name,
+            onValueChange = { name -> onEvent(BookOnSignupScreenEvent.NameChanged(name)) },
+        )
+        BookOnGenderSelector(
+            selectedGender = uiState.selectedGender,
+            onGenderSelected = { gender -> onEvent(BookOnSignupScreenEvent.GenderSelected(gender)) },
+        )
+        BookOnDropdownField(
+            uiState = uiState.department,
+            onClick = { onEvent(BookOnSignupScreenEvent.DepartmentClicked) },
+        )
     }
 }
 
@@ -75,13 +80,7 @@ private fun BookOnSignupScreenPreview() {
     BookOnTheme {
         BookOnSignupScreen(
             uiState = sampleSignupUiState(),
-            onBackClick = {},
-            onPasswordNoticeClick = {},
-            onEmailChange = {},
-            onNameChange = {},
-            onGenderSelected = {},
-            onDepartmentClick = {},
-            onNextClick = {},
+            onEvent = {},
         )
     }
 }

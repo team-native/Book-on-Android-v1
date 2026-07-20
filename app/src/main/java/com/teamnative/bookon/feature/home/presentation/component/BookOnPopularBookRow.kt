@@ -30,6 +30,9 @@ import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
 import com.teamnative.bookon.feature.home.presentation.model.BookOnPopularBookRowUiModel
 
+private val PopularBookRowWidth = 206.dp
+private val PopularBookRowHeight = 76.dp
+
 /**
  * 홈의 인기 책 영역처럼 작은 표지 placeholder와 책 정보를 가로 카드로 표시한다.
  * cover slot을 통해 실제 표지 로더를 연결할 수 있지만 기본값은 placeholder이다.
@@ -63,8 +66,8 @@ fun BookOnPopularBookRow(
 ) {
     Row(
         modifier = modifier
-            .width(206.dp)
-            .height(76.dp)
+            .width(PopularBookRowWidth)
+            .height(PopularBookRowHeight)
             .shadow(
                 elevation = AppElevation.Card,
                 shape = RoundedCornerShape(AppRadius.Chip),

@@ -22,6 +22,7 @@ object BookOnColor {
     val Surface = Color(0xFFFFFFFF)
     val SurfaceAlt = Color(0xFFF1F1F4)
     val SurfaceBorder = Color(0xFFEAEAEC)
+    val MarathonCardBorder = Color(0xFFF3F3F5)
     val Divider = Color(0xFFF2F2F4)
     val TextPrimary = InputTextColor
     val TextSecondary = Color(0xFF8E8E93)

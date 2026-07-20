@@ -3,7 +3,6 @@ package com.teamnative.bookon.feature.auth.presentation.component
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,11 +22,11 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
+import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
@@ -38,7 +37,8 @@ private val MarathonCardHeight = 92.dp
 internal fun BookOnMarathonToggleCard(
     title: String,
     description: String,
-    onClick: () -> Unit,
+    checked: Boolean,
+    onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Row(
@@ -47,8 +47,7 @@ internal fun BookOnMarathonToggleCard(
             .height(MarathonCardHeight)
             .clip(RoundedCornerShape(AppRadius.Field))
             .background(BookOnColor.Background)
-            .border(2.dp, BookOnColor.Divider, RoundedCornerShape(AppRadius.Field))
-            .clickable(role = Role.Button, onClick = onClick)
+            .border(AppStrokeWidth.SelectedBorder, BookOnColor.Divider, RoundedCornerShape(AppRadius.Field))
             .padding(AppSpacing.Content),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -61,7 +60,7 @@ internal fun BookOnMarathonToggleCard(
         ) {
             Image(
                 modifier = Modifier.size(AppIconSize.Default),
-                painter = painterResource(R.drawable.marathon_logo),
+                painter = painterResource(R.drawable.read365),
                 contentDescription = stringResource(R.string.reading_marathon_logo_description),
                 contentScale = ContentScale.Fit,
             )
@@ -72,6 +71,9 @@ internal fun BookOnMarathonToggleCard(
             Spacer(modifier = Modifier.height(AppSpacing.Tiny))
             Text(text = description, style = BookOnTypography.caption, color = BookOnColor.TextTertiary)
         }
-        Switch(checked = true, onCheckedChange = { onClick() })
+        Switch(
+            checked = checked,
+            onCheckedChange = onCheckedChange,
+        )
     }
 }

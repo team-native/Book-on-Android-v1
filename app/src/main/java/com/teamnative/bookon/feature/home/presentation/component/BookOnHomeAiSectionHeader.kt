@@ -23,6 +23,8 @@ import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
 
+private val HomeAiBadgeHeight = 22.dp
+
 /**
  * AI 추천 섹션의 제목, AI 배지, 설명과 우측 더보기 액션을 한 블록으로 표시한다.
  * 피그마 메인 화면처럼 설명은 제목 아래 보조 텍스트로 배치한다.
@@ -51,7 +53,7 @@ fun BookOnHomeAiSectionHeader(
                 Spacer(modifier = Modifier.width(AppSpacing.Small))
                 Row(
                     modifier = Modifier
-                        .height(22.dp)
+                        .height(HomeAiBadgeHeight)
                         .clip(RoundedCornerShape(AppRadius.Small))
                         .background(BookOnColor.Primary)
                         .padding(horizontal = AppSpacing.Small),

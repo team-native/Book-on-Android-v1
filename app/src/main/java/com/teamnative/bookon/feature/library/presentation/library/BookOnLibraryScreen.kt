@@ -37,8 +37,7 @@ import com.teamnative.bookon.feature.library.presentation.component.BookOnLibrar
 fun BookOnLibraryScreen(
     uiState: BookOnLibraryScreenUiState,
     bottomBar: @Composable () -> Unit,
-    onCategoryClick: (Int) -> Unit,
-    onSortClick: (Int) -> Unit,
+    onEvent: (BookOnLibraryScreenEvent) -> Unit,
     onBookClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
@@ -63,7 +62,9 @@ fun BookOnLibraryScreen(
                 BookOnLibraryHeader(
                     title = stringResource(R.string.nav_library),
                     sortOptions = uiState.sortOptions,
-                    onSortClick = onSortClick,
+                    onSortClick = { sortIndex ->
+                        onEvent(BookOnLibraryScreenEvent.SortClicked(sortIndex))
+                    },
                 )
             }
             item(span = { GridItemSpan(maxLineSpan) }) {
@@ -71,7 +72,9 @@ fun BookOnLibraryScreen(
                     items(uiState.categories.size) { index ->
                         BookOnFilterChip(
                             uiState = uiState.categories[index],
-                            onClick = { onCategoryClick(index) },
+                            onClick = {
+                                onEvent(BookOnLibraryScreenEvent.CategoryClicked(index))
+                            },
                         )
                     }
                 }
@@ -106,8 +109,7 @@ private fun BookOnLibraryScreenPreview() {
         BookOnLibraryScreen(
             uiState = sampleLibraryUiState(),
             bottomBar = {},
-            onCategoryClick = {},
-            onSortClick = {},
+            onEvent = {},
             onBookClick = {},
         )
     }

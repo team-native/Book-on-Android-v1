@@ -12,11 +12,15 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.stateDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.model.BookOnSwitchRowUiModel
 
 /**
@@ -46,18 +50,23 @@ fun BookOnSwitchRow(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier,
+    switchModifier: Modifier = Modifier,
     description: String? = null,
 ) {
+    val toggleStateDescription = stringResource(
+        if (checked) R.string.notification_toggle_enabled else R.string.notification_toggle_disabled,
+    )
+
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = AppSpacing.Item, horizontal = AppSpacing.Item),
+            .padding(vertical = AppSpacing.Item),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                style = BookOnTypography.bodySemiBold,
+                style = BookOnTypography.button,
                 color = BookOnColor.TextPrimary,
             )
             if (description != null) {
@@ -72,6 +81,9 @@ fun BookOnSwitchRow(
         Switch(
             checked = checked,
             onCheckedChange = onCheckedChange,
+            modifier = switchModifier.semantics {
+                stateDescription = toggleStateDescription
+            },
             colors = SwitchDefaults.colors(
                 checkedThumbColor = BookOnColor.Surface,
                 checkedTrackColor = BookOnColor.Primary,

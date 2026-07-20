@@ -17,8 +17,9 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
+import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
+import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
@@ -40,7 +41,7 @@ fun BookOnMenuRow(
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(51.dp)
+                .height(AppComponentSize.MenuRowHeight)
                 .then(
                     if (onClick != null) {
                         Modifier.clickable(role = Role.Button, onClick = onClick)
@@ -62,7 +63,7 @@ fun BookOnMenuRow(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(1.dp)
+                    .height(AppStrokeWidth.Divider)
                     .background(BookOnColor.Divider),
             )
         }
@@ -72,7 +73,7 @@ fun BookOnMenuRow(
 @Composable
 private fun MenuChevron() {
     Canvas(modifier = Modifier.size(AppIconSize.Small)) {
-        val strokeWidth = 1.5.dp.toPx()
+        val strokeWidth = AppStrokeWidth.MenuChevron.toPx()
         val startX = size.width * 0.35f
         val endX = size.width * 0.65f
         drawLine(

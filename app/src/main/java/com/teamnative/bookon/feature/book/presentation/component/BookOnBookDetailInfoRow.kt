@@ -26,6 +26,8 @@ import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
 import com.teamnative.bookon.feature.book.presentation.model.BookOnBookDetailInfoItemUiModel
 import com.teamnative.bookon.feature.book.presentation.model.BookOnBookDetailInfoRowUiModel
 
+private val BookDetailInfoItemHeight = 68.dp
+
 /**
  * 상세 화면의 도서관 번호, 재고 수량, 대출 가능 여부 같은 정보를 같은 너비 타일로 표시한다.
  * items가 비어 있으면 아무것도 그리지 않는다.
@@ -75,7 +77,7 @@ private fun BookOnBookDetailInfoItem(
 ) {
     Column(
         modifier = modifier
-            .height(68.dp)
+            .height(BookDetailInfoItemHeight)
             .clip(RoundedCornerShape(AppRadius.Small))
             .background(BookOnColor.SurfaceAlt)
             .padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Item),

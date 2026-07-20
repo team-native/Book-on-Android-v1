@@ -1,13 +1,24 @@
 package com.teamnative.bookon.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.core.tween
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
+import androidx.navigation.NavType
+import androidx.navigation.navArgument
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.teamnative.bookon.feature.auth.presentation.login.BookOnLoginRoute
 import com.teamnative.bookon.feature.auth.presentation.passwordsetup.BookOnPasswordSetupRoute
+import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetRoute
 import com.teamnative.bookon.feature.auth.presentation.readingmarathonlink.BookOnReadingMarathonLinkRoute
 import com.teamnative.bookon.feature.auth.presentation.readingmarathonsignup.BookOnReadingMarathonSignupRoute
 import com.teamnative.bookon.feature.auth.presentation.signupcomplete.BookOnSignupCompleteRoute
@@ -22,6 +33,12 @@ import com.teamnative.bookon.feature.my.presentation.favorites.BookOnFavoriteBoo
 import com.teamnative.bookon.feature.my.presentation.loanhistory.BookOnLoanHistoryRoute
 import com.teamnative.bookon.feature.my.presentation.main.BookOnMyRoute
 import com.teamnative.bookon.feature.ranking.presentation.ranking.BookOnRankingRoute
+import com.teamnative.bookon.core.designsystem.theme.AppAnimationDuration
+
+private const val SignupProgressInitialStepKey = "signup_progress_initial_step"
+private const val PasswordSetupStep = 2
+private const val ReadingMarathonSignupStep = 3
+private const val ReadingMarathonLinkFromMyKey = "reading_marathon_link_from_my"
 
 /**
  * 앱의 최상위 Navigation Host이다.
@@ -30,6 +47,7 @@ import com.teamnative.bookon.feature.ranking.presentation.ranking.BookOnRankingR
 @Composable
 fun BookOnNavHost() {
     val navController = rememberNavController()
+    var isReadingMarathonLinked by rememberSaveable { mutableStateOf(true) }
     val backStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = backStackEntry?.destination?.route
     val bottomBar: @Composable () -> Unit = {
@@ -42,12 +60,20 @@ fun BookOnNavHost() {
     NavHost(
         navController = navController,
         startDestination = BookOnDestination.Login.route,
+        enterTransition = { EnterTransition.None },
+        exitTransition = { ExitTransition.None },
+        popEnterTransition = { EnterTransition.None },
+        popExitTransition = { ExitTransition.None },
     ) {
         composable(BookOnDestination.Login.route) {
             BookOnLoginRoute(
                 onLoginClick = { navController.navigateToHomeAndClearAuth() },
                 onSignupClick = { navController.navigate(BookOnDestination.Signup.route) },
+                onForgotPasswordClick = { navController.navigate(BookOnDestination.PasswordReset.route) },
             )
+        }
+        composable(BookOnDestination.PasswordReset.route) {
+            BookOnPasswordResetRoute(onNavigateBack = navController::navigateUp)
         }
         composable(BookOnDestination.Signup.route) {
             BookOnSignupRoute(
@@ -55,34 +81,105 @@ fun BookOnNavHost() {
                 onNextClick = { navController.navigate(BookOnDestination.VerificationCode.route) },
             )
         }
-        composable(BookOnDestination.VerificationCode.route) {
+        composable(BookOnDestination.VerificationCode.route) { backStackEntry ->
             BookOnVerificationCodeRoute(
+                initialProgressStep = backStackEntry.savedStateHandle[SignupProgressInitialStepKey],
                 onBackClick = navController::navigateUp,
                 onConfirmClick = { navController.navigate(BookOnDestination.PasswordSetup.route) },
             )
         }
-        composable(BookOnDestination.PasswordSetup.route) {
+        composable(BookOnDestination.PasswordSetup.route) { backStackEntry ->
             BookOnPasswordSetupRoute(
-                onBackClick = navController::navigateUp,
+                initialProgressStep = backStackEntry.savedStateHandle[SignupProgressInitialStepKey],
+                onBackClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(SignupProgressInitialStepKey, PasswordSetupStep)
+                    navController.navigateUp()
+                },
                 onNextClick = { navController.navigate(BookOnDestination.ReadingMarathonSignup.route) },
             )
         }
         composable(BookOnDestination.ReadingMarathonSignup.route) {
             BookOnReadingMarathonSignupRoute(
-                onBackClick = navController::navigateUp,
+                onBackClick = {
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(SignupProgressInitialStepKey, ReadingMarathonSignupStep)
+                    navController.navigateUp()
+                },
                 onUseClick = { navController.navigate(BookOnDestination.ReadingMarathonLink.route) },
-                onSkipClick = { navController.navigate(BookOnDestination.SignupComplete.route) },
+                onSkipClick = {
+                    isReadingMarathonLinked = false
+                    navController.navigate(
+                        BookOnDestination.SignupComplete.createRoute(isReadingMarathonLinked = false),
+                    )
+                },
             )
         }
-        composable(BookOnDestination.ReadingMarathonLink.route) {
+        composable(
+            route = BookOnDestination.ReadingMarathonLink.route,
+            enterTransition = {
+                if (initialState.destination.route == BookOnDestination.My.route) {
+                    slideInHorizontally(
+                        animationSpec = tween(AppAnimationDuration.Navigation),
+                        initialOffsetX = { fullWidth -> fullWidth },
+                    )
+                } else {
+                    EnterTransition.None
+                }
+            },
+            popExitTransition = {
+                if (targetState.destination.route == BookOnDestination.My.route) {
+                    slideOutHorizontally(
+                        animationSpec = tween(AppAnimationDuration.Navigation),
+                        targetOffsetX = { fullWidth -> fullWidth },
+                    )
+                } else {
+                    ExitTransition.None
+                }
+            },
+        ) {
+            val openedFromMy = navController.previousBackStackEntry
+                ?.savedStateHandle
+                ?.get<Boolean>(ReadingMarathonLinkFromMyKey) ?: false
             BookOnReadingMarathonLinkRoute(
                 onBackClick = navController::navigateUp,
-                onSkipClick = { navController.navigate(BookOnDestination.SignupComplete.route) },
-                onCompleteClick = { navController.navigate(BookOnDestination.SignupComplete.route) },
+                onSkipClick = {
+                    if (openedFromMy) {
+                        navController.navigateUp()
+                    } else {
+                        isReadingMarathonLinked = false
+                        navController.navigate(
+                            BookOnDestination.SignupComplete.createRoute(isReadingMarathonLinked = false),
+                        )
+                    }
+                },
+                onCompleteClick = {
+                    isReadingMarathonLinked = true
+                    if (openedFromMy) {
+                        navController.navigateUp()
+                    } else {
+                        navController.navigate(
+                            BookOnDestination.SignupComplete.createRoute(isReadingMarathonLinked = true),
+                        )
+                    }
+                },
             )
         }
-        composable(BookOnDestination.SignupComplete.route) {
+        composable(
+            route = BookOnDestination.SignupComplete.route,
+            arguments = listOf(
+                navArgument(BookOnDestination.SignupComplete.isReadingMarathonLinkedArgument) {
+                    type = NavType.BoolType
+                },
+            ),
+        ) { backStackEntry ->
+            val isReadingMarathonLinked = backStackEntry.arguments?.getBoolean(
+                BookOnDestination.SignupComplete.isReadingMarathonLinkedArgument,
+            ) ?: false
             BookOnSignupCompleteRoute(
+                isReadingMarathonLinked = isReadingMarathonLinked,
                 onStartClick = { navController.navigateToHomeAndClearAuth() },
             )
         }
@@ -105,11 +202,43 @@ fun BookOnNavHost() {
                 onBookClick = { navController.navigate(BookOnDestination.BookDetail.route) },
             )
         }
-        composable(BookOnDestination.My.route) {
+        composable(
+            route = BookOnDestination.My.route,
+            exitTransition = {
+                if (targetState.destination.route == BookOnDestination.ReadingMarathonLink.route) {
+                    slideOutHorizontally(
+                        animationSpec = tween(AppAnimationDuration.Navigation),
+                        targetOffsetX = { fullWidth -> -fullWidth },
+                    )
+                } else {
+                    ExitTransition.None
+                }
+            },
+            popEnterTransition = {
+                if (initialState.destination.route == BookOnDestination.ReadingMarathonLink.route) {
+                    slideInHorizontally(
+                        animationSpec = tween(AppAnimationDuration.Navigation),
+                        initialOffsetX = { fullWidth -> -fullWidth },
+                    )
+                } else {
+                    EnterTransition.None
+                }
+            },
+        ) {
             BookOnMyRoute(
                 bottomBar = bottomBar,
+                isReadingMarathonLinked = isReadingMarathonLinked,
+                onPasswordChangeClick = {
+                    navController.navigate(BookOnDestination.PasswordReset.route)
+                },
                 onLoanHistoryClick = { navController.navigate(BookOnDestination.LoanHistory.route) },
                 onFavoriteClick = { navController.navigate(BookOnDestination.Favorites.route) },
+                onReadingMarathonLinkClick = {
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(ReadingMarathonLinkFromMyKey, true)
+                    navController.navigate(BookOnDestination.ReadingMarathonLink.route)
+                },
                 onLogoutRequest = {
                     // TODO: 로그아웃 API와 토큰 저장소가 준비되면 서버에 토큰을 반납하고 로컬 세션을 정리한 뒤 이동한다.
                     navController.navigateToLoginAndClearBackStack()

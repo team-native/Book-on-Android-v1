@@ -9,6 +9,7 @@ import androidx.compose.ui.res.stringResource
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.model.BookOnPasswordFieldUiModel
 import com.teamnative.bookon.core.ui.model.BookOnTextFieldUiModel
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnPasswordPolicy
 
 /** 독서마라톤 계정 입력과 동의 상태를 보존하며 화면 이벤트를 연결한다. */
 @Composable
@@ -31,8 +32,13 @@ fun BookOnReadingMarathonLinkRoute(
             value = password,
             label = stringResource(R.string.password),
             placeholder = stringResource(R.string.password),
+            errorText = password.takeIf { it.isNotEmpty() && !BookOnPasswordPolicy.isValid(it) }
+                ?.let { stringResource(R.string.error_password_rule) },
         ),
         agreement = sample.agreement.copy(checked = agreementChecked),
+        linkEnabled = marathonId.isNotBlank() &&
+            BookOnPasswordPolicy.isValid(password) &&
+            agreementChecked,
     )
 
     BookOnReadingMarathonLinkScreen(

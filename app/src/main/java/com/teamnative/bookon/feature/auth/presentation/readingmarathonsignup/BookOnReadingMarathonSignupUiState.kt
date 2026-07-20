@@ -10,5 +10,6 @@ data class BookOnReadingMarathonSignupUiState(
     val useTitle: String,
     val useDescription: String,
     val benefitText: String,
-    val laterNotice: String? = null,
+    val laterNotice: String,
+    val isLinked: Boolean = true,
 )

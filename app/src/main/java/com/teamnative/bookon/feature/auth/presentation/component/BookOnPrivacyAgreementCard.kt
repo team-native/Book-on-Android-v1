@@ -31,9 +31,15 @@ import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppAnimationDuration
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
+import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+
+private val PrivacyAgreementHeaderMinHeight = 24.dp
+private val PrivacyAgreementIndicatorWidth = 13.dp
+private val PrivacyAgreementIndicatorHeight = 6.dp
+private val PrivacyAgreementCheckIconSize = 16.dp
 
 @Composable
 internal fun BookOnPrivacyAgreementCard(
@@ -48,14 +54,14 @@ internal fun BookOnPrivacyAgreementCard(
             .fillMaxWidth()
             .clip(RoundedCornerShape(AppRadius.Field))
             .background(BookOnColor.Surface)
-            .border(1.dp, BookOnColor.SurfaceBorder, RoundedCornerShape(AppRadius.Field))
+            .border(AppStrokeWidth.Divider, BookOnColor.SurfaceBorder, RoundedCornerShape(AppRadius.Field))
             .animateContentSize(animationSpec = tween(durationMillis = AppAnimationDuration.Medium))
             .padding(AppSpacing.Content),
     ) {
         Row(
             modifier = Modifier
                 .fillMaxWidth()
-                .heightIn(min = 24.dp)
+                .heightIn(min = PrivacyAgreementHeaderMinHeight)
                 .clickable(
                     role = Role.Button,
                     onClickLabel = stringResource(
@@ -76,7 +82,10 @@ internal fun BookOnPrivacyAgreementCard(
                 color = BookOnColor.TextPrimary,
             )
             Image(
-                modifier = Modifier.size(width = 13.dp, height = 6.dp),
+                modifier = Modifier.size(
+                    width = PrivacyAgreementIndicatorWidth,
+                    height = PrivacyAgreementIndicatorHeight,
+                ),
                 painter = painterResource(if (expanded) R.drawable.up_arrow else R.drawable.down_arrow),
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
@@ -130,7 +139,7 @@ private fun BookOnPrivacyPolicyDetails() {
             .fillMaxWidth()
             .clip(RoundedCornerShape(AppRadius.Small))
             .background(BookOnColor.Background)
-            .border(1.dp, BookOnColor.SurfaceBorder, RoundedCornerShape(AppRadius.Small))
+            .border(AppStrokeWidth.Divider, BookOnColor.SurfaceBorder, RoundedCornerShape(AppRadius.Small))
             .padding(AppSpacing.Item),
         text = stringResource(R.string.privacy_refusal_notice),
         style = BookOnTypography.privacyNotice,
@@ -167,7 +176,7 @@ private fun BookOnCheckTextRow(
     ) {
         Image(
             modifier = Modifier
-                .size(16.dp)
+                .size(PrivacyAgreementCheckIconSize)
                 .clip(RoundedCornerShape(AppRadius.Progress))
                 .toggleable(
                     value = checked,

@@ -25,6 +25,7 @@ import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
+import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
@@ -78,7 +79,7 @@ fun BookOnStatSummaryCard(
             if (index < items.lastIndex) {
                 Box(
                     modifier = Modifier
-                        .width(1.dp)
+                        .width(AppStrokeWidth.Divider)
                         .fillMaxHeight()
                         .background(BookOnColor.PrimaryLight.copy(alpha = 0.45f)),
                 )
