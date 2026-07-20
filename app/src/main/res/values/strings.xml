@@ -1,0 +1,218 @@
+<resources>
+    <string name="app_name">BookOn</string>
+
+    <!-- Common -->
+    <string name="action_next">다음</string>
+    <string name="action_confirm">확인</string>
+    <string name="action_complete_signup">가입 완료</string>
+    <string name="action_start">시작하기</string>
+    <string name="action_show_more">더보기</string>
+    <string name="action_view_detail">자세히 보기</string>
+    <string name="action_search">검색</string>
+    <string name="action_verify_continue">인증하고 계속하기</string>
+    <string name="action_logout">로그아웃</string>
+    <string name="action_cancel">취소</string>
+    <string name="logout_confirmation_message">정말 로그아웃하시겠어요?</string>
+    <string name="action_show_password">보기</string>
+    <string name="action_hide_password">숨김</string>
+    <string name="state_loading">처리 중</string>
+    <string name="step_progress">STEP %1$d / %2$d</string>
+    <string name="password_visibility_toggle_description">비밀번호 표시 전환</string>
+    <string name="status_available">가능</string>
+    <string name="status_linked">연동됨</string>
+    <string name="status_not_linked">연동안됨</string>
+    <string name="status_joining">참여 중</string>
+
+    <!-- Auth -->
+    <string name="login_title">환영합니다 !</string>
+    <string name="login_description">대출 현황부터 독서마라톤까지 편리하게</string>
+    <string name="login">로그인</string>
+    <string name="signup">회원가입</string>
+    <string name="go_to_signup">회원가입 하러가기</string>
+    <string name="forgot_password">비밀번호를 잊으셨나요?</string>
+    <string name="action_reset_password">비밀번호 재설정</string>
+    <string name="error_invalid_email_format">올바른 이메일 형식이 아니에요</string>
+    <string name="error_invalid_email">이메일이 옳지 않습니다</string>
+    <string name="error_password_min_length">비밀번호는 6자 이상이어야 해요</string>
+    <string name="error_password_rule">영문 대·소문자, 숫자, 특수문자를 포함한 6~15자로 입력해주세요</string>
+    <string name="error_password_mismatch">비밀번호가 일치하지 않아요</string>
+    <string name="password_reset_step">STEP %1$d / %2$d</string>
+    <string name="password_reset_email_title">비밀번호 재설정</string>
+    <string name="password_reset_email_description">학교 이메일을 입력해 주세요</string>
+    <string name="password_reset_verification_title">인증번호 입력</string>
+    <string name="password_reset_verification_description">%1$s으로 보낸\n6자리 코드를 입력해 주세요</string>
+    <string name="password_reset_verification_expire">04:52 후 만료</string>
+    <string name="password_reset_new_password_title">새 비밀번호 설정</string>
+    <string name="password_reset_new_password_description">새 비밀번호를 입력해 주세요</string>
+
+    <!-- Signup -->
+    <string name="signup_step_1">STEP 1 / 3</string>
+    <string name="signup_step_2">STEP 2 / 3</string>
+    <string name="signup_step_3">STEP 3 / 3</string>
+    <string name="signup_school_info_title">학교 정보</string>
+    <string name="signup_account_info_title">계정 정보</string>
+    <string name="signup_school_account_description">학교 계정으로 간편하게 가입하세요!</string>
+    <string name="school_email">학교 이메일</string>
+    <string name="email_address">이메일 주소</string>
+    <string name="email_domain_gsm">@gsm.hs.kr</string>
+    <string name="name">이름</string>
+    <string name="gender">성별</string>
+    <string name="male">남자</string>
+    <string name="female">여자</string>
+    <string name="department">학과</string>
+    <string name="department_selection_title">학과 선택</string>
+    <string name="department_dropdown_expand_description">학과 목록 펼치기</string>
+    <string name="department_dropdown_collapse_description">학과 목록 접기</string>
+    <string name="department_software">소프트웨어 개발과</string>
+    <string name="department_iot">IoT과</string>
+    <string name="department_ai">AI과</string>
+    <string name="password">비밀번호</string>
+    <string name="password_confirm">비밀번호 확인</string>
+    <string name="password_confirm_short">확인</string>
+    <string name="password_notice">비밀번호 주의사항</string>
+    <string name="password_warning_action">비밀번호 주의사항</string>
+    <string name="password_precaution">비밀번호 유의사항</string>
+    <string name="password_rule">영문(대·소문자), 숫자\n특수문자를 포함한 6~15자를 입력</string>
+    <string name="password_setup_description">비밀번호를 설정해주세요</string>
+    <string name="error_check_password_notice">비밀번호 주의사항을 확인해주세요</string>
+    <string name="error_check_password_again">비밀번호를 다시 확인해주세요</string>
+    <string name="privacy_policy_title">개인정보 수집 및 이용 안내</string>
+    <string name="privacy_required_agreement">개인정보 수집 및 이용에 동의합니다 (필수)</string>
+    <string name="privacy_agreement_check_description">개인정보 수집 및 이용 동의 체크</string>
+    <string name="privacy_policy_expand_description">개인정보 수집 및 이용 안내 펼치기</string>
+    <string name="privacy_policy_collapse_description">개인정보 수집 및 이용 안내 접기</string>
+    <string name="privacy_collected_items_title">1. 수집 항목</string>
+    <string name="privacy_collected_items">이름, 이메일 주소, 비밀번호</string>
+    <string name="privacy_purpose_title">2. 수집 목적</string>
+    <string name="privacy_purpose_account">회원 식별 및 관리</string>
+    <string name="privacy_purpose_notice">서비스 제공 및 공지사항 전달</string>
+    <string name="privacy_retention_title">3. 보유 및 이용 기간</string>
+    <string name="privacy_retention_until_withdrawal">회원 탈퇴 시까지</string>
+    <string name="terms_title">4.이용약관 안내</string>
+    <string name="terms_service_interruption">서버 점검이나 업데이트 시\n      서비스가 일시 중단될 수 있음</string>
+    <string name="privacy_bullet_format">• %1$s</string>
+    <string name="privacy_refusal_notice">이용자는 개인정보 수집 및 이용에 대한 동의를 거부할 권리가 있으\n며, 동의를  거부할 경우 회원가입이 제한될 수 있습니다.</string>
+    <string name="signup_complete_title">가입 완료!</string>
+    <string name="signup_complete_message">%1$s 님, 환영해요.\n이제 Book-on에서 마음껏 읽어보세요.</string>
+    <string name="owned_books">보유 도서</string>
+    <string name="verification_code_title">인증번호 입력</string>
+    <string name="verification_code_description">%1$s 으로 보낸\n6자리 코드를 입력해 주세요</string>
+    <string name="verification_code_expire">%1$s 후 만료</string>
+    <string name="verification_code_resend">코드를 받지 못하셨나요? 재전송</string>
+    <string name="email_icon_description">이메일 입력 아이콘</string>
+    <string name="name_icon_description">이름 입력 아이콘</string>
+    <string name="password_icon_description">비밀번호 입력 아이콘</string>
+    <string name="info_mark">ⓘ</string>
+
+    <!-- Reading marathon -->
+    <string name="reading_marathon">독서마라톤</string>
+    <string name="reading_marathon_link_title">계정연동</string>
+    <string name="reading_marathon_signup_description">독서마라톤 계정을 연동하면\n읽은 책이 자동으로 기록돼요</string>
+    <string name="reading_marathon_login_description">독서마라톤 아이디와 비밀번호를\n입력해 주세요</string>
+    <string name="reading_marathon_use">독서마라톤 이용하기</string>
+    <string name="reading_marathon_use_description">교내 독서마라톤에 참여 중이라면 연동\n하세요</string>
+    <string name="reading_marathon_link_benefit">연동하면 홈 · 마이페이지에서 진척도와 랭킹이 자동으로\n표시돼요.</string>
+    <string name="reading_marathon_later_notice">지금 연동하지 않아도 괜찮아요.\n마이페이지에서 언제든 다시 연동할 수 있어요!</string>
+    <string name="reading_marathon_id">독서마라톤 아이디</string>
+    <string name="reading_marathon_agreement_check_description">독서마라톤 개인정보 제공 동의 체크</string>
+    <string name="reading_marathon_logo_description">Read365 로고</string>
+    <string name="reading_marathon_third_party_agreement">독서마라톤 계정 연동을 위한 개인정보 제3자 제공에 동의합니다.</string>
+    <string name="reading_marathon_third_party_agreement_prefix">독서마라톤 계정 연동을 위한 </string>
+    <string name="reading_marathon_third_party_agreement_highlight">개인정보 제3자 제공</string>
+    <string name="reading_marathon_third_party_agreement_suffix">에 동의합니다.</string>
+    <string name="oauth_google_description">구글 계정 연동</string>
+    <string name="oauth_naver_description">네이버 계정 연동</string>
+    <string name="oauth_kakao_description">카카오 계정 연동</string>
+    <string name="skip_reading_marathon_prefix">나중에 할게요 · </string>
+    <string name="skip_reading_marathon_action">건너뛰기</string>
+    <string name="complete_signup_with_link">연동하고 가입완료</string>
+
+    <!-- Home -->
+    <string name="home_greeting_evening">좋은 저녁이에요</string>
+    <string name="user_name_suffix">%1$s님</string>
+    <string name="find_book">도서 찾기</string>
+    <string name="search_book_placeholder">책 제목, 저자, 도서관 번호</string>
+    <string name="home_search_placeholder">도서 찾기</string>
+    <string name="home_search_description">도서 검색</string>
+    <string name="home_notification_description">알림</string>
+    <string name="home_profile_description">프로필</string>
+    <string name="library_notice">도서부 공지</string>
+    <string name="badge_new">NEW</string>
+    <string name="notice_date_author">%1$s · 도서부</string>
+    <string name="summer_vacation_loan_notice_title">여름방학 도서 대출 기간 연장 안내</string>
+    <string name="summer_vacation_loan_notice_description">방학 기간 동안 1인당 최대 5권, 대출 기간이 14일로 연장됩니다.\n반납은 개학일 전까지 완료해 주세요.</string>
+    <string name="ai_recommendation">AI 추천</string>
+    <string name="ai_recommendation_badge">AI</string>
+    <string name="ai_recommendation_description">%1$s님의 대출 이력을 분석해 골랐어요</string>
+    <string name="popular_books_school">우리 학교 인기 책</string>
+    <string name="new_books_recent">최근 새로 들어온 도서</string>
+
+    <!-- Navigation -->
+    <string name="nav_home">홈</string>
+    <string name="nav_ranking">랭킹</string>
+    <string name="nav_library">도서실</string>
+    <string name="nav_my">마이</string>
+
+    <!-- Book detail and search -->
+    <string name="book_library_number">도서관 번호</string>
+    <string name="book_stock_count">재고 수량</string>
+    <string name="book_loan_availability">대출 여부</string>
+    <string name="book_intro">책 소개</string>
+    <string name="loan_request">대출 신청하기</string>
+    <string name="loan_unavailable">대출 불가</string>
+    <string name="search_result_summary">%1$s 검색 결과 %2$d건 · 제목 · 도서관 번호</string>
+    <string name="empty_search_result">검색된 책이 없어요\n다른 검색어를 입력해보세요</string>
+
+    <!-- Ranking -->
+    <string name="ranking_all">전체</string>
+    <string name="ranking_title">다독왕 랭킹</string>
+    <string name="ranking_description">2026년 · 대출 권수 기준 · 매년 1월 1일 초기화</string>
+    <string name="ranking_books_count">%1$d권</string>
+    <string name="ranking_books_count_spaced">%1$d 권</string>
+    <string name="student_grade_department">%1$d학년 · %2$s</string>
+
+    <!-- Library -->
+    <string name="sort_popular">인기순</string>
+    <string name="sort_new">신간순</string>
+    <string name="category_all">전체</string>
+    <string name="category_novel">소설</string>
+    <string name="category_science">과학</string>
+    <string name="category_history">역사</string>
+    <string name="category_development">개발</string>
+
+    <!-- My page -->
+    <string name="my_library_title">내 서재</string>
+    <string name="user_name_suffix_spaced">%1$s 님</string>
+    <string name="student_generation_department">%1$d기 · %2$s</string>
+    <string name="loaning">대출 중</string>
+    <string name="return_due_soon">반납 임박</string>
+    <string name="total_loan">누적 대출</string>
+    <string name="books_count">%1$d권</string>
+    <string name="reading_marathon_2026">2026 독서마라톤</string>
+    <string name="reading_marathon_course_progress">%1$s · %2$d / %3$d권</string>
+    <string name="reading_marathon_percent">%1$d%%</string>
+    <string name="reading_marathon_not_linked">아직 연동하지 않았어요</string>
+    <string name="reading_marathon_remaining_rank">완주까지 %1$d권 남았어요 · 상위 %2$d%%</string>
+    <string name="reading_marathon_link_toggle_description">토글을 켜면 독서마라톤 계정을 연동할 수 있어요</string>
+    <string name="reading_marathon_link_toggle_state_off">독서마라톤 계정 미연동</string>
+    <string name="change_password">비밀번호 변경</string>
+    <string name="loan_return_history">대출 / 반납 내역</string>
+    <string name="favorite_books">즐겨찾기 목록</string>
+    <string name="favorite_book">관심 도서</string>
+    <string name="notification_settings">알림 설정</string>
+    <string name="usage_guide">이용 안내</string>
+    <string name="notification_select_title">받고 싶은 알림을 선택하세요</string>
+    <string name="library_notice_notification">도서부 공지 알림</string>
+    <string name="library_notice_notification_description">새 공지가 올라오면 알려드려요</string>
+    <string name="loaning_count">대출 중 %1$d</string>
+    <string name="returned">반납 완료</string>
+    <string name="return_notification">반납 알림</string>
+    <string name="return_notification_description">반납 3일 전과 당일에 알려드려요</string>
+    <string name="loan_status_notification">대출 상태 알림</string>
+    <string name="loan_status_notification_description">대출 승인과 반납 처리 상태를 알려드려요</string>
+    <string name="notification_toggle_enabled">알림 켜짐</string>
+    <string name="notification_toggle_disabled">알림 꺼짐</string>
+    <string name="d_day_minus">D - %1$d</string>
+    <string name="book_return_date">%1$s · 반납 %2$s</string>
+    <string name="past_loan">지난 대출</string>
+</resources>
