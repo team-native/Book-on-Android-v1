@@ -45,7 +45,7 @@ private const val ReadingMarathonLinkFromMyKey = "reading_marathon_link_from_my"
  * 로그인/회원가입 플로우와 메인 탭, 상세 화면 이동을 단일 NavController로 관리한다.
  */
 @Composable
-fun BookOnNavHost() {
+fun BookOnNavHost(isInitiallyAuthenticated: Boolean) {
     val navController = rememberNavController()
     var isReadingMarathonLinked by rememberSaveable { mutableStateOf(true) }
     val backStackEntry by navController.currentBackStackEntryAsState()
@@ -59,7 +59,11 @@ fun BookOnNavHost() {
 
     NavHost(
         navController = navController,
-        startDestination = BookOnDestination.Login.route,
+        startDestination = if (isInitiallyAuthenticated) {
+            BookOnDestination.Home.route
+        } else {
+            BookOnDestination.Login.route
+        },
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         popEnterTransition = { EnterTransition.None },

@@ -1,6 +1,10 @@
 package com.teamnative.bookon.app
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 import com.teamnative.bookon.navigation.BookOnNavHost
 
 /**
@@ -9,5 +13,11 @@ import com.teamnative.bookon.navigation.BookOnNavHost
  */
 @Composable
 fun BookOnApp() {
-    BookOnNavHost()
+    val sessionViewModel: BookOnSessionViewModel = hiltViewModel()
+    val sessionUiState by sessionViewModel.uiState.collectAsStateWithLifecycle()
+    when (sessionUiState) {
+        BookOnSessionUiState.Checking -> BookOnLoadingScreen()
+        BookOnSessionUiState.Authenticated -> BookOnNavHost(isInitiallyAuthenticated = true)
+        BookOnSessionUiState.Unauthenticated -> BookOnNavHost(isInitiallyAuthenticated = false)
+    }
 }
