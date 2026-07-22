@@ -116,7 +116,7 @@ fun BookOnPasswordField(
     val shape = RoundedCornerShape(AppRadius.Field)
     val borderColor by animateColorAsState(
         targetValue = when {
-            isError -> BookOnColor.Error
+            isError -> BookOnColor.ErrorContainer
             isFocused -> BookOnColor.Primary
             else -> BookOnColor.Surface
         },
@@ -132,7 +132,9 @@ fun BookOnPasswordField(
                 style = BookOnTypography.fieldLabel,
                 color = BookOnColor.TextPrimary,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Small))
+
         }
 
         BasicTextField(
@@ -183,7 +185,9 @@ fun BookOnPasswordField(
                         ) {
                             leadingIcon()
                         }
+
                         Spacer(modifier = Modifier.width(AppSpacing.Content))
+
                     }
 
                     Box(modifier = Modifier.weight(1f)) {
@@ -218,7 +222,9 @@ fun BookOnPasswordField(
         )
 
         if (errorText != null) {
+
             Spacer(modifier = Modifier.height(AppSpacing.Small))
+
             Text(
                 text = errorText,
                 style = BookOnTypography.caption,

@@ -48,18 +48,27 @@ fun BookOnLoginScreen(
                 .padding(horizontal = AppSpacing.AuthHorizontal)
                 .fillMaxSize(),
         ) {
+
             Spacer(modifier = Modifier.height(LoginTitleTopSpacing))
+
             Text(text = uiState.title, style = BookOnTypography.screenTitle, color = BookOnColor.TextPrimary)
+
             Spacer(modifier = Modifier.height(AppSpacing.Small))
+
             Text(
                 text = stringResource(R.string.login_description),
                 style = BookOnTypography.bodySemiBold,
                 color = BookOnColor.TextTertiary,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Section + AppSpacing.Content))
+
             BookOnEmailField(uiState = uiState.email, onValueChange = onEmailChange)
+
             Spacer(modifier = Modifier.height(AppSpacing.Content))
+
             BookOnAuthPasswordField(uiState = uiState.password, onValueChange = onPasswordChange)
+
             Text(
                 modifier = Modifier
                     .align(Alignment.End)
@@ -69,14 +78,18 @@ fun BookOnLoginScreen(
                 style = BookOnTypography.caption,
                 color = BookOnColor.Primary,
             )
+
             Spacer(modifier = Modifier.weight(1f))
+
             BookOnPrimaryButton(
                 modifier = Modifier.padding(horizontal = AppSpacing.Small),
                 text = stringResource(R.string.login),
                 onClick = onLoginClick,
                 enabled = uiState.loginEnabled,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Section))
+
             Text(
                 modifier = Modifier
                     .align(Alignment.CenterHorizontally)
@@ -85,7 +98,9 @@ fun BookOnLoginScreen(
                 style = BookOnTypography.caption.copy(textDecoration = TextDecoration.Underline),
                 color = BookOnColor.TextPrimary,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Section))
+
         }
     }
 }

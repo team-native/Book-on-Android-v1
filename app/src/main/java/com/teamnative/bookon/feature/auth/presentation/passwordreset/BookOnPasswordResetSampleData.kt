@@ -8,7 +8,7 @@ import com.teamnative.bookon.core.ui.model.BookOnTextFieldUiModel
 
 /** Preview와 초기 Route 상태에서 사용하는 비밀번호 재설정 기본 표시값이다. */
 @Composable
-internal fun samplePasswordResetUiState() = BookOnPasswordResetUiState(
+internal fun defaultPasswordResetUiState() = BookOnPasswordResetUiState(
     step = BookOnPasswordResetStep.Email,
     title = stringResource(R.string.password_reset_email_title),
     description = stringResource(R.string.password_reset_email_description),

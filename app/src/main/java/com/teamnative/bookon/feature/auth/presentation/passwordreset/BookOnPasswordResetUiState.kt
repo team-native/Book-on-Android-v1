@@ -15,6 +15,8 @@ data class BookOnPasswordResetUiState(
     val password: BookOnPasswordFieldUiModel,
     val passwordConfirm: BookOnPasswordFieldUiModel,
     val nextEnabled: Boolean,
+    val errorText: String? = null,
+    val isLoading: Boolean = false,
 )
 
 /** 비밀번호 재설정에서 사용자에게 노출되는 세 단계다. */

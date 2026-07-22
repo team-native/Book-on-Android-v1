@@ -5,11 +5,12 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.res.stringResource
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.model.BookOnPasswordFieldUiModel
 import com.teamnative.bookon.core.ui.model.BookOnTextFieldUiModel
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnPasswordPolicy
 
 /** 독서마라톤 계정 입력과 동의 상태를 보존하며 화면 이벤트를 연결한다. */
 @Composable
@@ -18,11 +19,13 @@ fun BookOnReadingMarathonLinkRoute(
     onSkipClick: () -> Unit,
     onCompleteClick: () -> Unit,
 ) {
+    val viewModel: BookOnReadingMarathonLinkViewModel = hiltViewModel()
+    val linkState by viewModel.state.collectAsStateWithLifecycle()
     var marathonId by rememberSaveable { mutableStateOf("") }
     var password by rememberSaveable { mutableStateOf("") }
     var agreementChecked by rememberSaveable { mutableStateOf(false) }
-    val sample = sampleReadingMarathonLinkUiState()
-    val uiState = sample.copy(
+    val defaultState = defaultReadingMarathonLinkUiState()
+    val uiState = defaultState.copy(
         marathonId = BookOnTextFieldUiModel(
             value = marathonId,
             label = stringResource(R.string.reading_marathon_id),
@@ -32,13 +35,14 @@ fun BookOnReadingMarathonLinkRoute(
             value = password,
             label = stringResource(R.string.password),
             placeholder = stringResource(R.string.password),
-            errorText = password.takeIf { it.isNotEmpty() && !BookOnPasswordPolicy.isValid(it) }
-                ?.let { stringResource(R.string.error_password_rule) },
+            errorText = null,
         ),
-        agreement = sample.agreement.copy(checked = agreementChecked),
+        agreement = defaultState.agreement.copy(checked = agreementChecked),
         linkEnabled = marathonId.isNotBlank() &&
-            BookOnPasswordPolicy.isValid(password) &&
-            agreementChecked,
+            password.isNotBlank() &&
+            agreementChecked && !linkState.isLoading,
+        errorText = linkState.errorText,
+        isLoading = linkState.isLoading,
     )
 
     BookOnReadingMarathonLinkScreen(
@@ -49,6 +53,6 @@ fun BookOnReadingMarathonLinkRoute(
         onAgreementChange = { agreementChecked = it },
         onOauthClick = {},
         onSkipClick = onSkipClick,
-        onCompleteClick = onCompleteClick,
+        onCompleteClick = { viewModel.link(marathonId, password, onCompleteClick) },
     )
 }

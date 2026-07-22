@@ -14,4 +14,6 @@ data class BookOnReadingMarathonLinkUiState(
     val password: BookOnPasswordFieldUiModel,
     val agreement: BookOnMarathonAgreementUiModel,
     val linkEnabled: Boolean = true,
+    val errorText: String? = null,
+    val isLoading: Boolean = false,
 )

@@ -47,7 +47,9 @@ fun BookOnAuthFormScaffold(
                 modifier = Modifier.padding(horizontal = AppSpacing.Small),
                 content = footer,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Section))
+
         }
     }
 }

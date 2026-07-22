@@ -8,7 +8,7 @@ import com.teamnative.bookon.core.ui.model.BookOnTextFieldUiModel
 import com.teamnative.bookon.feature.auth.presentation.model.BookOnMarathonAgreementUiModel
 
 @Composable
-internal fun sampleReadingMarathonLinkUiState() = BookOnReadingMarathonLinkUiState(
+internal fun defaultReadingMarathonLinkUiState() = BookOnReadingMarathonLinkUiState(
     stepText = stringResource(R.string.signup_step_3),
     title = stringResource(R.string.reading_marathon_link_title),
     description = stringResource(R.string.reading_marathon_login_description),

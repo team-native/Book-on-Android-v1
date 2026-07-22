@@ -44,7 +44,9 @@ internal fun BookOnPasswordResetProgress(
                     .background(BookOnColor.Primary),
             )
         }
+
         Spacer(modifier = Modifier.height(AppSpacing.Small))
+
         Text(
             text = stringResource(R.string.password_reset_step, currentStep.index, PasswordResetTotalStep),
             style = BookOnTypography.caption,

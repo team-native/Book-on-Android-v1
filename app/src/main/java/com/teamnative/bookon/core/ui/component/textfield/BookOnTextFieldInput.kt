@@ -105,7 +105,7 @@ fun BookOnTextField(
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderColor by animateColorAsState(
         targetValue = when {
-            isError -> BookOnColor.Error
+            isError -> BookOnColor.ErrorContainer
             isFocused -> BookOnColor.Primary
             else -> BookOnColor.Surface
         },
@@ -121,7 +121,9 @@ fun BookOnTextField(
                 style = BookOnTypography.fieldLabel,
                 color = BookOnColor.TextPrimary,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Small))
+
         }
 
         BasicTextField(
@@ -165,7 +167,9 @@ fun BookOnTextField(
                         ) {
                             leadingIcon()
                         }
+
                         Spacer(modifier = Modifier.width(AppSpacing.Content))
+
                     }
 
                     Box(modifier = Modifier.weight(1f)) {
@@ -180,7 +184,9 @@ fun BookOnTextField(
                     }
 
                     if (suffixText != null) {
+
                         Spacer(modifier = Modifier.width(AppSpacing.Item))
+
                         Text(
                             text = suffixText,
                             style = BookOnTypography.fieldPlaceholder,
@@ -189,7 +195,9 @@ fun BookOnTextField(
                     }
 
                     if (trailingIcon != null) {
+
                         Spacer(modifier = Modifier.width(AppSpacing.Item))
+
                         Box(
                             modifier = Modifier.sizeIn(
                                 minWidth = AppComponentSize.MinTouchTarget,
@@ -205,7 +213,9 @@ fun BookOnTextField(
         )
 
         if (errorText != null) {
+
             Spacer(modifier = Modifier.height(AppSpacing.Small))
+
             Text(
                 text = errorText,
                 style = BookOnTypography.caption,

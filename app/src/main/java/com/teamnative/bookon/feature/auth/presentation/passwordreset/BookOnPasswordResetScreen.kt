@@ -51,7 +51,9 @@ fun BookOnPasswordResetScreen(
             )
         },
     ) {
+
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
+
         Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Content)) {
             BookOnPasswordResetProgress(currentStep = uiState.step)
             Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Small)) {
@@ -65,6 +67,9 @@ fun BookOnPasswordResetScreen(
                     style = BookOnTypography.bodyMedium,
                     color = BookOnColor.TextSecondary,
                 )
+            }
+            uiState.errorText?.let { errorText ->
+                Text(text = errorText, style = BookOnTypography.bodyMedium, color = BookOnColor.TextSecondary)
             }
         }
 
@@ -104,6 +109,6 @@ fun BookOnPasswordResetScreen(
 @Composable
 private fun BookOnPasswordResetEmailPreview() {
     BookOnTheme {
-        BookOnPasswordResetScreen(uiState = samplePasswordResetUiState(), onEvent = {})
+        BookOnPasswordResetScreen(uiState = defaultPasswordResetUiState(), onEvent = {})
     }
 }

@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -52,13 +53,16 @@ fun BookOnReadingMarathonLinkScreen(
                 onClick = onCompleteClick,
                 enabled = uiState.linkEnabled,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Item))
+
             BookOnSkipTextButton(
                 text = skipReadingMarathonAnnotatedString(),
                 onClick = onSkipClick,
             )
         },
     ) {
+
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
 
         BookOnSignupStepHeader(
@@ -76,6 +80,11 @@ fun BookOnReadingMarathonLinkScreen(
             checked = uiState.agreement.checked,
             onCheckedChange = onAgreementChange,
         )
+
+        uiState.errorText?.let { errorText ->
+            Text(text = errorText)
+        }
+
         Spacer(modifier = Modifier.height(AuthOauthTopSpacing))
 
         Row(
@@ -88,13 +97,17 @@ fun BookOnReadingMarathonLinkScreen(
                 contentDescription = stringResource(R.string.oauth_google_description),
                 onSelected = onOauthClick,
             )
+
             Spacer(modifier = Modifier.width(AppSpacing.Section))
+
             BookOnMarathonCircleAction(
                 iconRes = R.drawable.oauth_naver,
                 contentDescription = stringResource(R.string.oauth_naver_description),
                 onSelected = onOauthClick,
             )
+
             Spacer(modifier = Modifier.width(AppSpacing.Section))
+
             BookOnMarathonCircleAction(
                 iconRes = R.drawable.oauth_kakao,
                 contentDescription = stringResource(R.string.oauth_kakao_description),
@@ -109,7 +122,7 @@ fun BookOnReadingMarathonLinkScreen(
 private fun BookOnReadingMarathonLinkScreenPreview() {
     BookOnTheme {
         BookOnReadingMarathonLinkScreen(
-            uiState = sampleReadingMarathonLinkUiState(),
+            uiState = defaultReadingMarathonLinkUiState(),
             onBackClick = {}, onIdChange = {}, onPasswordChange = {},
             onAgreementChange = {}, onOauthClick = {}, onSkipClick = {}, onCompleteClick = {},
         )
