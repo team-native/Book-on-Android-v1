@@ -17,17 +17,20 @@ android {
     defaultConfig {
         applicationId = "com.teamnative.bookon"
         minSdk = 34
-        targetSdk = 36
         versionCode = 1
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         buildConfigField("String", "BASE_URL", "\"http://ssh.gsmsv.site:33839/\"")
-        buildConfigField("boolean", "ENABLE_NETWORK_LOG", "true")
+        buildConfigField("int", "NETWORK_TIMEOUT_SECONDS", "20")
     }
 
     buildTypes {
+        debug {
+            buildConfigField("boolean", "ENABLE_NETWORK_LOG", "true")
+        }
         release {
+            buildConfigField("boolean", "ENABLE_NETWORK_LOG", "false")
             isMinifyEnabled = false
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
@@ -67,6 +70,7 @@ dependencies {
     implementation(libs.okhttp.logging)
     implementation(libs.kotlinx.serialization.json)
     testImplementation(libs.junit)
+    testImplementation(libs.kotlinx.coroutines.test)
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.compose.ui.test.junit4)
     androidTestImplementation(libs.androidx.espresso.core)

@@ -6,11 +6,13 @@ import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
 import androidx.datastore.preferences.core.stringPreferencesKey
 import java.io.IOException
-import java.util.concurrent.atomic.AtomicReference
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 
 /**
  * 인증 토큰의 암호화 저장과 즉시 읽기 가능한 메모리 사본을 함께 관리한다.
@@ -21,7 +23,9 @@ class TokenSessionManager @Inject constructor(
     private val tokenDataStore: DataStore<Preferences>,
     private val tokenCipher: TokenCipher,
 ) {
-    private val cachedTokens = AtomicReference<AuthTokens?>(null)
+    private val mutableTokens = MutableStateFlow<AuthTokens?>(null)
+    /** Interceptor는 이 값만 동기적으로 읽고 UI는 세션 전환을 관찰한다. */
+    val tokens: StateFlow<AuthTokens?> = mutableTokens.asStateFlow()
 
     /** 앱 시작 시 암호화된 DataStore 값을 읽어 Interceptor용 메모리 캐시를 채운다. */
     suspend fun restore(): AuthTokens? {
@@ -37,7 +41,7 @@ class TokenSessionManager @Inject constructor(
         } else {
             AuthTokens(accessToken = accessToken, refreshToken = refreshToken)
         }
-        cachedTokens.set(restoredTokens)
+        mutableTokens.value = restoredTokens
         if (restoredTokens == null && (preferences[AccessTokenKey] != null || preferences[RefreshTokenKey] != null)) {
             clear()
         }
@@ -50,7 +54,7 @@ class TokenSessionManager @Inject constructor(
             preferences[AccessTokenKey] = tokenCipher.encrypt(tokens.accessToken)
             preferences[RefreshTokenKey] = tokenCipher.encrypt(tokens.refreshToken)
         }
-        cachedTokens.set(tokens)
+        mutableTokens.value = tokens
     }
 
     /** 로그아웃 또는 refresh 실패 시 저장소와 메모리의 토큰을 함께 제거한다. */
@@ -59,11 +63,11 @@ class TokenSessionManager @Inject constructor(
             preferences.remove(AccessTokenKey)
             preferences.remove(RefreshTokenKey)
         }
-        cachedTokens.set(null)
+        mutableTokens.value = null
     }
 
-    fun accessToken(): String? = cachedTokens.get()?.accessToken
-    fun refreshToken(): String? = cachedTokens.get()?.refreshToken
+    fun accessToken(): String? = mutableTokens.value?.accessToken
+    fun refreshToken(): String? = mutableTokens.value?.refreshToken
 
     private companion object {
         val AccessTokenKey = stringPreferencesKey("encrypted_access_token")

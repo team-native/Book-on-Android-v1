@@ -1,6 +1,7 @@
 package com.teamnative.bookon.core.network.auth
 
 import com.teamnative.bookon.core.network.ApiEnvelope
+import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import retrofit2.Response
 import retrofit2.http.Body
@@ -15,10 +16,15 @@ interface TokenRefreshApiService {
 }
 
 @Serializable
-data class RefreshTokenRequestDto(val refreshToken: String)
+data class RefreshTokenRequestDto(
+    @SerialName("refreshToken")
+    val refreshToken: String,
+)
 
 @Serializable
 data class RefreshTokenResponseDto(
+    @SerialName("accessToken")
     val accessToken: String,
+    @SerialName("refreshToken")
     val refreshToken: String,
 )
