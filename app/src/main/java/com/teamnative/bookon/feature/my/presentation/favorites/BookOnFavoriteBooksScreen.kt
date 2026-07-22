@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -28,13 +29,18 @@ import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.book.BookOnBookListItem
+import com.teamnative.bookon.core.ui.component.loading.BookOnInlineLoadingIndicator
+import com.teamnative.bookon.core.ui.model.resolve
 
 /** 관심 도서 요약과 즐겨찾기 목록을 표시한다. */
 @Composable
 fun BookOnFavoriteBooksScreen(
     uiState: BookOnFavoriteBooksScreenUiState,
     onBackClick: () -> Unit,
-    onBookClick: () -> Unit,
+    onBookClick: (Long) -> Unit,
+    onRetryClick: () -> Unit,
+    onLoadMoreClick: () -> Unit,
+    onRemoveFavoriteClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -53,7 +59,16 @@ fun BookOnFavoriteBooksScreen(
             contentPadding = PaddingValues(AppSpacing.ScreenHorizontal),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Content),
         ) {
-            item {
+            uiState.errorMessage?.let { message ->
+                item {
+                    Text(text = message.resolve(), color = BookOnColor.TextSecondary)
+                    Button(onClick = onRetryClick) { Text(text = stringResource(R.string.action_retry)) }
+                }
+            }
+            if (uiState.errorMessage == null && uiState.books.isEmpty()) {
+                item { Text(text = stringResource(R.string.empty_favorite_books), color = BookOnColor.TextSecondary) }
+            }
+            if (uiState.books.isNotEmpty()) item {
                 Text(
                     text = uiState.summary,
                     style = BookOnTypography.bodySemiBold,
@@ -63,7 +78,7 @@ fun BookOnFavoriteBooksScreen(
             items(uiState.books) { book ->
                 BookOnBookListItem(
                     uiState = book,
-                    onClick = onBookClick,
+                    onClick = { onBookClick(book.id) },
                     trailingContent = if (book.isFavorite) {
                         {
                             val favoriteInteractionSource = remember { MutableInteractionSource() }
@@ -74,7 +89,7 @@ fun BookOnFavoriteBooksScreen(
                                         interactionSource = favoriteInteractionSource,
                                         indication = null,
                                         role = Role.Button,
-                                        onClick = {},
+                                        onClick = { onRemoveFavoriteClick(book.id) },
                                     ),
                                 contentAlignment = Alignment.Center,
                             ) {
@@ -90,6 +105,14 @@ fun BookOnFavoriteBooksScreen(
                     },
                 )
             }
+            if (uiState.isPagingLoading) {
+                item { BookOnInlineLoadingIndicator() }
+            }
+            if (uiState.hasNext && !uiState.isPagingLoading) {
+                item {
+                    Button(onClick = onLoadMoreClick) { Text(text = stringResource(R.string.action_load_more)) }
+                }
+            }
         }
     }
 }
@@ -101,7 +124,10 @@ private fun BookOnFavoriteBooksScreenPreview() {
         BookOnFavoriteBooksScreen(
             uiState = sampleFavoriteBooksUiState(),
             onBackClick = {},
-            onBookClick = {},
+            onBookClick = { _ -> },
+            onRetryClick = {},
+            onLoadMoreClick = {},
+            onRemoveFavoriteClick = {},
         )
     }
 }

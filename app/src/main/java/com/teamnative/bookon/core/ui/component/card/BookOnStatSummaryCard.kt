@@ -68,7 +68,9 @@ fun BookOnStatSummaryCard(
                     style = BookOnTypography.caption,
                     color = BookOnColor.PrimaryLight,
                 )
+
                 Spacer(modifier = Modifier.height(AppSpacing.Tiny))
+
                 Text(
                     text = item.value,
                     style = BookOnTypography.sectionTitle,

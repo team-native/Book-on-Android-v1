@@ -5,7 +5,7 @@ import androidx.compose.ui.res.stringResource
 import com.teamnative.bookon.R
 
 @Composable
-internal fun sampleVerificationCodeUiState() = BookOnVerificationCodeUiState(
+internal fun defaultVerificationCodeUiState() = BookOnVerificationCodeUiState(
     stepText = stringResource(R.string.signup_step_1),
     title = stringResource(R.string.verification_code_title),
     description = stringResource(R.string.verification_code_description, "s20000@gsm.hs.kr"),

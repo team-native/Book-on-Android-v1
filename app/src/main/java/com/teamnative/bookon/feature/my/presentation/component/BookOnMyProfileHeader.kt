@@ -46,7 +46,9 @@ fun BookOnMyProfileHeader(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Tiny))
+
             Text(
                 text = studentInfoText,
                 style = BookOnTypography.caption,

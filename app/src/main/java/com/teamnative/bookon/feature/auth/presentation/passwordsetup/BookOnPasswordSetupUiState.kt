@@ -14,5 +14,6 @@ data class BookOnPasswordSetupUiState(
     val ruleText: String,
     val privacyChecked: Boolean,
     val privacyPolicyExpanded: Boolean = false,
+    val isVerificationRequestInProgress: Boolean = false,
     val nextEnabled: Boolean = true,
 )

@@ -66,6 +66,6 @@ fun BookOnPrivacyPolicyScreen(
 @Composable
 private fun BookOnPrivacyPolicyScreenPreview() {
     BookOnTheme {
-        BookOnPrivacyPolicyScreen(uiState = samplePrivacyPolicyUiState(), onBackClick = {})
+        BookOnPrivacyPolicyScreen(uiState = defaultPrivacyPolicyUiState(), onBackClick = {})
     }
 }

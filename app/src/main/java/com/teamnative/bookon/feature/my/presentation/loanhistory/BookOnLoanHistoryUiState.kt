@@ -11,4 +11,8 @@ data class BookOnLoanHistoryScreenUiState(
     val pastTitle: String,
     val currentLoans: List<BookOnBookListItemUiModel>,
     val pastLoans: List<BookOnBookListItemUiModel>,
+    val isInitialLoading: Boolean = false,
+    val errorMessage: String? = null,
+    val hasNext: Boolean = false,
+    val isPagingLoading: Boolean = false,
 )

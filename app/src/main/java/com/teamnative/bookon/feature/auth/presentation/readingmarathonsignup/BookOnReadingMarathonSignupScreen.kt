@@ -44,8 +44,9 @@ fun BookOnReadingMarathonSignupScreen(
             BookOnPrimaryButton(
                 text = stringResource(if (uiState.isLinked) R.string.action_next else R.string.complete_signup_with_link),
                 onClick = onContinueClick,
-                enabled = !progressAnimating,
+                enabled = uiState.isLinked && !progressAnimating,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Item))
 
             BookOnSkipTextButton(
@@ -54,6 +55,7 @@ fun BookOnReadingMarathonSignupScreen(
             )
         },
     ) {
+
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
 
         BookOnSignupStepHeader(
@@ -82,7 +84,7 @@ fun BookOnReadingMarathonSignupScreen(
 private fun BookOnReadingMarathonSignupScreenPreview() {
     BookOnTheme {
         BookOnReadingMarathonSignupScreen(
-            uiState = sampleReadingMarathonSignupUiState(),
+            uiState = defaultReadingMarathonSignupUiState(),
             onBackClick = {}, onLinkChange = {}, onContinueClick = {}, onSkipClick = {},
         )
     }

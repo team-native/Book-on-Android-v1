@@ -54,7 +54,9 @@ fun BookOnSignupCompleteScreen(
                     .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
+
                 Spacer(modifier = Modifier.height(SignupCompleteContentTopSpacing))
+
                 BookOnSignupCompleteCheckIcon()
 
                 Spacer(modifier = Modifier.height(SignupCompleteTitleSpacing))
@@ -65,27 +67,35 @@ fun BookOnSignupCompleteScreen(
                     color = BookOnColor.TextPrimary,
                     textAlign = TextAlign.Center,
                 )
+
                 Spacer(modifier = Modifier.height(AppSpacing.Small))
+
                 Text(
                     text = uiState.message,
                     style = BookOnTypography.bodyMedium,
                     color = BookOnColor.TextSecondary,
                     textAlign = TextAlign.Center,
                 )
+
                 Spacer(modifier = Modifier.height(SignupCompleteSummarySpacing))
+
                 BookOnSignupCompleteSummary(
                     ownedBookCountText = uiState.ownedBookCountText,
                     ownedBookDescription = stringResource(R.string.owned_books),
                     marathonStatusText = uiState.marathonStatusText,
                     marathonDescription = stringResource(R.string.reading_marathon),
                 )
+
                 Spacer(modifier = Modifier.weight(1f))
+
                 BookOnPrimaryButton(
                     modifier = Modifier.padding(horizontal = AppSpacing.Small),
                     text = stringResource(R.string.action_start),
                     onClick = onStartClick,
                 )
+
                 Spacer(modifier = Modifier.height(SignupCompleteBottomSpacing))
+
             }
         }
     }
@@ -95,6 +105,6 @@ fun BookOnSignupCompleteScreen(
 @Composable
 private fun BookOnSignupCompleteScreenPreview() {
     BookOnTheme {
-        BookOnSignupCompleteScreen(uiState = sampleSignupCompleteUiState(), onStartClick = {})
+        BookOnSignupCompleteScreen(uiState = defaultSignupCompleteUiState(), onStartClick = {})
     }
 }

@@ -5,7 +5,7 @@ import androidx.compose.ui.res.stringResource
 import com.teamnative.bookon.R
 
 @Composable
-internal fun sampleReadingMarathonSignupUiState() = BookOnReadingMarathonSignupUiState(
+internal fun defaultReadingMarathonSignupUiState() = BookOnReadingMarathonSignupUiState(
     stepText = stringResource(R.string.signup_step_3),
     title = stringResource(R.string.reading_marathon),
     description = stringResource(R.string.reading_marathon_signup_description),

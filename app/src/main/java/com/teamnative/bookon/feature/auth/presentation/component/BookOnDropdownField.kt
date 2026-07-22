@@ -90,7 +90,9 @@ fun BookOnDropdownField(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
+
         Spacer(modifier = Modifier.weight(1f))
+
         IconButton(
             modifier = Modifier.size(AppComponentSize.MinTouchTarget),
             enabled = enabled,

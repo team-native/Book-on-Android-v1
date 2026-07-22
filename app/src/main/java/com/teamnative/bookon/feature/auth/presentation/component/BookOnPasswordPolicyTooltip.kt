@@ -86,7 +86,9 @@ internal fun BookOnPasswordPolicyTooltip(modifier: Modifier = Modifier) {
                 style = BookOnTypography.caption.copy(fontWeight = FontWeight.Normal),
                 color = BookOnColor.TextTertiary,
             )
+
             Spacer(modifier = Modifier.width(AppSpacing.Tiny))
+
             Text(
                 text = stringResource(R.string.info_mark),
                 style = BookOnTypography.caption,

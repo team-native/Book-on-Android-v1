@@ -5,4 +5,5 @@ sealed interface BookOnMyScreenEvent {
     data class MenuClicked(val menuIndex: Int) : BookOnMyScreenEvent
     data object ReadingMarathonLinkRequested : BookOnMyScreenEvent
     data object LogoutClicked : BookOnMyScreenEvent
+    data object RetryClicked : BookOnMyScreenEvent
 }

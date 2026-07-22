@@ -49,10 +49,6 @@ fun BookOnNotificationSettingsBottomSheetContent(
             title = stringResource(R.string.library_notice_notification),
             description = stringResource(R.string.library_notice_notification_description),
         ),
-        NotificationSettingRow(
-            title = stringResource(R.string.library_notice_notification),
-            description = stringResource(R.string.library_notice_notification_description),
-        ),
     )
 
     Column(
@@ -68,6 +64,7 @@ fun BookOnNotificationSettingsBottomSheetContent(
                 .padding(top = AppSpacing.Item)
                 .height(AppSpacing.Tiny),
         ) {
+
             Spacer(
                 modifier = Modifier
                     .align(Alignment.Center)
@@ -75,8 +72,11 @@ fun BookOnNotificationSettingsBottomSheetContent(
                     .clip(RoundedCornerShape(percent = 50))
                     .background(BookOnColor.Disabled),
             )
+
         }
+
         Spacer(modifier = Modifier.height(AppSpacing.Large))
+
         Text(
             text = stringResource(R.string.notification_settings),
             style = BookOnTypography.sectionTitle.copy(
@@ -85,12 +85,15 @@ fun BookOnNotificationSettingsBottomSheetContent(
             ),
             color = BookOnColor.TextDarkGray,
         )
+
         Spacer(modifier = Modifier.height(AppSpacing.Small))
+
         Text(
             text = stringResource(R.string.notification_select_title),
             style = BookOnTypography.caption,
             color = BookOnColor.TextSecondary,
         )
+
         Spacer(modifier = Modifier.height(AppSpacing.XLarge))
 
         notificationRows.forEachIndexed { index, row ->
@@ -107,7 +110,9 @@ fun BookOnNotificationSettingsBottomSheetContent(
                 thickness = AppStrokeWidth.Divider,
             )
         }
+
         Spacer(modifier = Modifier.height(AppSpacing.Section + AppSpacing.Content))
+
         BookOnPrimaryButton(
             text = stringResource(R.string.action_complete_signup),
             onClick = onCompleteClick,
@@ -126,7 +131,7 @@ private data class NotificationSettingRow(
 private fun BookOnNotificationSettingsBottomSheetContentPreview() {
     BookOnTheme {
         BookOnNotificationSettingsBottomSheetContent(
-            notificationSelections = listOf(true, true, false),
+            notificationSelections = listOf(true, true),
             onCheckedChange = { _, _ -> },
             onCompleteClick = {},
         )

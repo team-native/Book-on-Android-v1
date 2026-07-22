@@ -52,7 +52,9 @@ internal fun BookOnThirdPartyAgreementRow(
             contentDescription = stringResource(R.string.reading_marathon_agreement_check_description),
             contentScale = ContentScale.Fit,
         )
+
         Spacer(modifier = Modifier.width(AppSpacing.Small))
+
         Text(
             modifier = Modifier.weight(1f),
             text = buildAnnotatedString {

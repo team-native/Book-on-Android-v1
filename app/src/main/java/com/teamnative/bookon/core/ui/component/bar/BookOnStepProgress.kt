@@ -124,7 +124,9 @@ fun BookOnStepProgress(
                 }
             }
         }
+
         Spacer(modifier = Modifier.height(AppSpacing.Small))
+
         Text(
             text = stringResource(R.string.step_progress, stackedStep, safeTotal),
             style = BookOnTypography.caption,

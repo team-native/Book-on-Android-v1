@@ -85,7 +85,9 @@ fun BookOnBookCard(
         ) {
             cover()
         }
+
         Spacer(modifier = Modifier.height(AppSpacing.Item))
+
         Text(
             text = title,
             style = titleStyle,

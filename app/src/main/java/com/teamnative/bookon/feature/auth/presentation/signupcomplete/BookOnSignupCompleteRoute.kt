@@ -9,7 +9,7 @@ fun BookOnSignupCompleteRoute(
     onStartClick: () -> Unit,
 ) {
     BookOnSignupCompleteScreen(
-        uiState = sampleSignupCompleteUiState(isReadingMarathonLinked),
+        uiState = defaultSignupCompleteUiState(isReadingMarathonLinked),
         onStartClick = onStartClick,
     )
 }

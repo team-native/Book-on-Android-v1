@@ -4,5 +4,7 @@ package com.teamnative.bookon.feature.my.presentation.loanhistory
 sealed interface BookOnLoanHistoryScreenEvent {
     data object BackClicked : BookOnLoanHistoryScreenEvent
     data class FilterClicked(val filterIndex: Int) : BookOnLoanHistoryScreenEvent
-    data object BookClicked : BookOnLoanHistoryScreenEvent
+    data class BookClicked(val bookId: Long) : BookOnLoanHistoryScreenEvent
+    data object RetryClicked : BookOnLoanHistoryScreenEvent
+    data object LoadMoreClicked : BookOnLoanHistoryScreenEvent
 }

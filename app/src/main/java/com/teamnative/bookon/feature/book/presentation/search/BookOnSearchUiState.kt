@@ -9,4 +9,8 @@ data class BookOnSearchScreenUiState(
     val resultSummary: String,
     val books: List<BookOnBookListItemUiModel>,
     val emptyMessage: String,
+    val isSearching: Boolean = false,
+    val isPagingLoading: Boolean = false,
+    val hasNext: Boolean = false,
+    val errorMessage: String? = null,
 )

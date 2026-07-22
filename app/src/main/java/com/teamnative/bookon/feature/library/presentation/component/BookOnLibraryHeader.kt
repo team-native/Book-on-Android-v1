@@ -35,7 +35,9 @@ fun BookOnLibraryHeader(
 ) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
         Text(text = title, style = BookOnTypography.screenTitle, color = BookOnColor.TextPrimary)
+
         Spacer(modifier = Modifier.weight(1f))
+
         Row(
             modifier = Modifier
                 .width(AppComponentSize.LibrarySortToggleWidth)

@@ -92,7 +92,9 @@ private fun BookOnBookDetailInfoItem(
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
         )
+
         Spacer(modifier = Modifier.height(AppSpacing.Tiny))
+
         Text(
             text = item.value,
             style = BookOnTypography.bodySemiBold,

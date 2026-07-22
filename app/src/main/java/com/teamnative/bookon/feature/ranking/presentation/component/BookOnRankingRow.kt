@@ -48,13 +48,17 @@ fun BookOnRankingRow(
             color = BookOnColor.TextSecondary,
             textAlign = TextAlign.Center,
         )
+
         Spacer(modifier = Modifier.width(AppSpacing.Item))
+
         RankingAvatar(
             avatarRes = member.avatarRes,
             contentDescription = member.avatarContentDescription,
             modifier = Modifier.size(AppIconSize.Medium),
         )
+
         Spacer(modifier = Modifier.width(AppSpacing.Item))
+
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = member.name,
@@ -71,7 +75,9 @@ fun BookOnRankingRow(
                 overflow = TextOverflow.Ellipsis,
             )
         }
+
         Spacer(modifier = Modifier.width(AppSpacing.Item))
+
         Text(
             text = member.bookCountText,
             style = BookOnTypography.caption,

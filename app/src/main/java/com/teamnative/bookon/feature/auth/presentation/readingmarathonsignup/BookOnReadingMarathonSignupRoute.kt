@@ -16,7 +16,7 @@ fun BookOnReadingMarathonSignupRoute(
     var isLinked by rememberSaveable { mutableStateOf(true) }
 
     BookOnReadingMarathonSignupScreen(
-        uiState = sampleReadingMarathonSignupUiState().copy(isLinked = isLinked),
+        uiState = defaultReadingMarathonSignupUiState().copy(isLinked = isLinked),
         onBackClick = onBackClick,
         onLinkChange = { isLinked = it },
         onContinueClick = onUseClick,

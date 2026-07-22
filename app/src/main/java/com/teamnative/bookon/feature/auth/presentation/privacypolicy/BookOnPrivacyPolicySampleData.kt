@@ -5,7 +5,7 @@ import androidx.compose.ui.res.stringResource
 import com.teamnative.bookon.R
 
 @Composable
-internal fun samplePrivacyPolicyUiState() = BookOnPrivacyPolicyUiState(
+internal fun defaultPrivacyPolicyUiState() = BookOnPrivacyPolicyUiState(
     stepText = stringResource(R.string.signup_step_2),
     title = stringResource(R.string.privacy_policy_title),
     sections = listOf(

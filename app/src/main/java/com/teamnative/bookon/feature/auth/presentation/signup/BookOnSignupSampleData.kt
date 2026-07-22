@@ -7,7 +7,7 @@ import com.teamnative.bookon.core.ui.model.BookOnTextFieldUiModel
 import com.teamnative.bookon.feature.auth.presentation.model.BookOnDropdownFieldUiModel
 
 @Composable
-internal fun sampleSignupUiState(
+internal fun defaultSignupUiState(
     email: String = "",
     name: String = "",
     selectedGender: BookOnGender? = null,

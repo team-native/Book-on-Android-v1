@@ -50,7 +50,9 @@ fun BookOnHomeAiSectionHeader(
                 overflow = TextOverflow.Ellipsis,
             )
             if (badgeText != null) {
+
                 Spacer(modifier = Modifier.width(AppSpacing.Small))
+
                 Row(
                     modifier = Modifier
                         .height(HomeAiBadgeHeight)
@@ -66,7 +68,9 @@ fun BookOnHomeAiSectionHeader(
                     )
                 }
             }
+
             Spacer(modifier = Modifier.weight(1f))
+
             if (actionText != null && onActionClick != null) {
                 Text(
                     modifier = Modifier
@@ -79,7 +83,9 @@ fun BookOnHomeAiSectionHeader(
                 )
             }
         }
+
         Spacer(modifier = Modifier.height(AppSpacing.Tiny))
+
         Text(
             text = description,
             style = BookOnTypography.caption,

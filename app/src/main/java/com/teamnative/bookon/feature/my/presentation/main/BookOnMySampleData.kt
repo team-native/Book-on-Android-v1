@@ -4,7 +4,7 @@ import com.teamnative.bookon.core.ui.model.BookOnMenuRowUiModel
 import com.teamnative.bookon.core.ui.model.BookOnStatItemUiModel
 import com.teamnative.bookon.feature.my.presentation.model.BookOnMyMarathonUiModel
 
-fun sampleMyUiState() = BookOnMyScreenUiState(
+fun defaultMyUiState() = BookOnMyScreenUiState(
     userNameText = "홍길동 님",
     studentInfoText = "10기 · 소프트웨어 개발과",
     stats = listOf(
@@ -28,4 +28,13 @@ fun sampleMyUiState() = BookOnMyScreenUiState(
         BookOnMenuRowUiModel("알림 설정"),
         BookOnMenuRowUiModel("이용 안내"),
     ),
+)
+
+/** 서버 응답 전 로딩 UI가 사용할 빈 화면 구조다. */
+fun initialMyUiState() = defaultMyUiState().copy(
+    userNameText = "",
+    studentInfoText = "",
+    stats = emptyList(),
+    isReadingMarathonLinked = false,
+    isInitialLoading = true,
 )

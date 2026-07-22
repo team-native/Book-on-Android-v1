@@ -8,6 +8,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
+import androidx.compose.material3.Button
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -20,6 +22,7 @@ import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.book.BookOnBookListItem
 import com.teamnative.bookon.core.ui.component.chip.BookOnFilterChip
+import com.teamnative.bookon.core.ui.component.loading.BookOnInlineLoadingIndicator
 
 /** 대출 중인 책과 지난 대출 목록을 필터와 함께 표시한다. */
 @Composable
@@ -56,12 +59,23 @@ fun BookOnLoanHistoryScreen(
                     }
                 }
             }
+            uiState.errorMessage?.let { errorMessage ->
+                item {
+                    Text(text = errorMessage, style = BookOnTypography.bodyMedium, color = BookOnColor.TextSecondary)
+                    TextButton(onClick = { onEvent(BookOnLoanHistoryScreenEvent.RetryClicked) }) {
+                        Text(text = stringResource(R.string.action_retry))
+                    }
+                }
+            }
+            if (uiState.errorMessage == null && uiState.currentLoans.isEmpty() && uiState.pastLoans.isEmpty()) {
+                item { Text(text = stringResource(R.string.empty_loan_history), style = BookOnTypography.bodyMedium, color = BookOnColor.TextSecondary) }
+            }
             if (uiState.currentLoans.isNotEmpty()) {
                 item { SectionTitle(text = uiState.currentTitle) }
                 items(uiState.currentLoans) { book ->
                     BookOnBookListItem(
                         uiState = book,
-                        onClick = { onEvent(BookOnLoanHistoryScreenEvent.BookClicked) },
+                        onClick = { onEvent(BookOnLoanHistoryScreenEvent.BookClicked(book.id)) },
                     )
                 }
             }
@@ -70,8 +84,18 @@ fun BookOnLoanHistoryScreen(
                 items(uiState.pastLoans) { book ->
                     BookOnBookListItem(
                         uiState = book,
-                        onClick = { onEvent(BookOnLoanHistoryScreenEvent.BookClicked) },
+                        onClick = { onEvent(BookOnLoanHistoryScreenEvent.BookClicked(book.id)) },
                     )
+                }
+            }
+            if (uiState.isPagingLoading) {
+                item { BookOnInlineLoadingIndicator() }
+            }
+            if (uiState.hasNext && !uiState.isPagingLoading) {
+                item {
+                    Button(onClick = { onEvent(BookOnLoanHistoryScreenEvent.LoadMoreClicked) }) {
+                        Text(text = stringResource(R.string.action_load_more))
+                    }
                 }
             }
         }

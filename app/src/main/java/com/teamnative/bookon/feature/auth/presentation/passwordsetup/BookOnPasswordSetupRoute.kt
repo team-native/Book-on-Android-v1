@@ -5,6 +5,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.res.stringResource
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.model.BookOnPasswordFieldUiModel
@@ -16,41 +18,42 @@ fun BookOnPasswordSetupRoute(
     initialProgressStep: Int?,
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
+    viewModel: com.teamnative.bookon.feature.auth.presentation.signup.BookOnRegistrationViewModel = hiltViewModel(),
 ) {
-    var password by rememberSaveable { mutableStateOf("") }
-    var passwordConfirm by rememberSaveable { mutableStateOf("") }
-    var privacyChecked by rememberSaveable { mutableStateOf(false) }
+    val registrationState by viewModel.state.collectAsStateWithLifecycle()
     var privacyPolicyExpanded by rememberSaveable { mutableStateOf(false) }
-    val uiState = samplePasswordSetupUiState().copy(
+    val uiState = defaultPasswordSetupUiState().copy(
         password = BookOnPasswordFieldUiModel(
-            value = password,
+            value = registrationState.password,
             label = stringResource(R.string.password),
             placeholder = stringResource(R.string.password),
-            errorText = password.takeIf { it.isNotEmpty() && !BookOnPasswordPolicy.isValid(it) }
-                ?.let { stringResource(R.string.error_password_rule) },
+            errorText = registrationState.password.takeIf { it.isNotEmpty() && !BookOnPasswordPolicy.isValid(it) }
+                ?.let { stringResource(R.string.error_check_password_notice) },
         ),
         passwordConfirm = BookOnPasswordFieldUiModel(
-            value = passwordConfirm,
+            value = registrationState.passwordConfirm,
             label = stringResource(R.string.password_confirm_short),
             placeholder = stringResource(R.string.password_confirm),
-            errorText = passwordConfirm.takeIf { it.isNotEmpty() && it != password }
-                ?.let { stringResource(R.string.error_password_mismatch) },
+            errorText = registrationState.passwordConfirm.takeIf { it.isNotEmpty() && it != registrationState.password }
+                ?.let { stringResource(R.string.error_check_password_again) },
         ),
-        privacyChecked = privacyChecked,
+        privacyChecked = registrationState.privacyAccepted,
         privacyPolicyExpanded = privacyPolicyExpanded,
-        nextEnabled = BookOnPasswordPolicy.isValid(password) &&
-            password == passwordConfirm &&
-            privacyChecked,
+        isVerificationRequestInProgress = registrationState.isLoading,
+        nextEnabled = BookOnPasswordPolicy.isValid(registrationState.password) &&
+            registrationState.password == registrationState.passwordConfirm &&
+            registrationState.privacyAccepted &&
+            !registrationState.isLoading,
     )
 
     BookOnPasswordSetupScreen(
         uiState = uiState,
         onBackClick = onBackClick,
-        onPasswordChange = { password = it },
-        onPasswordConfirmChange = { passwordConfirm = it },
-        onPrivacyCheckedChange = { privacyChecked = it },
+        onPasswordChange = { password -> viewModel.update { it.copy(password = password) } },
+        onPasswordConfirmChange = { password -> viewModel.update { it.copy(passwordConfirm = password) } },
+        onPrivacyCheckedChange = { accepted -> viewModel.update { it.copy(privacyAccepted = accepted) } },
         onPrivacyPolicyExpandedChange = { privacyPolicyExpanded = it },
-        onNextClick = onNextClick,
+        onNextClick = { viewModel.requestVerification(onNextClick) },
         initialProgressStep = initialProgressStep,
     )
 }

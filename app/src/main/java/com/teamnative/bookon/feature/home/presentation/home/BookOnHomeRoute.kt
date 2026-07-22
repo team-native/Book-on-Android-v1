@@ -1,20 +1,31 @@
 package com.teamnative.bookon.feature.home.presentation.home
 
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 
-/** 서버 연동 전 홈 샘플 상태와 화면 이벤트를 연결한다. */
+/** 홈 API 상태와 상단 탐색 이벤트를 조립한다. */
 @Composable
 fun BookOnHomeRoute(
     bottomBar: @Composable () -> Unit,
     onSearchClick: () -> Unit,
     onNewBooksClick: () -> Unit,
     onNotificationClick: () -> Unit,
+    viewModel: BookOnHomeViewModel = hiltViewModel(),
 ) {
-    BookOnHomeScreen(
-        uiState = sampleHomeUiState(),
-        bottomBar = bottomBar,
-        onSearchClick = onSearchClick,
-        onShowMoreClick = onNewBooksClick,
-        onNotificationClick = onNotificationClick,
-    )
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    if (uiState.isInitialLoading) {
+        BookOnLoadingScreen()
+    } else {
+        BookOnHomeScreen(
+            uiState = uiState,
+            bottomBar = bottomBar,
+            onSearchClick = onSearchClick,
+            onShowMoreClick = onNewBooksClick,
+            onNotificationClick = onNotificationClick,
+            onRetryClick = viewModel::load,
+        )
+    }
 }

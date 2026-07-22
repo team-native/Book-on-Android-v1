@@ -103,7 +103,9 @@ fun BookOnHomeNoticeCard(
                 contentDescription = iconContentDescription,
                 contentScale = ContentScale.Fit,
             )
+
             Spacer(modifier = Modifier.width(AppSpacing.Item))
+
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = category,
@@ -137,7 +139,9 @@ fun BookOnHomeNoticeCard(
                 }
             }
         }
+
         Spacer(modifier = Modifier.height(AppSpacing.Content))
+
         Text(
             text = title,
             style = BookOnTypography.bodySemiBold,
@@ -145,7 +149,9 @@ fun BookOnHomeNoticeCard(
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
+
         Spacer(modifier = Modifier.height(AppSpacing.Small))
+
         Text(
             text = description,
             style = BookOnTypography.bodyMedium,
@@ -154,7 +160,9 @@ fun BookOnHomeNoticeCard(
             overflow = TextOverflow.Ellipsis,
         )
         if (actionText != null) {
+
             Spacer(modifier = Modifier.height(AppSpacing.Item))
+
             Text(
                 text = actionText,
                 style = BookOnTypography.caption,

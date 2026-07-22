@@ -84,6 +84,7 @@ fun BookOnMyUnlinkedMarathonCard(
                 contentDescription = null,
                 contentScale = ContentScale.Fit,
             )
+
             Spacer(modifier = Modifier.width(AppSpacing.Content))
 
             Text(
@@ -110,6 +111,7 @@ fun BookOnMyUnlinkedMarathonCard(
                 ),
             )
         }
+
         Spacer(modifier = Modifier.height(AppSpacing.Content))
 
         Row(
@@ -124,7 +126,9 @@ fun BookOnMyUnlinkedMarathonCard(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+
             Spacer(modifier = Modifier.width(AppSpacing.Small))
+
             Text(
                 text = uiState.percentText,
                 style = BookOnTypography.bodySemiBold,
@@ -132,6 +136,7 @@ fun BookOnMyUnlinkedMarathonCard(
                 maxLines = 1,
             )
         }
+
         Spacer(modifier = Modifier.height(AppSpacing.Small))
 
         MyMarathonProgressBar(
@@ -140,6 +145,7 @@ fun BookOnMyUnlinkedMarathonCard(
                 .fillMaxWidth()
                 .height(AppSpacing.Item),
         )
+
         Spacer(modifier = Modifier.height(AppSpacing.Content))
 
         Text(

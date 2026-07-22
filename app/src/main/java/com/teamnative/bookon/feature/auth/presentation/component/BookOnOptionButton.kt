@@ -100,7 +100,9 @@ private fun BookOnOptionButtonPreview() {
                 onSelected = {},
                 modifier = Modifier.weight(1f),
             )
+
             Spacer(modifier = Modifier.width(AppSpacing.Content))
+
             BookOnOptionButton(
                 text = "여자",
                 selected = false,

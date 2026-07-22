@@ -1,10 +1,9 @@
 package com.teamnative.bookon.feature.library.presentation.library
 
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.setValue
-import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 
 
 
@@ -14,31 +13,19 @@ import androidx.compose.runtime.saveable.rememberSaveable
 @Composable
 fun BookOnLibraryRoute(
     bottomBar: @Composable () -> Unit,
-    onBookClick: () -> Unit,
+    onBookClick: (Long) -> Unit,
+    viewModel: BookOnLibraryViewModel = hiltViewModel(),
 ) {
-    var selectedCategoryIndex by rememberSaveable { mutableIntStateOf(ALL_CATEGORY_INDEX) }
-    var selectedSortIndex by rememberSaveable { mutableIntStateOf(POPULAR_SORT_INDEX) }
+    val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
 
-    BookOnLibraryScreen(
-        uiState = sampleLibraryUiState(
-            selectedCategoryIndex = selectedCategoryIndex,
-            selectedSortIndex = selectedSortIndex,
-        ),
-        bottomBar = bottomBar,
-        onEvent = { event ->
-            when (event) {
-                is BookOnLibraryScreenEvent.CategoryClicked -> {
-                    selectedCategoryIndex = event.categoryIndex
-                }
-
-                is BookOnLibraryScreenEvent.SortClicked -> {
-                    selectedSortIndex = event.sortIndex
-                }
-            }
-        },
-        onBookClick = onBookClick,
-    )
+    if (uiState.isInitialLoading) {
+        BookOnLoadingScreen()
+    } else {
+        BookOnLibraryScreen(
+            uiState = uiState,
+            bottomBar = bottomBar,
+            onEvent = viewModel::onEvent,
+            onBookClick = onBookClick,
+        )
+    }
 }
-
-private const val ALL_CATEGORY_INDEX = 0
-private const val POPULAR_SORT_INDEX = 0

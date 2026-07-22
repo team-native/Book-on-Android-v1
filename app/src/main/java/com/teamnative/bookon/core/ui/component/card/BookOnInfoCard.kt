@@ -57,7 +57,9 @@ fun BookOnInfoCard(
             ) {
                 leadingContent()
             }
+
             Spacer(modifier = Modifier.width(AppSpacing.Content))
+
         }
 
         Column(modifier = Modifier.weight(1f)) {
@@ -67,7 +69,9 @@ fun BookOnInfoCard(
                 color = BookOnColor.TextPrimary,
             )
             if (description != null) {
+
                 Spacer(modifier = Modifier.height(AppSpacing.Tiny))
+
                 Text(
                     text = description,
                     style = BookOnTypography.caption,
@@ -77,7 +81,9 @@ fun BookOnInfoCard(
         }
 
         if (trailingContent != null) {
+
             Spacer(modifier = Modifier.width(AppSpacing.Content))
+
             trailingContent()
         }
     }

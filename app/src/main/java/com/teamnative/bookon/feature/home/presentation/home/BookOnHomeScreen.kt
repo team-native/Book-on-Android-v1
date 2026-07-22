@@ -5,6 +5,8 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -27,6 +29,7 @@ fun BookOnHomeScreen(
     onSearchClick: () -> Unit,
     onShowMoreClick: () -> Unit,
     onNotificationClick: () -> Unit,
+    onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -44,6 +47,16 @@ fun BookOnHomeScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Section),
         ) {
+            uiState.errorMessage?.let { errorMessage ->
+                item {
+                    Text(text = errorMessage, color = BookOnColor.TextSecondary)
+                    Button(onClick = onRetryClick) { Text(text = stringResource(R.string.action_retry)) }
+                }
+            }
+            if (uiState.errorMessage == null && uiState.notice == null && uiState.aiRecommendedBooks.isEmpty() && uiState.popularBooks.isEmpty()) {
+                item { Text(text = stringResource(R.string.empty_home), color = BookOnColor.TextSecondary) }
+            }
+            if (uiState.errorMessage == null) {
             item {
                 BookOnHomeHeader(
                     greeting = uiState.greeting,
@@ -60,11 +73,14 @@ fun BookOnHomeScreen(
                     onClick = onSearchClick,
                 )
             }
-            item {
-                BookOnHomeNoticeCard(
-                    uiState = uiState.notice,
-                    actionText = stringResource(R.string.action_view_detail),
-                )
+            }
+            uiState.notice?.let { notice ->
+                item {
+                    BookOnHomeNoticeCard(
+                        uiState = notice,
+                        actionText = stringResource(R.string.action_view_detail),
+                    )
+                }
             }
             item {
                 BookOnBookSection(
@@ -98,6 +114,7 @@ private fun BookOnHomeScreenPreview() {
             onSearchClick = {},
             onShowMoreClick = {},
             onNotificationClick = {},
+            onRetryClick = {},
         )
     }
 }

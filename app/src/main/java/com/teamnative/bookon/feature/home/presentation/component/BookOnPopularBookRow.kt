@@ -86,7 +86,9 @@ fun BookOnPopularBookRow(
         ) {
             cover()
         }
+
         Spacer(modifier = Modifier.width(AppSpacing.Small))
+
         Column(
             modifier = Modifier
                 .weight(1f)
@@ -100,7 +102,9 @@ fun BookOnPopularBookRow(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Tiny))
+
             Text(
                 text = metaText,
                 style = BookOnTypography.bookMeta,

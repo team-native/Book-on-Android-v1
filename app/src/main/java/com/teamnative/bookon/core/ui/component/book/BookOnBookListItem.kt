@@ -106,7 +106,9 @@ fun BookOnBookListItem(
         ) {
             cover()
         }
+
         Spacer(modifier = Modifier.width(AppSpacing.Content))
+
         Column(
             modifier = Modifier.weight(1f),
             verticalArrangement = Arrangement.Center,
@@ -118,7 +120,9 @@ fun BookOnBookListItem(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Tiny))
+
             Text(
                 text = metaText,
                 style = BookOnTypography.caption,
@@ -128,14 +132,18 @@ fun BookOnBookListItem(
             )
         }
         if (statusText != null) {
+
             Spacer(modifier = Modifier.width(AppSpacing.Item))
+
             BookStatusBadge(
                 text = statusText,
                 available = available,
             )
         }
         if (trailingContent != null) {
+
             Spacer(modifier = Modifier.width(AppSpacing.Small))
+
             trailingContent()
         }
     }

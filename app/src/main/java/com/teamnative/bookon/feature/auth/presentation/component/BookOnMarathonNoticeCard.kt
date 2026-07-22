@@ -60,6 +60,7 @@ internal fun BookOnMarathonNoticeCard(
             style = BookOnTypography.caption,
             color = if (isLinked) BookOnColor.PrimaryPressed else BookOnColor.TextTertiary,
         )
+
         Spacer(modifier = Modifier.width(AppSpacing.Small))
 
         AnimatedContent(

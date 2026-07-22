@@ -48,7 +48,9 @@ fun BookOnSignupScreen(
             )
         },
     ) {
+
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
+
         BookOnSignupStepHeader(
             step = 1,
             title = uiState.title,
@@ -79,7 +81,7 @@ fun BookOnSignupScreen(
 private fun BookOnSignupScreenPreview() {
     BookOnTheme {
         BookOnSignupScreen(
-            uiState = sampleSignupUiState(),
+            uiState = defaultSignupUiState(),
             onEvent = {},
         )
     }

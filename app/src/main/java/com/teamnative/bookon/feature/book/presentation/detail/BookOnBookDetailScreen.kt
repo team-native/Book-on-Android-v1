@@ -48,7 +48,7 @@ fun BookOnBookDetailScreen(
                     if (uiState.loanAvailable) R.string.loan_request else R.string.loan_unavailable,
                 ),
                 onClick = onLoanClick,
-                enabled = uiState.loanAvailable,
+                enabled = uiState.loanAvailable && !uiState.isSubmitting,
                 modifier = Modifier.padding(AppSpacing.ScreenHorizontal),
             )
         },
@@ -72,7 +72,9 @@ fun BookOnBookDetailScreen(
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
+
                     Spacer(modifier = Modifier.height(AppSpacing.Tiny))
+
                     Text(
                         text = uiState.author,
                         style = BookOnTypography.bodyMedium,

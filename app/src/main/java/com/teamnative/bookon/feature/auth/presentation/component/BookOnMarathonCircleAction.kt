@@ -79,7 +79,9 @@ private fun BookOnMarathonCircleActionPreview() {
                 contentDescription = MarathonNaverContentDescription,
                 onSelected = {},
             )
+
             Spacer(modifier = Modifier.width(AppSpacing.Content))
+
             BookOnMarathonCircleAction(
                 iconRes = R.drawable.oauth_google,
                 contentDescription = MarathonGoogleContentDescription,

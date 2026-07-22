@@ -40,7 +40,9 @@ fun BookOnVerificationCodeScreen(
             )
         },
     ) {
+
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
+
         BookOnSignupStepHeader(
             step = 1,
             title = uiState.title,
@@ -66,7 +68,7 @@ fun BookOnVerificationCodeScreen(
 private fun BookOnVerificationCodeScreenPreview() {
     BookOnTheme {
         BookOnVerificationCodeScreen(
-            uiState = sampleVerificationCodeUiState(),
+            uiState = defaultVerificationCodeUiState(),
             onBackClick = {}, onCodeChange = {}, onResendClick = {}, onConfirmClick = {},
         )
     }

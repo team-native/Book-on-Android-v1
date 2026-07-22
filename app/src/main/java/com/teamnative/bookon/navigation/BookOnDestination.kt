@@ -23,7 +23,11 @@ internal sealed interface BookOnDestination {
     data object Library : BookOnDestination { override val route = "library" }
     data object My : BookOnDestination { override val route = "my" }
     data object Search : BookOnDestination { override val route = "search" }
-    data object BookDetail : BookOnDestination { override val route = "bookDetail" }
+    data object BookDetail : BookOnDestination {
+        const val bookIdArgument = "bookId"
+        override val route = "bookDetail/{$bookIdArgument}"
+        fun createRoute(bookId: Long) = "bookDetail/$bookId"
+    }
     data object NewBooks : BookOnDestination { override val route = "newBooks" }
     data object LoanHistory : BookOnDestination { override val route = "loanHistory" }
     data object Favorites : BookOnDestination { override val route = "favorites" }

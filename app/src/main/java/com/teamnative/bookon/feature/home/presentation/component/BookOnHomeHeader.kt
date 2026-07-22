@@ -58,6 +58,7 @@ fun BookOnHomeHeader(
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
+
             Spacer(modifier = Modifier.height(AppSpacing.Tiny))
 
             Text(
@@ -74,6 +75,7 @@ fun BookOnHomeHeader(
             contentDescription = notificationContentDescription,
             onClick = onNotificationClick,
         )
+
         Spacer(modifier = Modifier.width(AppSpacing.Content))
 
         BookOnHomeIconButton(

@@ -51,7 +51,9 @@ fun BookOnPasswordSetupScreen(
             BookOnPrimaryButton(
                 text = stringResource(R.string.action_next),
                 onClick = onNextClick,
-                enabled = uiState.nextEnabled && !progressAnimating,
+                enabled = uiState.nextEnabled &&
+                    !uiState.isVerificationRequestInProgress &&
+                    !progressAnimating,
             )
         },
     ) {
@@ -101,7 +103,7 @@ fun BookOnPasswordSetupScreen(
 private fun BookOnPasswordSetupScreenPreview() {
     BookOnTheme {
         BookOnPasswordSetupScreen(
-            uiState = samplePasswordSetupUiState(),
+            uiState = defaultPasswordSetupUiState(),
             onBackClick = {},
             onPasswordChange = {},
             onPasswordConfirmChange = {},

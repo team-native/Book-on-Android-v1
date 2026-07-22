@@ -9,4 +9,5 @@ data class BookOnBookListItemUiModel(
     val statusText: String? = null,
     val available: Boolean = true,
     val isFavorite: Boolean = false,
+    val id: Long = 0L,
 )

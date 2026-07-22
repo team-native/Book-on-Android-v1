@@ -13,6 +13,8 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -27,19 +29,20 @@ private val DepartmentMenuMinWidth = 240.dp
 
 /** 학교 정보 입력 단계의 샘플 상태와 화면 이벤트를 연결한다. */
 @Composable
-fun BookOnSignupRoute(onBackClick: () -> Unit, onNextClick: () -> Unit) {
-    var email by rememberSaveable { mutableStateOf("") }
-    var name by rememberSaveable { mutableStateOf("") }
-    var selectedGender by rememberSaveable { mutableStateOf<BookOnGender?>(null) }
-    var selectedDepartment by rememberSaveable { mutableStateOf<BookOnDepartment?>(null) }
+fun BookOnSignupRoute(
+    onBackClick: () -> Unit,
+    onNextClick: () -> Unit,
+    viewModel: BookOnRegistrationViewModel = hiltViewModel(),
+) {
+    val registrationState by viewModel.state.collectAsStateWithLifecycle()
     var isDepartmentMenuExpanded by rememberSaveable { mutableStateOf(false) }
-    val selectedDepartmentText = selectedDepartment?.let { department ->
+    val selectedDepartmentText = registrationState.department?.let { department ->
         stringResource(department.textResId)
     }.orEmpty()
-    val uiState = sampleSignupUiState(
-        email = email,
-        name = name,
-        selectedGender = selectedGender,
+    val uiState = defaultSignupUiState(
+        email = registrationState.email,
+        name = registrationState.name,
+        selectedGender = registrationState.gender,
         selectedDepartmentText = selectedDepartmentText,
         isDepartmentMenuExpanded = isDepartmentMenuExpanded,
     )
@@ -50,9 +53,9 @@ fun BookOnSignupRoute(onBackClick: () -> Unit, onNextClick: () -> Unit) {
         onEvent = { event ->
             when (event) {
                 BookOnSignupScreenEvent.BackClicked -> onBackClick()
-                is BookOnSignupScreenEvent.EmailChanged -> email = event.email
-                is BookOnSignupScreenEvent.NameChanged -> name = event.name
-                is BookOnSignupScreenEvent.GenderSelected -> selectedGender = event.gender
+                is BookOnSignupScreenEvent.EmailChanged -> viewModel.update { it.copy(email = event.email) }
+                is BookOnSignupScreenEvent.NameChanged -> viewModel.update { it.copy(name = event.name) }
+                is BookOnSignupScreenEvent.GenderSelected -> viewModel.update { it.copy(gender = event.gender) }
                 BookOnSignupScreenEvent.DepartmentClicked -> isDepartmentMenuExpanded = true
                 BookOnSignupScreenEvent.NextClicked -> onNextClick()
             }
@@ -61,9 +64,9 @@ fun BookOnSignupRoute(onBackClick: () -> Unit, onNextClick: () -> Unit) {
 
     if (isDepartmentMenuExpanded) {
         BookOnDepartmentCenterMenu(
-            selectedDepartment = selectedDepartment,
+            selectedDepartment = registrationState.department,
             onDepartmentSelected = { department ->
-                selectedDepartment = department
+                viewModel.update { it.copy(department = department) }
                 isDepartmentMenuExpanded = false
             },
             onDismissRequest = { isDepartmentMenuExpanded = false },

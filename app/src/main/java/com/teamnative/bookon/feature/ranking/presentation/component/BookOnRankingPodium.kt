@@ -109,7 +109,9 @@ private fun RankingPodiumPlace(
             contentDescription = member.avatarContentDescription,
             modifier = Modifier.size(avatarSize),
         )
+
         Spacer(modifier = Modifier.height(AppSpacing.Small))
+
         Text(
             text = member.name,
             style = BookOnTypography.bodySemiBold,
@@ -123,7 +125,9 @@ private fun RankingPodiumPlace(
             color = bookCountColor,
             maxLines = 1,
         )
+
         Spacer(modifier = Modifier.height(AppSpacing.Item))
+
         Image(
             modifier = Modifier
                 .width(AppComponentSize.RankingPedestalWidth)

@@ -70,7 +70,9 @@ fun BookOnSwitchRow(
                 color = BookOnColor.TextPrimary,
             )
             if (description != null) {
+
                 Spacer(modifier = Modifier.height(AppSpacing.Tiny))
+
                 Text(
                     text = description,
                     style = BookOnTypography.caption,

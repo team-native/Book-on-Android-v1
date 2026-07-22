@@ -6,7 +6,7 @@ import androidx.compose.runtime.Composable
 @Composable
 fun BookOnPrivacyPolicyRoute(onBackClick: () -> Unit) {
     BookOnPrivacyPolicyScreen(
-        uiState = samplePrivacyPolicyUiState(),
+        uiState = defaultPrivacyPolicyUiState(),
         onBackClick = onBackClick,
     )
 }

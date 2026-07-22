@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -55,20 +56,25 @@ internal fun BookOnMarathonToggleCard(
             modifier = Modifier
                 .size(AppIconSize.XLarge)
                 .clip(RoundedCornerShape(AppRadius.IconButton))
-                .background(BookOnColor.PrimaryLight),
+                .background(BookOnColor.Surface)
+                .padding(6.dp),
             contentAlignment = Alignment.Center,
         ) {
             Image(
-                modifier = Modifier.size(AppIconSize.Default),
-                painter = painterResource(R.drawable.read365),
+                modifier = Modifier.fillMaxSize(),
+                painter = painterResource(R.drawable.marathon),
                 contentDescription = stringResource(R.string.reading_marathon_logo_description),
                 contentScale = ContentScale.Fit,
             )
         }
+
         Spacer(modifier = Modifier.width(AppSpacing.Content))
+
         Column(modifier = Modifier.weight(1f)) {
             Text(text = title, style = BookOnTypography.bodySemiBold, color = BookOnColor.TextPrimary)
+
             Spacer(modifier = Modifier.height(AppSpacing.Tiny))
+
             Text(text = description, style = BookOnTypography.caption, color = BookOnColor.TextTertiary)
         }
         Switch(

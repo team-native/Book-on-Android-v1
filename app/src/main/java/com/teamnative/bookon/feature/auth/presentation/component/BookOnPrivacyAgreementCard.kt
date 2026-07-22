@@ -93,9 +93,13 @@ internal fun BookOnPrivacyAgreementCard(
         }
         if (expanded) {
             BookOnPrivacyPolicyDetails()
+
             Spacer(modifier = Modifier.height(AppSpacing.Content))
+
         } else {
+
             Spacer(modifier = Modifier.height(AppSpacing.Item))
+
         }
         BookOnCheckTextRow(
             text = stringResource(R.string.privacy_required_agreement),
@@ -107,12 +111,16 @@ internal fun BookOnPrivacyAgreementCard(
 
 @Composable
 private fun BookOnPrivacyPolicyDetails() {
+
     Spacer(modifier = Modifier.height(AppSpacing.Content))
+
     BookOnPrivacyPolicyDetail(
         title = stringResource(R.string.privacy_collected_items_title),
         body = stringResource(R.string.privacy_collected_items),
     )
+
     Spacer(modifier = Modifier.height(AppSpacing.Item))
+
     BookOnPrivacyPolicyDetail(
         title = stringResource(R.string.privacy_purpose_title),
         body = listOf(
@@ -120,12 +128,16 @@ private fun BookOnPrivacyPolicyDetails() {
             stringResource(R.string.privacy_bullet_format, stringResource(R.string.privacy_purpose_notice)),
         ).joinToString("\n"),
     )
+
     Spacer(modifier = Modifier.height(AppSpacing.Item))
+
     BookOnPrivacyPolicyDetail(
         title = stringResource(R.string.privacy_retention_title),
         body = stringResource(R.string.privacy_retention_until_withdrawal),
     )
+
     Spacer(modifier = Modifier.height(AppSpacing.Item))
+
     BookOnPrivacyPolicyDetail(
         title = stringResource(R.string.terms_title),
         body = stringResource(
@@ -133,7 +145,9 @@ private fun BookOnPrivacyPolicyDetails() {
             stringResource(R.string.terms_service_interruption),
         ),
     )
+
     Spacer(modifier = Modifier.height(AppSpacing.Content))
+
     Text(
         modifier = Modifier
             .fillMaxWidth()
@@ -153,7 +167,9 @@ private fun BookOnPrivacyPolicyDetail(
     body: String,
 ) {
     Text(text = title, style = BookOnTypography.caption, color = BookOnColor.TextPrimary)
+
     Spacer(modifier = Modifier.height(AppSpacing.Small))
+
     Text(
         text = body,
         style = BookOnTypography.caption.copy(fontWeight = FontWeight.Normal),
@@ -187,7 +203,9 @@ private fun BookOnCheckTextRow(
             contentDescription = checkDescription,
             contentScale = ContentScale.Fit,
         )
+
         Spacer(modifier = Modifier.width(AppSpacing.Small))
+
         Text(
             modifier = Modifier.weight(1f),
             text = text,

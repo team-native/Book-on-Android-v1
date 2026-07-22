@@ -27,4 +27,5 @@ data class BookOnBookCardUiModel(
     val title: String,
     val author: String,
     val coverImageUrl: String? = null,
+    val id: Long = 0L,
 )
