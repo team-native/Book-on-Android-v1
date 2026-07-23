@@ -18,7 +18,10 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import com.teamnative.bookon.feature.auth.presentation.signup.BookOnRegistrationViewModel
 import com.teamnative.bookon.feature.auth.presentation.login.BookOnLoginRoute
 import com.teamnative.bookon.feature.auth.presentation.passwordsetup.BookOnPasswordSetupRoute
-import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetRoute
+import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetEmailRoute
+import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetNewPasswordRoute
+import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetVerificationRoute
+import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetViewModel
 import com.teamnative.bookon.feature.auth.presentation.readingmarathonlink.BookOnReadingMarathonLinkRoute
 import com.teamnative.bookon.feature.auth.presentation.readingmarathonsignup.BookOnReadingMarathonSignupRoute
 import com.teamnative.bookon.feature.auth.presentation.signupcomplete.BookOnSignupCompleteRoute
@@ -76,7 +79,43 @@ fun BookOnNavHost(isInitiallyAuthenticated: Boolean, onLogout: () -> Unit) {
             )
         }
         composable(BookOnDestination.PasswordReset.route) {
-            BookOnPasswordResetRoute(onNavigateBack = navController::navigateUp)
+            val passwordResetViewModel: BookOnPasswordResetViewModel = hiltViewModel()
+            BookOnPasswordResetEmailRoute(
+                onNavigateBack = navController::navigateUp,
+                onNavigateToVerification = {
+                    navController.navigate(BookOnDestination.PasswordResetVerification.route)
+                },
+                viewModel = passwordResetViewModel,
+            )
+        }
+        composable(BookOnDestination.PasswordResetVerification.route) { backStackEntry ->
+            val passwordResetEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(BookOnDestination.PasswordReset.route)
+            }
+            val passwordResetViewModel: BookOnPasswordResetViewModel = hiltViewModel(passwordResetEntry)
+            BookOnPasswordResetVerificationRoute(
+                onNavigateBack = navController::navigateUp,
+                onNavigateToNewPassword = {
+                    navController.navigate(BookOnDestination.PasswordResetNewPassword.route)
+                },
+                viewModel = passwordResetViewModel,
+            )
+        }
+        composable(BookOnDestination.PasswordResetNewPassword.route) { backStackEntry ->
+            val passwordResetEntry = remember(backStackEntry) {
+                navController.getBackStackEntry(BookOnDestination.PasswordReset.route)
+            }
+            val passwordResetViewModel: BookOnPasswordResetViewModel = hiltViewModel(passwordResetEntry)
+            BookOnPasswordResetNewPasswordRoute(
+                onNavigateBack = navController::navigateUp,
+                onResetCompleted = {
+                    navController.popBackStack(
+                        route = BookOnDestination.PasswordReset.route,
+                        inclusive = true,
+                    )
+                },
+                viewModel = passwordResetViewModel,
+            )
         }
         composable(BookOnDestination.Signup.route) {
             val registrationViewModel: BookOnRegistrationViewModel = hiltViewModel()

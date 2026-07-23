@@ -8,6 +8,8 @@ internal sealed interface BookOnDestination {
     data object VerificationCode : BookOnDestination { override val route = "verificationCode" }
     data object PasswordSetup : BookOnDestination { override val route = "passwordSetup" }
     data object PasswordReset : BookOnDestination { override val route = "passwordReset" }
+    data object PasswordResetVerification : BookOnDestination { override val route = "passwordResetVerification" }
+    data object PasswordResetNewPassword : BookOnDestination { override val route = "passwordResetNewPassword" }
     data object ReadingMarathonSignup : BookOnDestination { override val route = "readingMarathonSignup" }
     data object ReadingMarathonLink : BookOnDestination { override val route = "readingMarathonLink" }
     data object SignupComplete : BookOnDestination {

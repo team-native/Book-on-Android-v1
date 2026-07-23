@@ -19,55 +19,111 @@ class BookOnPasswordResetViewModel @Inject constructor(
 ) : ViewModel() {
     private val mutableState = MutableStateFlow(PasswordResetFormState())
     val state: StateFlow<PasswordResetFormState> = mutableState.asStateFlow()
-    fun update(transform: (PasswordResetFormState) -> PasswordResetFormState) {
-        mutableState.value = transform(mutableState.value).copy(error = null)
+
+    /** 이메일 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
+    fun updateEmail(email: String) {
+        mutableState.value = mutableState.value.copy(
+            email = email,
+            error = null,
+        )
     }
-    fun continueStep(onComplete: () -> Unit) = viewModelScope.launch {
-        val value = mutableState.value
-        mutableState.value = value.copy(isLoading = true, error = null)
-        when (value.step) {
-            BookOnPasswordResetStep.Email -> when (sendEmail(value.email)) {
+
+    /** 인증번호 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
+    fun updateVerificationCode(code: String) {
+        mutableState.value = mutableState.value.copy(
+            code = code,
+            error = null,
+        )
+    }
+
+    /** 새 비밀번호 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
+    fun updatePassword(password: String) {
+        mutableState.value = mutableState.value.copy(
+            password = password,
+            error = null,
+        )
+    }
+
+    /** 비밀번호 확인 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
+    fun updatePasswordConfirm(passwordConfirm: String) {
+        mutableState.value = mutableState.value.copy(
+            confirm = passwordConfirm,
+            error = null,
+        )
+    }
+
+    /** 이메일 화면의 다음 클릭에서 인증번호 발송을 요청하고 성공 시 다음 화면으로 이동한다. */
+    fun sendVerificationCode(onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            val value = mutableState.value
+            mutableState.value = value.copy(isLoading = true, error = null)
+
+            when (sendEmail(value.email)) {
+                is NetworkResult.Success -> {
+                    mutableState.value = value.copy(isLoading = false)
+                    onSuccess()
+                }
+
+                is NetworkResult.Failure -> fail(value)
+            }
+        }
+    }
+
+    /** 인증번호 화면의 재전송 클릭에서 발송 요청을 다시 수행한다. */
+    fun resendVerificationCode() {
+        viewModelScope.launch {
+            val value = mutableState.value
+            mutableState.value = value.copy(isLoading = true, error = null)
+
+            when (sendEmail(value.email)) {
                 is NetworkResult.Success -> {
                     mutableState.value = value.copy(
-                        step = BookOnPasswordResetStep.Verification,
+                        code = "",
+                        error = null,
+                        isLoading = false,
                     )
                 }
 
                 is NetworkResult.Failure -> fail(value)
             }
-            BookOnPasswordResetStep.Verification -> mutableState.value = value.copy(step = BookOnPasswordResetStep.Password)
-            BookOnPasswordResetStep.Password -> when (
-                resetPassword(value.email, value.code, value.password, value.confirm)
-            ) {
+        }
+    }
+
+    /** 새 비밀번호 화면의 완료 클릭에서 재설정을 요청하고 성공 시 로그인 화면으로 이동한다. */
+    fun resetPassword(onSuccess: () -> Unit) {
+        viewModelScope.launch {
+            val value = mutableState.value
+            mutableState.value = value.copy(isLoading = true, error = null)
+
+            when (resetPassword(value.email, value.code, value.password, value.confirm)) {
                 is NetworkResult.Success -> {
                     mutableState.value = value.copy(isLoading = false)
-                    onComplete()
+                    onSuccess()
                 }
 
                 is NetworkResult.Failure -> fail(value)
             }
         }
     }
-    fun resend() = viewModelScope.launch {
-        val value = mutableState.value
-        when (sendEmail(value.email)) {
-            is NetworkResult.Success -> mutableState.value = value.copy(code = "", error = null, isLoading = false)
-            is NetworkResult.Failure -> fail(value)
-        }
-    }
+
     private fun fail(value: PasswordResetFormState) {
         mutableState.value = value.copy(
             isLoading = false,
-            error = "요청에 실패했습니다. 다시 시도해 주세요.",
+            error = PasswordResetError.RequestFailed,
         )
     }
 }
+
+/** 비밀번호 재설정 요청 실패를 UI 리소스로 변환하기 전 표현한다. */
+enum class PasswordResetError {
+    RequestFailed,
+}
+
 data class PasswordResetFormState(
-    val step: BookOnPasswordResetStep = BookOnPasswordResetStep.Email,
     val email: String = "",
     val code: String = "",
     val password: String = "",
     val confirm: String = "",
-    val error: String? = null,
+    val error: PasswordResetError? = null,
     val isLoading: Boolean = false,
 )
