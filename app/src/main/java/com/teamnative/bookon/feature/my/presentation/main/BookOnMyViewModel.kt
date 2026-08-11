@@ -38,6 +38,7 @@ class BookOnMyViewModel @Inject constructor(
                 stats = listOf(
                     BookOnStatItemUiModel("대출 중", "${result.data.currentLoanCount}권"),
                     BookOnStatItemUiModel("반납 임박", "${result.data.overdueCount}권"),
+                    BookOnStatItemUiModel("누적 대출", "${result.data.totalLoanCount}권"),
                 ),
                 notificationSettings = result.data.notificationSettings,
                 isInitialLoading = false,

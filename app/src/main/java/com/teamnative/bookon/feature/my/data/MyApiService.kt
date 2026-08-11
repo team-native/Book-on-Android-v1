@@ -55,6 +55,7 @@ data class UserDto(
 data class LoanSummaryDto(
     @SerialName("currentLoanCount") val currentLoanCount: Int,
     @SerialName("overdueCount") val overdueCount: Int,
+    @SerialName("totalLoanCount") val totalLoanCount: Int = 0,
     @SerialName("nearestDueDate") val nearestDueDate: String? = null,
     @SerialName("nearestDueDday") val nearestDueDday: Int? = null,
 )
