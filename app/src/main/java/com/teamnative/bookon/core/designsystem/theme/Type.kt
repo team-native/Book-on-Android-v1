@@ -49,6 +49,12 @@ object BookOnTypography {
         fontSize = 28.sp,
         lineHeight = 32.sp,
     )
+    val homeUserName = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        lineHeight = 20.sp,
+    )
     val sectionTitle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
