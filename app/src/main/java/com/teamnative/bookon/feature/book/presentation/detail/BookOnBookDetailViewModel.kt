@@ -47,6 +47,7 @@ class BookOnBookDetailViewModel @Inject constructor(
                         content = BookOnBookDetailScreenUiState(
                             title = book.title,
                             author = book.author,
+                            coverImageUrl = book.coverImageUrl,
                             info = BookOnBookDetailInfoRowUiModel(
                                 items = listOf(
                                     BookOnBookDetailInfoItemUiModel("출판사", book.publisher),

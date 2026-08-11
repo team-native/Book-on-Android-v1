@@ -20,4 +20,5 @@ data class BookOnPopularBookRowUiModel(
     val title: String,
     val metaText: String,
     val statusText: String? = null,
+    val coverImageUrl: String? = null,
 )

@@ -9,5 +9,6 @@ data class BookOnBookListItemUiModel(
     val statusText: String? = null,
     val available: Boolean = true,
     val isFavorite: Boolean = false,
+    val coverImageUrl: String? = null,
     val id: Long = 0L,
 )

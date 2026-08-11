@@ -1,10 +1,7 @@
 package com.teamnative.bookon.feature.library.presentation.library
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -101,7 +98,7 @@ fun BookOnLibraryScreen(
                     coverWidth = AppComponentSize.LibraryBookCoverWidth,
                     coverHeight = AppComponentSize.LibraryBookCoverHeight,
                     cardWidth = AppComponentSize.LibraryBookCoverWidth,
-                    cover = { LibraryBookCoverPlaceholder() },
+                    placeholderColor = BookOnColor.BookCoverSmallPlaceholder,
                     modifier = Modifier.clickable(role = Role.Button, onClick = { onBookClick(book.id) }),
                 )
             }
@@ -119,15 +116,6 @@ fun BookOnLibraryScreen(
             }
         }
     }
-}
-
-@Composable
-private fun LibraryBookCoverPlaceholder() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BookOnColor.BookCoverSmallPlaceholder),
-    )
 }
 
 @Preview(showBackground = true)

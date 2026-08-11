@@ -1,9 +1,7 @@
 package com.teamnative.bookon.feature.book.presentation.component
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -24,17 +22,18 @@ import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.ui.component.book.BookOnRemoteBookCover
 
 private val DetailCoverHeight = 236.dp
 
 /**
  * 상세 화면의 큰 책 표지 영역이다.
- * 실제 표지는 서버 이미지 로더가 준비되면 cover slot으로 주입한다.
+ * 서버 표지 URL을 표시하고, URL 누락·로딩 실패 시 기존 placeholder를 유지한다.
  */
 @Composable
 fun BookOnBookDetailCover(
+    coverImageUrl: String?,
     modifier: Modifier = Modifier,
-    cover: @Composable () -> Unit = { BookDetailCoverPlaceholder() },
 ) {
     Box(
         modifier = modifier
@@ -47,17 +46,11 @@ fun BookOnBookDetailCover(
             .clip(RoundedCornerShape(AppRadius.Card)),
         contentAlignment = Alignment.Center,
     ) {
-        cover()
+        BookOnRemoteBookCover(
+            coverImageUrl = coverImageUrl,
+            placeholderColor = BookOnColor.BookCoverPlaceholder,
+        )
     }
-}
-
-@Composable
-private fun BookDetailCoverPlaceholder() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BookOnColor.BookCoverPlaceholder),
-    )
 }
 
 @Preview(showBackground = true)
@@ -66,6 +59,7 @@ private fun BookOnBookDetailCoverPreview() {
     BookOnTheme {
         Row(modifier = Modifier.padding(AppSpacing.ScreenHorizontal)) {
             BookOnBookDetailCover(
+                coverImageUrl = null,
                 modifier = Modifier.size(
                     width = AppComponentSize.BookCoverWidth,
                     height = DetailCoverHeight,

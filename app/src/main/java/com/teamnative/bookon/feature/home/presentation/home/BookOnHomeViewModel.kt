@@ -68,7 +68,11 @@ class BookOnHomeViewModel @Inject constructor(
                 listOf(BookOnBookCardUiModel(recommendation.title, recommendation.author, recommendation.coverImageUrl, recommendation.bookId))
             }.orEmpty(),
             popularBooks = popular?.data?.items.orEmpty().map { book ->
-                BookOnPopularBookRowUiModel(book.title, "${book.author} · ${book.status}")
+                BookOnPopularBookRowUiModel(
+                    title = book.title,
+                    metaText = "${book.author} · ${book.status}",
+                    coverImageUrl = book.coverImageUrl,
+                )
             },
             newBooks = newBooks?.data?.items.orEmpty().map { book ->
                 BookOnBookCardUiModel(book.title, book.author, book.coverImageUrl, book.id)

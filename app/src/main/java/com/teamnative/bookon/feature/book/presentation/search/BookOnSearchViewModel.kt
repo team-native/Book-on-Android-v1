@@ -53,6 +53,7 @@ class BookOnSearchViewModel @Inject constructor(private val searchBooks: SearchB
                         metaText = "${it.author} · ${it.publisher}",
                         statusText = it.status,
                         available = it.loanAvailable,
+                        coverImageUrl = it.coverImageUrl,
                         id = it.id,
                     )
                 }

@@ -62,7 +62,11 @@ fun BookOnBookDetailScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Content),
         ) {
-            item { BookOnBookDetailCover() }
+            item {
+                BookOnBookDetailCover(
+                    coverImageUrl = uiState.coverImageUrl,
+                )
+            }
             item {
                 Column {
                     Text(

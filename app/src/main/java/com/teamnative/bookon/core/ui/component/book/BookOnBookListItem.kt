@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -34,7 +33,7 @@ import com.teamnative.bookon.core.ui.model.BookOnBookListItemUiModel
 
 /**
  * 검색 결과, 대출 내역, 즐겨찾기 목록에서 쓰는 책 정보 행이다.
- * cover는 실제 책 표지 로더를 호출부에서 연결할 수 있도록 slot으로 제공한다.
+ * 서버 표지 URL이 없거나 로드에 실패하면 기존 placeholder를 표시한다.
  */
 @Composable
 fun BookOnBookListItem(
@@ -43,7 +42,6 @@ fun BookOnBookListItem(
     onClick: (() -> Unit)? = null,
     coverWidth: Dp = AppComponentSize.BookListCoverWidth,
     coverHeight: Dp = AppComponentSize.BookListCoverHeight,
-    cover: @Composable () -> Unit = { BookListCoverPlaceholder() },
     trailingContent: (@Composable () -> Unit)? = null,
 ) {
     BookOnBookListItem(
@@ -52,17 +50,17 @@ fun BookOnBookListItem(
         modifier = modifier,
         statusText = uiState.statusText,
         available = uiState.available,
+        coverImageUrl = uiState.coverImageUrl,
         onClick = onClick,
         coverWidth = coverWidth,
         coverHeight = coverHeight,
-        cover = cover,
         trailingContent = trailingContent,
     )
 }
 
 /**
  * 검색 결과, 대출 내역, 즐겨찾기 목록에서 쓰는 책 정보 행이다.
- * cover는 실제 책 표지 로더를 호출부에서 연결할 수 있도록 slot으로 제공한다.
+ * 서버 표지 URL이 없거나 로드에 실패하면 기존 placeholder를 표시한다.
  */
 @Composable
 fun BookOnBookListItem(
@@ -74,7 +72,7 @@ fun BookOnBookListItem(
     onClick: (() -> Unit)? = null,
     coverWidth: Dp = AppComponentSize.BookListCoverWidth,
     coverHeight: Dp = AppComponentSize.BookListCoverHeight,
-    cover: @Composable () -> Unit = { BookListCoverPlaceholder() },
+    coverImageUrl: String? = null,
     trailingContent: (@Composable () -> Unit)? = null,
 ) {
     Row(
@@ -104,7 +102,10 @@ fun BookOnBookListItem(
                 .clip(RoundedCornerShape(AppRadius.IconButton)),
             contentAlignment = Alignment.Center,
         ) {
-            cover()
+            BookOnRemoteBookCover(
+                coverImageUrl = coverImageUrl,
+                placeholderColor = BookOnColor.BookCoverSmallPlaceholder,
+            )
         }
 
         Spacer(modifier = Modifier.width(AppSpacing.Content))
@@ -176,15 +177,6 @@ private fun BookStatusBadge(
             maxLines = 1,
         )
     }
-}
-
-@Composable
-private fun BookListCoverPlaceholder() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BookOnColor.BookCoverSmallPlaceholder),
-    )
 }
 
 @Preview(showBackground = true)
