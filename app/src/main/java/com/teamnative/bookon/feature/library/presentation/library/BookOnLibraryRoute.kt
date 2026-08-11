@@ -1,7 +1,7 @@
 package com.teamnative.bookon.feature.library.presentation.library
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 

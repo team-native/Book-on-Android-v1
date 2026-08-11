@@ -1,7 +1,7 @@
 package com.teamnative.bookon.feature.book.presentation.search
 
 import androidx.compose.runtime.Composable
-import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 
 /** 서버 검색 전 로컬 검색어와 샘플 결과를 화면에 연결한다. */

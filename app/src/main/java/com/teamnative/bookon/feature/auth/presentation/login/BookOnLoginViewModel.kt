@@ -11,9 +11,15 @@ import com.teamnative.bookon.feature.auth.domain.LoginUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
+
+sealed interface BookOnLoginEffect {
+    data object NavigateToHome : BookOnLoginEffect
+}
 
 @HiltViewModel
 class BookOnLoginViewModel @Inject constructor(
@@ -29,6 +35,9 @@ class BookOnLoginViewModel @Inject constructor(
     )
     val uiState: StateFlow<BookOnLoginUiState> = mutableUiState.asStateFlow()
 
+    private val mutableEffect = MutableSharedFlow<BookOnLoginEffect>()
+    val effect = mutableEffect.asSharedFlow()
+
     /** 이메일 변경 시 로그인 실패 문구를 해제한다. */
     fun updateEmail(email: String) {
         val currentState = mutableUiState.value
@@ -36,6 +45,7 @@ class BookOnLoginViewModel @Inject constructor(
             email = currentState.email.copy(value = email),
             password = currentState.password.copy(errorText = null),
             hasMissingCredentials = false,
+            loginError = null,
         )
     }
 
@@ -45,11 +55,12 @@ class BookOnLoginViewModel @Inject constructor(
         mutableUiState.value = currentState.copy(
             password = currentState.password.copy(value = password, errorText = null),
             hasMissingCredentials = false,
+            loginError = null,
         )
     }
 
-    /** 로그인 버튼 클릭에서 빈 입력을 먼저 검사하고, 통과 시 UseCase를 실행한다. */
-    fun login(onSuccess: () -> Unit) = viewModelScope.launch {
+    /** 로그인 버튼 클릭에서 빈 입력을 검사하고, 성공 시 이동 효과를 발행한다. */
+    fun login() = viewModelScope.launch {
         val state = mutableUiState.value
         if (state.isSubmitting) {
             return@launch
@@ -73,21 +84,15 @@ class BookOnLoginViewModel @Inject constructor(
                     ),
                 )
                 mutableUiState.value = mutableUiState.value.copy(isSubmitting = false)
-                onSuccess()
+                mutableEffect.emit(BookOnLoginEffect.NavigateToHome)
             }
             is NetworkResult.Failure -> {
                 val currentState = mutableUiState.value
                 mutableUiState.value = currentState.copy(
                     isSubmitting = false,
-                    password = currentState.password.copy(errorText = result.error.userMessage()),
+                    loginError = BookOnLoginError.RequestFailed,
                 )
             }
         }
     }
-}
-
-/** 서버가 전달한 HTTP 오류 문구를 우선 사용하고, 통신 오류는 안전한 기본 문구로 변환한다. */
-private fun com.teamnative.bookon.core.network.NetworkError.userMessage(): String = when (this) {
-    is com.teamnative.bookon.core.network.NetworkError.Http -> message
-    else -> "로그인에 실패했습니다. 네트워크 연결을 확인해 주세요."
 }
