@@ -11,6 +11,7 @@ import com.teamnative.bookon.feature.home.domain.GetHomeUseCase
 import com.teamnative.bookon.feature.home.domain.GetNoticesUseCase
 import com.teamnative.bookon.feature.home.presentation.model.BookOnHomeNoticeUiModel
 import com.teamnative.bookon.feature.home.presentation.model.BookOnPopularBookRowUiModel
+import com.teamnative.bookon.feature.my.domain.GetMyProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.async
@@ -29,6 +30,7 @@ class BookOnHomeViewModel @Inject constructor(
     private val getNotices: GetNoticesUseCase,
     private val getBooks: GetBooksUseCase,
     private val getNewBooks: GetNewBooksUseCase,
+    private val getMyProfile: GetMyProfileUseCase,
 ) : ViewModel() {
     private val mutableUiState = MutableStateFlow(
         emptyHomeUiState().copy(isInitialLoading = true),
@@ -47,13 +49,17 @@ class BookOnHomeViewModel @Inject constructor(
         val noticesResult = async { getNotices(FirstPage, HomeLimit) }
         val popularResult = async { getBooks(FirstPage, HomeLimit, BookSort.POPULAR, null) }
         val newBooksResult = async { getNewBooks(FirstPage, HomeLimit) }
+        val profileResult = async { getMyProfile() }
         val results = listOf(homeResult.await(), noticesResult.await(), popularResult.await(), newBooksResult.await())
         val errorMessage = results.filterIsInstance<NetworkResult.Failure>().firstOrNull()?.error?.toUserMessage()
         val home = homeResult.await() as? NetworkResult.Success
         val notices = noticesResult.await() as? NetworkResult.Success
         val popular = popularResult.await() as? NetworkResult.Success
         val newBooks = newBooksResult.await() as? NetworkResult.Success
+        val profile = profileResult.await() as? NetworkResult.Success
         mutableUiState.value = emptyHomeUiState().copy(
+            greeting = "",
+            userName = profile?.data?.name.orEmpty(),
             notice = notices?.data?.firstOrNull()?.let { notice ->
                 BookOnHomeNoticeUiModel("공지", notice.createdAt, notice.title, notice.summary)
             },
