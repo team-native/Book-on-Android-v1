@@ -22,12 +22,14 @@ fun BookOnLoginRoute(
     } else {
         state.password.errorText
     }
+    val hasLoginCredentialsError =
+        state.hasMissingCredentials || passwordErrorText != null
     val uiState = state.copy(
         title = stringResource(R.string.login_title),
         email = state.email.copy(
             placeholder = stringResource(R.string.email_address),
             suffixText = stringResource(R.string.email_domain_gsm),
-            isError = state.hasMissingCredentials,
+            isError = hasLoginCredentialsError,
         ),
         password = state.password.copy(
             placeholder = stringResource(R.string.password),

@@ -1,5 +1,7 @@
 package com.teamnative.bookon.core.ui.component.loading
 
+import androidx.compose.material3.MaterialTheme
+
 import android.content.res.Configuration
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
@@ -27,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppAnimationDuration
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 
 /**
@@ -39,6 +40,7 @@ fun BookOnLoadingScreen(
     modifier: Modifier = Modifier,
 ) {
     val loadingDescription = stringResource(R.string.state_loading)
+    val indicatorColor = MaterialTheme.colorScheme.primary
     val infiniteTransition = rememberInfiniteTransition(label = "BookOnLoadingRotation")
     val rotationDegrees = infiniteTransition.animateFloat(
         initialValue = 0f,
@@ -55,7 +57,7 @@ fun BookOnLoadingScreen(
     Box(
         modifier = modifier
             .fillMaxSize()
-            .background(BookOnColor.Background)
+            .background(MaterialTheme.colorScheme.background)
             .semantics {
                 contentDescription = loadingDescription
                 stateDescription = loadingDescription
@@ -65,7 +67,7 @@ fun BookOnLoadingScreen(
     ) {
         Canvas(modifier = Modifier.size(AppIconSize.Loading)) {
             drawArc(
-                color = BookOnColor.Primary,
+                color = indicatorColor,
                 startAngle = rotationDegrees.value,
                 sweepAngle = LoadingArcSweepAngle,
                 useCenter = false,

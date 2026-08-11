@@ -1,5 +1,7 @@
 package com.teamnative.bookon.core.ui.component.button
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -26,9 +28,8 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 /**
  * Figma의 52dp 녹색 CTA 버튼을 앱 공통 스타일로 제공한다.
  * enabled와 loading 상태에 따라 클릭 가능 여부와 표시 방식을 함께 제어한다.
@@ -42,8 +43,8 @@ fun BookOnPrimaryButton(
     loading: Boolean = false,
 ) {
     val isClickable = enabled && !loading
-    val targetBackgroundColor = if (enabled) BookOnColor.Primary else BookOnColor.Disabled
-    val targetContentColor = if (enabled) BookOnColor.Surface else BookOnColor.TextPlaceholder
+    val targetBackgroundColor = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
+    val targetContentColor = if (enabled) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurfaceVariant
     val backgroundColor by animateColorAsState(targetValue = targetBackgroundColor)
     val contentColor by animateColorAsState(targetValue = targetContentColor)
     val loadingDescription = stringResource(R.string.state_loading)
@@ -78,7 +79,7 @@ fun BookOnPrimaryButton(
         } else {
             Text(
                 text = text,
-                style = BookOnTypography.button,
+                style = bookOnTypography.button,
                 color = contentColor,
             )
         }

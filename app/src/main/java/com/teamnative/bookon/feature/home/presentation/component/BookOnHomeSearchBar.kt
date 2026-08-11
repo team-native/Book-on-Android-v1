@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -25,8 +27,7 @@ import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 /**
  * 홈 메인에서 검색 화면으로 이동하는 검색형 버튼이다.
@@ -48,7 +49,7 @@ fun BookOnHomeSearchBar(
                 shape = RoundedCornerShape(AppRadius.Search),
             )
             .clip(RoundedCornerShape(AppRadius.Search))
-            .background(BookOnColor.Surface)
+            .background(MaterialTheme.colorScheme.surface)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = AppSpacing.Item),
         verticalAlignment = Alignment.CenterVertically,
@@ -56,8 +57,8 @@ fun BookOnHomeSearchBar(
         Text(
             modifier = Modifier.weight(1f),
             text = placeholder,
-            style = BookOnTypography.fieldPlaceholder,
-            color = BookOnColor.TextPlaceholder,
+            style = bookOnTypography.fieldPlaceholder,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

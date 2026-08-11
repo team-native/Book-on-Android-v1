@@ -30,6 +30,7 @@ private val DepartmentMenuMinWidth = 240.dp
 /** 학교 정보 입력 단계의 샘플 상태와 화면 이벤트를 연결한다. */
 @Composable
 fun BookOnSignupRoute(
+    initialProgressStep: Int?,
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
     viewModel: BookOnRegistrationViewModel = hiltViewModel(),
@@ -50,6 +51,7 @@ fun BookOnSignupRoute(
     BookOnSignupScreen(
         modifier = if (isDepartmentMenuExpanded) Modifier.blur(radius = 8.dp) else Modifier,
         uiState = uiState,
+        initialProgressStep = initialProgressStep,
         onEvent = { event ->
             when (event) {
                 BookOnSignupScreenEvent.BackClicked -> onBackClick()

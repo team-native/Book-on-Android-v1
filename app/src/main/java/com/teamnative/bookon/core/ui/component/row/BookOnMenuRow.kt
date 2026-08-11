@@ -1,5 +1,7 @@
 package com.teamnative.bookon.core.ui.component.row
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -20,9 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 /**
  * 마이페이지 설정 목록처럼 제목, 우측 액션, 하단 구분선을 가진 행이다.
@@ -54,8 +55,8 @@ fun BookOnMenuRow(
             Text(
                 modifier = Modifier.weight(1f),
                 text = title,
-                style = BookOnTypography.bodySemiBold,
-                color = if (destructive) BookOnColor.Error else BookOnColor.TextPrimary,
+                style = bookOnTypography.bodySemiBold,
+                color = if (destructive) MaterialTheme.colorScheme.error else MaterialTheme.colorScheme.onSurface,
             )
             trailingContent()
         }
@@ -64,7 +65,7 @@ fun BookOnMenuRow(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(AppStrokeWidth.Divider)
-                    .background(BookOnColor.Divider),
+                    .background(MaterialTheme.colorScheme.outlineVariant),
             )
         }
     }
@@ -72,19 +73,21 @@ fun BookOnMenuRow(
 
 @Composable
 private fun MenuChevron() {
+    val chevronColor = MaterialTheme.colorScheme.onSurfaceVariant
+
     Canvas(modifier = Modifier.size(AppIconSize.Small)) {
         val strokeWidth = AppStrokeWidth.MenuChevron.toPx()
         val startX = size.width * 0.35f
         val endX = size.width * 0.65f
         drawLine(
-            color = BookOnColor.TextPlaceholder,
+            color = chevronColor,
             start = Offset(startX, size.height * 0.2f),
             end = Offset(endX, size.height * 0.5f),
             strokeWidth = strokeWidth,
             cap = StrokeCap.Round,
         )
         drawLine(
-            color = BookOnColor.TextPlaceholder,
+            color = chevronColor,
             start = Offset(endX, size.height * 0.5f),
             end = Offset(startX, size.height * 0.8f),
             strokeWidth = strokeWidth,

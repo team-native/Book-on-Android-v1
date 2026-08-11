@@ -16,19 +16,35 @@ import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 
 /** 대출 가능한 샘플 상세 상태와 화면 이벤트를 연결한다. */
 @Composable
-fun BookOnBookDetailRoute(bookId: Long, onBackClick: () -> Unit, viewModel: BookOnBookDetailViewModel = hiltViewModel()) {
+fun BookOnBookDetailRoute(
+    bookId: Long,
+    onBackClick: () -> Unit,
+    viewModel: BookOnBookDetailViewModel = hiltViewModel(),
+) {
     val state = viewModel.state.collectAsStateWithLifecycle().value
-    LaunchedEffect(bookId) { viewModel.load(bookId) }
+
+    LaunchedEffect(bookId) {
+        viewModel.load(bookId)
+    }
+
     if (state.isInitialLoading) {
         BookOnLoadingScreen()
     } else {
-        state.content?.let {
-        BookOnBookDetailScreen(uiState = it, onBackClick = onBackClick, onLoanClick = viewModel::loan)
-        } ?: BookOnBookDetailStatusScreen(
-            errorMessage = state.errorMessage,
-            onBackClick = onBackClick,
-            onRetryClick = { viewModel.load(bookId) },
-        )
+        state.content?.let { content ->
+            BookOnBookDetailScreen(
+                uiState = content,
+                onBackClick = onBackClick,
+                onLoanClick = viewModel::loan,
+            )
+        } ?: run {
+            BookOnBookDetailStatusScreen(
+                errorMessage = state.errorMessage,
+                onBackClick = onBackClick,
+                onRetryClick = {
+                    viewModel.load(bookId)
+                },
+            )
+        }
     }
 }
 
@@ -39,8 +55,21 @@ private fun BookOnBookDetailStatusScreen(
     onBackClick: () -> Unit,
     onRetryClick: () -> Unit,
 ) {
-    Scaffold(topBar = { BookOnTopBar(title = "", onBackClick = onBackClick) }) { innerPadding ->
-        Text(modifier = Modifier.padding(innerPadding), text = errorMessage.orEmpty())
-        Button(onClick = onRetryClick) { Text(text = stringResource(R.string.action_retry)) }
+    Scaffold(
+        topBar = {
+            BookOnTopBar(
+                title = "",
+                onBackClick = onBackClick,
+            )
+        },
+    ) { innerPadding ->
+        Text(
+            modifier = Modifier.padding(innerPadding),
+            text = errorMessage.orEmpty(),
+        )
+
+        Button(onClick = onRetryClick) {
+            Text(text = stringResource(R.string.action_retry))
+        }
     }
 }

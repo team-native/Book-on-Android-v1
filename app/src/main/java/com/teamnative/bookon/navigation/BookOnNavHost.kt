@@ -15,6 +15,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamnative.bookon.feature.auth.presentation.signup.BookOnRegistrationViewModel
 import com.teamnative.bookon.feature.auth.presentation.login.BookOnLoginRoute
 import com.teamnative.bookon.feature.auth.presentation.passwordsetup.BookOnPasswordSetupRoute
@@ -78,35 +79,57 @@ fun BookOnNavHost(isInitiallyAuthenticated: Boolean, onLogout: () -> Unit) {
         composable(BookOnDestination.PasswordReset.route) {
             BookOnPasswordResetRoute(onNavigateBack = navController::navigateUp)
         }
-        composable(BookOnDestination.Signup.route) {
+        composable(BookOnDestination.Signup.route) { backStackEntry ->
+            val initialProgressStep by backStackEntry.savedStateHandle
+                .getStateFlow<Int?>(SignupProgressInitialStepKey, null)
+                .collectAsStateWithLifecycle()
             val registrationViewModel: BookOnRegistrationViewModel = hiltViewModel()
             BookOnSignupRoute(
+                initialProgressStep = initialProgressStep,
                 onBackClick = navController::navigateUp,
                 onNextClick = { navController.navigate(BookOnDestination.PasswordSetup.route) },
                 viewModel = registrationViewModel,
             )
         }
         composable(BookOnDestination.PasswordSetup.route) { backStackEntry ->
+            val initialProgressStep by backStackEntry.savedStateHandle
+                .getStateFlow<Int?>(SignupProgressInitialStepKey, null)
+                .collectAsStateWithLifecycle()
             val registrationEntry = remember(backStackEntry) { navController.getBackStackEntry(BookOnDestination.Signup.route) }
             val registrationViewModel: BookOnRegistrationViewModel = hiltViewModel(registrationEntry)
             BookOnPasswordSetupRoute(
-                initialProgressStep = backStackEntry.savedStateHandle[SignupProgressInitialStepKey],
+                initialProgressStep = initialProgressStep,
                 onBackClick = {
                     navController.previousBackStackEntry
                         ?.savedStateHandle
                         ?.set(SignupProgressInitialStepKey, PasswordSetupStep)
                     navController.navigateUp()
                 },
-                onNextClick = { navController.navigate(BookOnDestination.VerificationCode.route) },
+                onNextClick = {
+                    navController.navigate(BookOnDestination.VerificationCode.route)
+                    // 비밀번호와 인증번호는 동일한 2단계이므로 게이지 애니메이션을 재생하지 않는다.
+                    navController.currentBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(SignupProgressInitialStepKey, PasswordSetupStep)
+                },
                 viewModel = registrationViewModel,
             )
         }
         composable(BookOnDestination.VerificationCode.route) { backStackEntry ->
+            val initialProgressStep by backStackEntry.savedStateHandle
+                .getStateFlow<Int?>(SignupProgressInitialStepKey, null)
+                .collectAsStateWithLifecycle()
             val registrationEntry = remember(backStackEntry) { navController.getBackStackEntry(BookOnDestination.Signup.route) }
             val registrationViewModel: BookOnRegistrationViewModel = hiltViewModel(registrationEntry)
             BookOnVerificationCodeRoute(
-                initialProgressStep = backStackEntry.savedStateHandle[SignupProgressInitialStepKey],
-                onBackClick = navController::navigateUp,
+                initialProgressStep = initialProgressStep,
+                onBackClick = {
+                    // 비밀번호 설정과 인증번호는 모두 2단계이므로 게이지 값을 유지한 채 이전 화면으로 돌아간다.
+                    navController.previousBackStackEntry
+                        ?.savedStateHandle
+                        ?.set(SignupProgressInitialStepKey, PasswordSetupStep)
+                    navController.navigateUp()
+                },
                 onConfirmClick = { navController.navigate(BookOnDestination.ReadingMarathonSignup.route) },
                 viewModel = registrationViewModel,
             )

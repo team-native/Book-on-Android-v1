@@ -31,10 +31,16 @@ fun BookOnApp() {
     when (sessionUiState) {
         BookOnSessionUiState.Checking -> BookOnLoadingScreen()
         BookOnSessionUiState.Authenticated -> key(sessionUiState) {
-            BookOnNavHost(isInitiallyAuthenticated = true, onLogout = sessionViewModel::logout)
+            BookOnNavHost(
+                isInitiallyAuthenticated = true,
+                onLogout = sessionViewModel::logout,
+            )
         }
         BookOnSessionUiState.Unauthenticated -> key(sessionUiState) {
-            BookOnNavHost(isInitiallyAuthenticated = false, onLogout = sessionViewModel::logout)
+            BookOnNavHost(
+                isInitiallyAuthenticated = false,
+                onLogout = sessionViewModel::logout,
+            )
         }
         BookOnSessionUiState.RetryableError -> BookOnSessionRetryScreen(
             onRetryClick = sessionViewModel::retryAutoLogin,

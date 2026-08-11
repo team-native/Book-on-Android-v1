@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -25,9 +27,8 @@ import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.home.presentation.model.BookOnPopularBookRowUiModel
 
 private val PopularBookRowWidth = 206.dp
@@ -73,7 +74,7 @@ fun BookOnPopularBookRow(
                 shape = RoundedCornerShape(AppRadius.Chip),
             )
             .clip(RoundedCornerShape(AppRadius.Chip))
-            .background(BookOnColor.Surface)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(AppSpacing.Small),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -97,8 +98,8 @@ fun BookOnPopularBookRow(
         ) {
             Text(
                 text = title,
-                style = BookOnTypography.caption,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.caption,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -107,16 +108,16 @@ fun BookOnPopularBookRow(
 
             Text(
                 text = metaText,
-                style = BookOnTypography.bookMeta,
-                color = BookOnColor.TextSecondary,
+                style = bookOnTypography.bookMeta,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             if (statusText != null) {
                 Text(
                     text = statusText,
-                    style = BookOnTypography.bookMeta,
-                    color = BookOnColor.PrimaryPressed,
+                    style = bookOnTypography.bookMeta,
+                    color = MaterialTheme.colorScheme.secondary,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
@@ -130,7 +131,7 @@ private fun PopularBookCoverPlaceholder() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(BookOnColor.BookCoverSmallPlaceholder),
+            .background(MaterialTheme.colorScheme.tertiaryContainer),
     )
 }
 

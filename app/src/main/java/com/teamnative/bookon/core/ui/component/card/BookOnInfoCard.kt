@@ -1,5 +1,7 @@
 package com.teamnative.bookon.core.ui.component.card
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -22,9 +24,8 @@ import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 /**
  * 안내, 연동, 공지 등 아이콘과 설명이 함께 있는 공통 카드이다.
  * leadingContent와 trailingContent는 화면별 아이콘이나 토글을 연결할 때 사용한다.
@@ -34,8 +35,8 @@ fun BookOnInfoCard(
     title: String,
     modifier: Modifier = Modifier,
     description: String? = null,
-    containerColor: Color = BookOnColor.Background,
-    borderColor: Color = BookOnColor.SurfaceBorder,
+    containerColor: Color = MaterialTheme.colorScheme.background,
+    borderColor: Color = MaterialTheme.colorScheme.outline,
     leadingContent: (@Composable () -> Unit)? = null,
     trailingContent: (@Composable () -> Unit)? = null,
 ) {
@@ -65,8 +66,8 @@ fun BookOnInfoCard(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                style = BookOnTypography.bodySemiBold,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.bodySemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             if (description != null) {
 
@@ -74,8 +75,8 @@ fun BookOnInfoCard(
 
                 Text(
                     text = description,
-                    style = BookOnTypography.caption,
-                    color = BookOnColor.TextSecondary,
+                    style = bookOnTypography.caption,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -100,7 +101,7 @@ private fun BookOnInfoCardPreview() {
                 Box(
                     modifier = Modifier
                         .size(AppIconSize.Small)
-                        .background(BookOnColor.Primary),
+                        .background(MaterialTheme.colorScheme.primary),
                 )
             },
         )

@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.book.presentation.detail
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,9 +18,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.book.presentation.component.BookOnBookDetailCover
@@ -34,7 +35,7 @@ fun BookOnBookDetailScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        containerColor = BookOnColor.Background,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BookOnTopBar(
                 title = "",
@@ -67,8 +68,8 @@ fun BookOnBookDetailScreen(
                 Column {
                     Text(
                         text = uiState.title,
-                        style = BookOnTypography.sectionTitle,
-                        color = BookOnColor.TextPrimary,
+                        style = bookOnTypography.sectionTitle,
+                        color = MaterialTheme.colorScheme.onSurface,
                         maxLines = 2,
                         overflow = TextOverflow.Ellipsis,
                     )
@@ -77,8 +78,8 @@ fun BookOnBookDetailScreen(
 
                     Text(
                         text = uiState.author,
-                        style = BookOnTypography.bodyMedium,
-                        color = BookOnColor.TextSecondary,
+                        style = bookOnTypography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
@@ -87,13 +88,13 @@ fun BookOnBookDetailScreen(
                 Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Item)) {
                     Text(
                         text = stringResource(R.string.book_intro),
-                        style = BookOnTypography.bodySemiBold,
-                        color = BookOnColor.TextPrimary,
+                        style = bookOnTypography.bodySemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
                     )
                     Text(
                         text = uiState.intro,
-                        style = BookOnTypography.bodyMedium,
-                        color = BookOnColor.TextSecondary,
+                        style = bookOnTypography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }

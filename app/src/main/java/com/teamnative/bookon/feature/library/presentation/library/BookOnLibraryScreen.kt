@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.library.presentation.library
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -29,7 +31,6 @@ import com.teamnative.bookon.core.ui.component.loading.BookOnInlineLoadingIndica
 import com.teamnative.bookon.core.ui.model.resolve
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.feature.library.presentation.component.BookOnLibraryHeader
 
@@ -47,7 +48,7 @@ fun BookOnLibraryScreen(
     Scaffold(
         modifier = modifier,
         bottomBar = bottomBar,
-        containerColor = BookOnColor.Surface,
+        containerColor = MaterialTheme.colorScheme.surface,
     ) { innerPadding ->
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
@@ -61,7 +62,11 @@ fun BookOnLibraryScreen(
             horizontalArrangement = Arrangement.spacedBy(AppSpacing.Content),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Content),
         ) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
+            item(
+                span = {
+                    GridItemSpan(maxLineSpan)
+                },
+            ) {
                 BookOnLibraryHeader(
                     title = stringResource(R.string.nav_library),
                     sortOptions = uiState.sortOptions,
@@ -70,7 +75,11 @@ fun BookOnLibraryScreen(
                     },
                 )
             }
-            item(span = { GridItemSpan(maxLineSpan) }) {
+            item(
+                span = {
+                    GridItemSpan(maxLineSpan)
+                },
+            ) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Small)) {
                     items(uiState.categories.size) { index ->
                         BookOnFilterChip(
@@ -83,16 +92,35 @@ fun BookOnLibraryScreen(
                 }
             }
             uiState.errorMessage?.let { message ->
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text(text = message.resolve(), color = BookOnColor.TextSecondary)
-                    Button(onClick = { onEvent(BookOnLibraryScreenEvent.RetryClicked) }) {
+                item(
+                    span = {
+                        GridItemSpan(maxLineSpan)
+                    },
+                ) {
+                    Text(
+                        text = message.resolve(),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    Button(
+                        onClick = {
+                            onEvent(BookOnLibraryScreenEvent.RetryClicked)
+                        },
+                    ) {
                         Text(text = stringResource(R.string.action_retry))
                     }
                 }
             }
             if (uiState.errorMessage == null && uiState.books.isEmpty()) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Text(text = stringResource(R.string.empty_books), color = BookOnColor.TextSecondary)
+                item(
+                    span = {
+                        GridItemSpan(maxLineSpan)
+                    },
+                ) {
+                    Text(
+                        text = stringResource(R.string.empty_books),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                 }
             }
             items(uiState.books) { book ->
@@ -102,17 +130,34 @@ fun BookOnLibraryScreen(
                     coverHeight = AppComponentSize.LibraryBookCoverHeight,
                     cardWidth = AppComponentSize.LibraryBookCoverWidth,
                     cover = { LibraryBookCoverPlaceholder() },
-                    modifier = Modifier.clickable(role = Role.Button, onClick = { onBookClick(book.id) }),
+                    modifier = Modifier.clickable(
+                        role = Role.Button,
+                        onClick = {
+                            onBookClick(book.id)
+                        },
+                    ),
                 )
             }
             if (uiState.isPagingLoading) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
+                item(
+                    span = {
+                        GridItemSpan(maxLineSpan)
+                    },
+                ) {
                     BookOnInlineLoadingIndicator()
                 }
             }
             if (uiState.hasNext && !uiState.isPagingLoading) {
-                item(span = { GridItemSpan(maxLineSpan) }) {
-                    Button(onClick = { onEvent(BookOnLibraryScreenEvent.LoadMoreClicked) }) {
+                item(
+                    span = {
+                        GridItemSpan(maxLineSpan)
+                    },
+                ) {
+                    Button(
+                        onClick = {
+                            onEvent(BookOnLibraryScreenEvent.LoadMoreClicked)
+                        },
+                    ) {
                         Text(text = stringResource(R.string.action_load_more))
                     }
                 }
@@ -126,7 +171,7 @@ private fun LibraryBookCoverPlaceholder() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(BookOnColor.BookCoverSmallPlaceholder),
+            .background(MaterialTheme.colorScheme.tertiaryContainer),
     )
 }
 

@@ -7,6 +7,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
+import com.teamnative.bookon.feature.home.presentation.home.BookOnHomeSectionUiState
 import com.teamnative.bookon.feature.home.presentation.model.BookOnPopularBookRowUiModel
 
 /**
@@ -16,7 +17,10 @@ import com.teamnative.bookon.feature.home.presentation.model.BookOnPopularBookRo
 @Composable
 fun BookOnPopularBooksSection(
     title: String,
-    books: List<BookOnPopularBookRowUiModel>,
+    state: BookOnHomeSectionUiState<List<BookOnPopularBookRowUiModel>>,
+    emptyMessage: String,
+    retryText: String,
+    onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
     actionText: String? = null,
     onActionClick: (() -> Unit)? = null,
@@ -30,9 +34,29 @@ fun BookOnPopularBooksSection(
             actionText = actionText,
             onActionClick = onActionClick,
         )
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Item)) {
-            items(books) { book ->
-                BookOnPopularBookRow(uiState = book)
+        when (state) {
+            is BookOnHomeSectionUiState.Content -> {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Item)) {
+                    items(state.value) { book ->
+                        BookOnPopularBookRow(uiState = book)
+                    }
+                }
+            }
+
+            BookOnHomeSectionUiState.Loading -> {
+                BookOnHomeSectionFeedback()
+            }
+
+            BookOnHomeSectionUiState.Empty -> {
+                BookOnHomeSectionFeedback(message = emptyMessage)
+            }
+
+            is BookOnHomeSectionUiState.Error -> {
+                BookOnHomeSectionFeedback(
+                    message = state.message,
+                    retryText = retryText,
+                    onRetryClick = onRetryClick,
+                )
             }
         }
     }

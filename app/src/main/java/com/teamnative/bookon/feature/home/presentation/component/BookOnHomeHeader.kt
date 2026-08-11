@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -29,8 +31,7 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 /**
  * 홈 상단의 인사말, 사용자 이름, 알림과 프로필 액션을 피그마 메인 화면 구조로 표시한다.
@@ -53,8 +54,8 @@ fun BookOnHomeHeader(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = greeting,
-                style = BookOnTypography.caption,
-                color = BookOnColor.TextSecondary,
+                style = bookOnTypography.caption,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -63,8 +64,8 @@ fun BookOnHomeHeader(
 
             Text(
                 text = userName,
-                style = BookOnTypography.screenTitle,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.screenTitle,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -102,8 +103,8 @@ private fun BookOnHomeIconButton(
         colors = IconButtonDefaults.iconButtonColors(
             containerColor = Color.Transparent,
             disabledContainerColor = Color.Transparent,
-            contentColor = BookOnColor.TextPrimary,
-            disabledContentColor = BookOnColor.TextPrimary,
+            contentColor = MaterialTheme.colorScheme.onSurface,
+            disabledContentColor = MaterialTheme.colorScheme.onSurface,
         ),
     ) {
         Image(

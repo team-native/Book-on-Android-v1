@@ -39,7 +39,12 @@ fun BookOnReadingMarathonSignupScreen(
 
     BookOnAuthFormScaffold(
         modifier = modifier,
-        topBar = { BookOnTopBar(title = "", onBackClick = onBackClick) },
+        topBar = {
+            BookOnTopBar(
+                title = "",
+                onBackClick = onBackClick,
+            )
+        },
         footer = {
             BookOnPrimaryButton(
                 text = stringResource(if (uiState.isLinked) R.string.action_next else R.string.complete_signup_with_link),
@@ -69,7 +74,9 @@ fun BookOnReadingMarathonSignupScreen(
             description = uiState.useDescription,
             checked = uiState.isLinked,
             onCheckedChange = { isLinked ->
-                if (!progressAnimating) onLinkChange(isLinked)
+                if (!progressAnimating) {
+                    onLinkChange(isLinked)
+                }
             },
         )
         BookOnMarathonNoticeCard(
@@ -85,7 +92,10 @@ private fun BookOnReadingMarathonSignupScreenPreview() {
     BookOnTheme {
         BookOnReadingMarathonSignupScreen(
             uiState = defaultReadingMarathonSignupUiState(),
-            onBackClick = {}, onLinkChange = {}, onContinueClick = {}, onSkipClick = {},
+            onBackClick = {},
+            onLinkChange = {},
+            onContinueClick = {},
+            onSkipClick = {},
         )
     }
 }

@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -16,8 +17,7 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 private const val PasswordResetTotalStep = 3
 
@@ -35,13 +35,13 @@ internal fun BookOnPasswordResetProgress(
                 .fillMaxWidth()
                 .height(AppStrokeWidth.Progress)
                 .clip(RoundedCornerShape(AppRadius.Progress))
-                .background(BookOnColor.SurfaceBorder),
+                .background(MaterialTheme.colorScheme.outlineVariant),
         ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth(progress)
                     .height(AppStrokeWidth.Progress)
-                    .background(BookOnColor.Primary),
+                    .background(MaterialTheme.colorScheme.primary),
             )
         }
 
@@ -49,8 +49,8 @@ internal fun BookOnPasswordResetProgress(
 
         Text(
             text = stringResource(R.string.password_reset_step, currentStep.index, PasswordResetTotalStep),
-            style = BookOnTypography.caption,
-            color = BookOnColor.TextTertiary,
+            style = bookOnTypography.caption,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

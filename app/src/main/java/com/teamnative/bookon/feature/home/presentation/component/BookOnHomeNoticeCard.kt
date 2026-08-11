@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -31,9 +33,8 @@ import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.home.presentation.model.BookOnHomeNoticeUiModel
 
 /**
@@ -68,7 +69,7 @@ fun BookOnHomeNoticeCard(
 @Composable
 fun BookOnHomeNoticeCard(
     category: String,
-    dateText: String,
+    dateText: String?,
     title: String,
     description: String,
     modifier: Modifier = Modifier,
@@ -86,7 +87,7 @@ fun BookOnHomeNoticeCard(
                 shape = RoundedCornerShape(AppRadius.LargeCard),
             )
             .clip(RoundedCornerShape(AppRadius.LargeCard))
-            .background(BookOnColor.Surface)
+            .background(MaterialTheme.colorScheme.surface)
             .then(
                 if (onClick != null) {
                     Modifier.clickable(role = Role.Button, onClick = onClick)
@@ -109,32 +110,34 @@ fun BookOnHomeNoticeCard(
             Column(modifier = Modifier.weight(1f)) {
                 Text(
                     text = category,
-                    style = BookOnTypography.bodySemiBold,
-                    color = BookOnColor.TextPrimary,
+                    style = bookOnTypography.bodySemiBold,
+                    color = MaterialTheme.colorScheme.onSurface,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
                 )
-                Text(
-                    text = dateText,
-                    style = BookOnTypography.bookMeta,
-                    color = BookOnColor.TextSecondary,
-                    maxLines = 1,
-                    overflow = TextOverflow.Ellipsis,
-                )
+                if (!dateText.isNullOrBlank()) {
+                    Text(
+                        text = dateText,
+                        style = bookOnTypography.bookMeta,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                }
             }
             if (badgeText != null) {
                 Box(
                     modifier = Modifier
                         .height(AppComponentSize.SmallChipHeight)
                         .clip(RoundedCornerShape(AppRadius.Small))
-                        .background(BookOnColor.Primary)
+                        .background(MaterialTheme.colorScheme.primary)
                         .padding(horizontal = AppSpacing.Item),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = badgeText,
-                        style = BookOnTypography.badge,
-                        color = BookOnColor.Surface,
+                        style = bookOnTypography.badge,
+                        color = MaterialTheme.colorScheme.surface,
                     )
                 }
             }
@@ -144,8 +147,8 @@ fun BookOnHomeNoticeCard(
 
         Text(
             text = title,
-            style = BookOnTypography.bodySemiBold,
-            color = BookOnColor.TextPrimary,
+            style = bookOnTypography.bodySemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -154,8 +157,8 @@ fun BookOnHomeNoticeCard(
 
         Text(
             text = description,
-            style = BookOnTypography.bodyMedium,
-            color = BookOnColor.TextSecondary,
+            style = bookOnTypography.bodyMedium,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 3,
             overflow = TextOverflow.Ellipsis,
         )
@@ -165,8 +168,8 @@ fun BookOnHomeNoticeCard(
 
             Text(
                 text = actionText,
-                style = BookOnTypography.caption,
-                color = BookOnColor.PrimaryPressed,
+                style = bookOnTypography.caption,
+                color = MaterialTheme.colorScheme.secondary,
             )
         }
     }

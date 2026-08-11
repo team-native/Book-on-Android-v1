@@ -1,5 +1,7 @@
 package com.teamnative.bookon.core.ui.component.row
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -17,9 +19,8 @@ import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.model.BookOnSwitchRowUiModel
 
@@ -66,8 +67,8 @@ fun BookOnSwitchRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = title,
-                style = BookOnTypography.button,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.button,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             if (description != null) {
 
@@ -75,8 +76,8 @@ fun BookOnSwitchRow(
 
                 Text(
                     text = description,
-                    style = BookOnTypography.caption,
-                    color = BookOnColor.TextSecondary,
+                    style = bookOnTypography.caption,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }
@@ -87,11 +88,11 @@ fun BookOnSwitchRow(
                 stateDescription = toggleStateDescription
             },
             colors = SwitchDefaults.colors(
-                checkedThumbColor = BookOnColor.Surface,
-                checkedTrackColor = BookOnColor.Primary,
-                uncheckedThumbColor = BookOnColor.Surface,
-                uncheckedTrackColor = BookOnColor.SwitchOff,
-                uncheckedBorderColor = BookOnColor.SwitchOff,
+                checkedThumbColor = MaterialTheme.colorScheme.surface,
+                checkedTrackColor = MaterialTheme.colorScheme.primary,
+                uncheckedThumbColor = MaterialTheme.colorScheme.surface,
+                uncheckedTrackColor = MaterialTheme.colorScheme.outlineVariant,
+                uncheckedBorderColor = MaterialTheme.colorScheme.outlineVariant,
             ),
         )
     }

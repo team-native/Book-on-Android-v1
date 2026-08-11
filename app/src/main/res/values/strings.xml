@@ -142,6 +142,8 @@
     <string name="home_notification_description">알림</string>
     <string name="home_profile_description">프로필</string>
     <string name="library_notice">도서부 공지</string>
+    <string name="empty_notice_title">새 공지가 없어요</string>
+    <string name="empty_notice_description">새로운 공지사항이 등록되면 알려드릴게요.</string>
     <string name="badge_new">NEW</string>
     <string name="notice_date_author">%1$s · 도서부</string>
     <string name="summer_vacation_loan_notice_title">여름방학 도서 대출 기간 연장 안내</string>

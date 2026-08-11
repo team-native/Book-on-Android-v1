@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.my.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Box
@@ -26,9 +28,8 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.core.ui.component.row.BookOnSwitchRow
 
@@ -70,7 +71,7 @@ fun BookOnNotificationSettingsBottomSheetContent(
                     .align(Alignment.Center)
                     .size(width = AppComponentSize.BottomSheetHandleWidth, height = AppSpacing.Tiny)
                     .clip(RoundedCornerShape(percent = 50))
-                    .background(BookOnColor.Disabled),
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
             )
 
         }
@@ -79,19 +80,19 @@ fun BookOnNotificationSettingsBottomSheetContent(
 
         Text(
             text = stringResource(R.string.notification_settings),
-            style = BookOnTypography.sectionTitle.copy(
+            style = bookOnTypography.sectionTitle.copy(
                 fontWeight = FontWeight.Bold,
                 lineHeight = 24.sp,
             ),
-            color = BookOnColor.TextDarkGray,
+            color = MaterialTheme.colorScheme.onSurface,
         )
 
         Spacer(modifier = Modifier.height(AppSpacing.Small))
 
         Text(
             text = stringResource(R.string.notification_select_title),
-            style = BookOnTypography.caption,
-            color = BookOnColor.TextSecondary,
+            style = bookOnTypography.caption,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         Spacer(modifier = Modifier.height(AppSpacing.XLarge))
@@ -106,7 +107,7 @@ fun BookOnNotificationSettingsBottomSheetContent(
                 switchModifier = Modifier.semantics { testTag = "notification_switch_$index" },
             )
             HorizontalDivider(
-                color = BookOnColor.Divider,
+                color = MaterialTheme.colorScheme.outlineVariant,
                 thickness = AppStrokeWidth.Divider,
             )
         }

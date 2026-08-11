@@ -46,7 +46,12 @@ fun BookOnReadingMarathonLinkScreen(
 ) {
     BookOnAuthFormScaffold(
         modifier = modifier,
-        topBar = { BookOnTopBar(title = "", onBackClick = onBackClick) },
+        topBar = {
+            BookOnTopBar(
+                title = "",
+                onBackClick = onBackClick,
+            )
+        },
         footer = {
             BookOnPrimaryButton(
                 text = stringResource(R.string.complete_signup_with_link),
@@ -71,9 +76,15 @@ fun BookOnReadingMarathonLinkScreen(
             description = uiState.description,
             animateProgress = false,
         )
-        BookOnTextField(uiState = uiState.marathonId, onValueChange = onIdChange)
+        BookOnTextField(
+            uiState = uiState.marathonId,
+            onValueChange = onIdChange,
+        )
 
-        BookOnAuthPasswordField(uiState = uiState.password, onValueChange = onPasswordChange)
+        BookOnAuthPasswordField(
+            uiState = uiState.password,
+            onValueChange = onPasswordChange,
+        )
         BookOnPasswordPolicyTooltip()
 
         BookOnThirdPartyAgreementRow(
@@ -123,8 +134,13 @@ private fun BookOnReadingMarathonLinkScreenPreview() {
     BookOnTheme {
         BookOnReadingMarathonLinkScreen(
             uiState = defaultReadingMarathonLinkUiState(),
-            onBackClick = {}, onIdChange = {}, onPasswordChange = {},
-            onAgreementChange = {}, onOauthClick = {}, onSkipClick = {}, onCompleteClick = {},
+            onBackClick = {},
+            onIdChange = {},
+            onPasswordChange = {},
+            onAgreementChange = {},
+            onOauthClick = {},
+            onSkipClick = {},
+            onCompleteClick = {},
         )
     }
 }

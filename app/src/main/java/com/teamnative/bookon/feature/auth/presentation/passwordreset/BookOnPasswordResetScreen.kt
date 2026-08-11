@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -12,8 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.auth.presentation.component.AuthTitleTopSpacing
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
@@ -59,17 +59,21 @@ fun BookOnPasswordResetScreen(
             Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Small)) {
                 Text(
                     text = uiState.title,
-                    style = BookOnTypography.screenTitle,
-                    color = BookOnColor.TextPrimary,
+                    style = bookOnTypography.screenTitle,
+                    color = MaterialTheme.colorScheme.onSurface,
                 )
                 Text(
                     text = uiState.description,
-                    style = BookOnTypography.bodyMedium,
-                    color = BookOnColor.TextSecondary,
+                    style = bookOnTypography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
             uiState.errorText?.let { errorText ->
-                Text(text = errorText, style = BookOnTypography.bodyMedium, color = BookOnColor.TextSecondary)
+                Text(
+                    text = errorText,
+                    style = bookOnTypography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
             }
         }
 

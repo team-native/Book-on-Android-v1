@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.book.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -21,9 +23,8 @@ import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 private val DetailCoverHeight = 236.dp
 
@@ -56,7 +57,7 @@ private fun BookDetailCoverPlaceholder() {
     Box(
         modifier = Modifier
             .fillMaxSize()
-            .background(BookOnColor.BookCoverPlaceholder),
+            .background(MaterialTheme.colorScheme.tertiaryContainer),
     )
 }
 
@@ -73,7 +74,7 @@ private fun BookOnBookDetailCoverPreview() {
             )
             Text(
                 text = "",
-                style = BookOnTypography.bodyMedium,
+                style = bookOnTypography.bodyMedium,
             )
         }
     }

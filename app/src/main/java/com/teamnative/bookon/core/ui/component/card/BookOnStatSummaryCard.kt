@@ -1,5 +1,7 @@
 package com.teamnative.bookon.core.ui.component.card
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -26,9 +28,8 @@ import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.model.BookOnStatItemUiModel
 
 /**
@@ -51,7 +52,7 @@ fun BookOnStatSummaryCard(
             .clip(RoundedCornerShape(AppRadius.Card))
             .background(
                 brush = Brush.horizontalGradient(
-                    colors = listOf(BookOnColor.Primary, BookOnColor.PrimaryDark),
+                    colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary),
                 ),
             )
             .padding(vertical = AppSpacing.Content),
@@ -65,16 +66,16 @@ fun BookOnStatSummaryCard(
             ) {
                 Text(
                     text = item.label,
-                    style = BookOnTypography.caption,
-                    color = BookOnColor.PrimaryLight,
+                    style = bookOnTypography.caption,
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
                 )
 
                 Spacer(modifier = Modifier.height(AppSpacing.Tiny))
 
                 Text(
                     text = item.value,
-                    style = BookOnTypography.sectionTitle,
-                    color = BookOnColor.PrimaryLight,
+                    style = bookOnTypography.sectionTitle,
+                    color = MaterialTheme.colorScheme.tertiaryContainer,
                 )
             }
 
@@ -83,7 +84,7 @@ fun BookOnStatSummaryCard(
                     modifier = Modifier
                         .width(AppStrokeWidth.Divider)
                         .fillMaxHeight()
-                        .background(BookOnColor.PrimaryLight.copy(alpha = 0.45f)),
+                        .background(MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.45f)),
                 )
             }
         }

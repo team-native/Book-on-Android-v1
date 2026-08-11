@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.my.presentation.main
 
+import androidx.compose.material3.MaterialTheme
+
 import android.app.AlertDialog
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Composable
@@ -19,7 +21,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.R
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 import com.teamnative.bookon.feature.my.presentation.component.BookOnNotificationSettingsBottomSheetContent
 
@@ -108,7 +109,7 @@ fun BookOnMyRoute(
         ModalBottomSheet(
             onDismissRequest = { isNotificationSettingsVisible = false },
             sheetState = sheetState,
-            containerColor = BookOnColor.Surface,
+            containerColor = MaterialTheme.colorScheme.surface,
             dragHandle = null,
         ) {
             BookOnNotificationSettingsBottomSheetContent(

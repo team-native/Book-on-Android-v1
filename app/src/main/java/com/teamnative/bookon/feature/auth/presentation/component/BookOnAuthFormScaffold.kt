@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.ColumnScope
@@ -11,7 +13,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 
 /**
  * 회원가입 계열 화면에서 공통으로 쓰는 Scaffold, 상단바, 하단 액션 배치를 제공한다.
@@ -26,7 +27,7 @@ fun BookOnAuthFormScaffold(
 ) {
     Scaffold(
         modifier = modifier,
-        containerColor = BookOnColor.Background,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             Column(modifier = Modifier.padding(horizontal = AppSpacing.AuthHorizontal)) {
                 topBar()

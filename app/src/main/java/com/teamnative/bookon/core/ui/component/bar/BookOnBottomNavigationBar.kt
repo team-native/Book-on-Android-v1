@@ -1,10 +1,14 @@
 package com.teamnative.bookon.core.ui.component.bar
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -29,9 +33,10 @@ import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.LocalBookOnExtraColors
+import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.model.BookOnNavigationItemUiModel
 
@@ -50,50 +55,71 @@ fun BookOnBottomNavigationBar(
         modifier = modifier
             .fillMaxWidth()
             .height(AppComponentSize.NavigationHeight),
-        color = BookOnColor.Surface,
+        color = MaterialTheme.colorScheme.surface,
         tonalElevation = 0.dp,
         shadowElevation = 0.dp,
     ) {
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = AppSpacing.ScreenHorizontal),
-            horizontalArrangement = Arrangement.SpaceBetween,
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            items.forEachIndexed { index, item ->
-                val selected = index == selectedIndex
-                val itemColor = if (selected) BookOnColor.Primary else BookOnColor.NavigationInactive
-                val label = stringResource(item.labelRes)
-                Column(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(AppRadius.Small))
-                        .selectable(
-                            selected = selected,
-                            role = Role.Tab,
-                            onClick = { onItemClick(index) },
-                        )
-                        .padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Small),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(AppSpacing.Tiny),
-                ) {
-                    Box(
-                        modifier = Modifier.size(AppIconSize.Default),
-                        contentAlignment = Alignment.Center,
+        Column(modifier = Modifier.fillMaxWidth()) {
+            Spacer(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(AppStrokeWidth.Divider)
+                    .background(LocalBookOnExtraColors.current.navigationDivider),
+            )
+
+            Spacer(modifier = Modifier.height(AppSpacing.NavigationDividerToIcon))
+
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = AppSpacing.ScreenHorizontal),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top,
+            ) {
+                items.forEachIndexed { index, item ->
+                    val selected = index == selectedIndex
+                    val labelColor = if (selected) {
+                        MaterialTheme.colorScheme.primary
+                    } else {
+                        MaterialTheme.colorScheme.onSurface
+                    }
+                    val label = stringResource(item.labelRes)
+                    Column(
+                        modifier = Modifier
+                            .clip(RoundedCornerShape(AppRadius.Small))
+                            .selectable(
+                                selected = selected,
+                                role = Role.Tab,
+                                onClick = { onItemClick(index) },
+                            )
+                            .padding(horizontal = AppSpacing.Small),
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.spacedBy(AppSpacing.Tiny),
                     ) {
-                        Image(
-                            modifier = Modifier.fillMaxSize(),
-                            painter = painterResource(item.iconRes),
-                            contentDescription = null,
-                            contentScale = ContentScale.Fit,
-                            colorFilter = ColorFilter.tint(itemColor),
+                        Box(
+                            modifier = Modifier.size(AppIconSize.Default),
+                            contentAlignment = Alignment.Center,
+                        ) {
+                            Image(
+                                modifier = Modifier.fillMaxSize(),
+                                painter = painterResource(item.iconRes),
+                                contentDescription = null,
+                                contentScale = ContentScale.Fit,
+                                colorFilter = if (selected) {
+                                    ColorFilter.tint(
+                                        MaterialTheme.colorScheme.primary,
+                                    )
+                                } else {
+                                    null
+                                },
+                            )
+                        }
+                        Text(
+                            text = label,
+                            style = bookOnTypography.bookMeta,
+                            color = labelColor,
                         )
                     }
-                    Text(
-                        text = label,
-                        style = BookOnTypography.bookMeta,
-                        color = itemColor,
-                    )
                 }
             }
         }

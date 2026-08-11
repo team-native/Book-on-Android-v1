@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -27,8 +29,7 @@ import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 private const val ThirdPartyAgreementAnnotationTag = "third_party_agreement"
 private val ThirdPartyAgreementCheckIconSize = 16.dp
@@ -64,7 +65,7 @@ internal fun BookOnThirdPartyAgreementRow(
                         tag = ThirdPartyAgreementAnnotationTag,
                         styles = TextLinkStyles(
                             style = SpanStyle(
-                                color = BookOnColor.Primary,
+                                color = MaterialTheme.colorScheme.primary,
                                 fontWeight = FontWeight.Bold,
                             ),
                         ),
@@ -77,8 +78,8 @@ internal fun BookOnThirdPartyAgreementRow(
                 }
                 append(stringResource(R.string.reading_marathon_third_party_agreement_suffix))
             },
-            style = BookOnTypography.caption,
-            color = BookOnColor.TextTertiary,
+            style = bookOnTypography.caption,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

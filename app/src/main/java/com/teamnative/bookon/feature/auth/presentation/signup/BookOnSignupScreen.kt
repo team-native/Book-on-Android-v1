@@ -29,6 +29,7 @@ import com.teamnative.bookon.feature.auth.presentation.component.BookOnNameField
 fun BookOnSignupScreen(
     uiState: BookOnSignupUiState,
     onEvent: (BookOnSignupScreenEvent) -> Unit,
+    initialProgressStep: Int? = null,
     modifier: Modifier = Modifier,
 ) {
     var progressAnimating by remember { mutableStateOf(true) }
@@ -55,6 +56,7 @@ fun BookOnSignupScreen(
             step = 1,
             title = uiState.title,
             description = uiState.description,
+            initialProgressStep = initialProgressStep,
             onProgressAnimationRunningChange = { progressAnimating = it },
         )
         BookOnEmailField(

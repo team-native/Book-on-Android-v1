@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.privacypolicy
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -11,8 +13,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import androidx.compose.ui.Modifier
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.bar.BookOnStepProgress
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.card.BookOnInfoCard
@@ -28,7 +29,7 @@ fun BookOnPrivacyPolicyScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        containerColor = BookOnColor.Background,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BookOnTopBar(
                 title = uiState.title,
@@ -54,8 +55,8 @@ fun BookOnPrivacyPolicyScreen(
             item {
                 Text(
                     text = uiState.notice,
-                    style = BookOnTypography.caption,
-                    color = BookOnColor.TextSecondary,
+                    style = bookOnTypography.caption,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
             }
         }

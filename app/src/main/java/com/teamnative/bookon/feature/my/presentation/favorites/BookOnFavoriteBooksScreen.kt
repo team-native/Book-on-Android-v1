@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.my.presentation.favorites
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -24,9 +26,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.book.BookOnBookListItem
 import com.teamnative.bookon.core.ui.component.loading.BookOnInlineLoadingIndicator
@@ -45,7 +46,7 @@ fun BookOnFavoriteBooksScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        containerColor = BookOnColor.Background,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BookOnTopBar(
                 title = stringResource(R.string.favorite_books),
@@ -61,19 +62,32 @@ fun BookOnFavoriteBooksScreen(
         ) {
             uiState.errorMessage?.let { message ->
                 item {
-                    Text(text = message.resolve(), color = BookOnColor.TextSecondary)
-                    Button(onClick = onRetryClick) { Text(text = stringResource(R.string.action_retry)) }
+                    Text(
+                        text = message.resolve(),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    Button(onClick = onRetryClick) {
+                        Text(text = stringResource(R.string.action_retry))
+                    }
                 }
             }
             if (uiState.errorMessage == null && uiState.books.isEmpty()) {
-                item { Text(text = stringResource(R.string.empty_favorite_books), color = BookOnColor.TextSecondary) }
+                item {
+                    Text(
+                        text = stringResource(R.string.empty_favorite_books),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
-            if (uiState.books.isNotEmpty()) item {
-                Text(
-                    text = uiState.summary,
-                    style = BookOnTypography.bodySemiBold,
-                    color = BookOnColor.TextPrimary,
-                )
+            if (uiState.books.isNotEmpty()) {
+                item {
+                    Text(
+                        text = uiState.summary,
+                        style = bookOnTypography.bodySemiBold,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                }
             }
             items(uiState.books) { book ->
                 BookOnBookListItem(
@@ -106,11 +120,15 @@ fun BookOnFavoriteBooksScreen(
                 )
             }
             if (uiState.isPagingLoading) {
-                item { BookOnInlineLoadingIndicator() }
+                item {
+                    BookOnInlineLoadingIndicator()
+                }
             }
             if (uiState.hasNext && !uiState.isPagingLoading) {
                 item {
-                    Button(onClick = onLoadMoreClick) { Text(text = stringResource(R.string.action_load_more)) }
+                    Button(onClick = onLoadMoreClick) {
+                        Text(text = stringResource(R.string.action_load_more))
+                    }
                 }
             }
         }

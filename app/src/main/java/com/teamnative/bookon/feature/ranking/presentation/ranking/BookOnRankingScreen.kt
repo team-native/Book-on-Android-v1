@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.ranking.presentation.ranking
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -16,9 +18,8 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.feature.ranking.presentation.component.BookOnRankingListCard
 import com.teamnative.bookon.feature.ranking.presentation.component.BookOnRankingPodium
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.model.resolve
 
 /**
@@ -34,7 +35,7 @@ fun BookOnRankingScreen(
     Scaffold(
         modifier = modifier,
         bottomBar = bottomBar,
-        containerColor = BookOnColor.Background,
+        containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
@@ -43,34 +44,45 @@ fun BookOnRankingScreen(
         ) {
             uiState.errorMessage?.let { message ->
                 item {
-                    Text(text = message.resolve(), color = BookOnColor.TextSecondary)
-                    Button(onClick = onRetryClick) { Text(text = stringResource(R.string.action_retry)) }
+                    Text(
+                        text = message.resolve(),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    Button(onClick = onRetryClick) {
+                        Text(text = stringResource(R.string.action_retry))
+                    }
                 }
             }
             if (uiState.errorMessage == null && uiState.list.members.isEmpty()) {
-                item { Text(text = stringResource(R.string.empty_ranking), color = BookOnColor.TextSecondary) }
-            }
-            if (uiState.errorMessage == null && uiState.list.members.isNotEmpty()) {
-            item {
-                Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Tiny)) {
+                item {
                     Text(
-                        text = stringResource(R.string.ranking_title),
-                        style = BookOnTypography.screenTitle,
-                        color = BookOnColor.TextPrimary,
-                    )
-                    Text(
-                        text = uiState.description,
-                        style = BookOnTypography.caption,
-                        color = BookOnColor.TextSecondary,
+                        text = stringResource(R.string.empty_ranking),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }
-            item {
-                BookOnRankingPodium(uiState = uiState.podium)
-            }
-            item {
-                BookOnRankingListCard(uiState = uiState.list)
-            }
+            if (uiState.errorMessage == null && uiState.list.members.isNotEmpty()) {
+                item {
+                    Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Tiny)) {
+                        Text(
+                            text = stringResource(R.string.ranking_title),
+                            style = bookOnTypography.screenTitle,
+                            color = MaterialTheme.colorScheme.onSurface,
+                        )
+                        Text(
+                            text = uiState.description,
+                            style = bookOnTypography.caption,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        )
+                    }
+                }
+                item {
+                    BookOnRankingPodium(uiState = uiState.podium)
+                }
+                item {
+                    BookOnRankingListCard(uiState = uiState.list)
+                }
             }
         }
     }

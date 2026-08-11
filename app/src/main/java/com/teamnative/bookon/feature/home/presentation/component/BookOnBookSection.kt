@@ -10,6 +10,7 @@ import com.teamnative.bookon.core.ui.component.card.BookOnBookCard
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.ui.model.BookOnBookCardUiModel
+import com.teamnative.bookon.feature.home.presentation.home.BookOnHomeSectionUiState
 
 /**
  * 홈의 AI 추천 또는 일반 책 섹션을 제목 영역과 가로 책 카드 목록으로 조립한다.
@@ -18,7 +19,10 @@ import com.teamnative.bookon.core.ui.model.BookOnBookCardUiModel
 @Composable
 fun BookOnBookSection(
     title: String,
-    books: List<BookOnBookCardUiModel>,
+    state: BookOnHomeSectionUiState<List<BookOnBookCardUiModel>>,
+    emptyMessage: String,
+    retryText: String,
+    onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
     description: String? = null,
     badgeText: String? = null,
@@ -44,13 +48,33 @@ fun BookOnBookSection(
                 onActionClick = onActionClick,
             )
         }
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Content)) {
-            items(books) { book ->
-                BookOnBookCard(
-                    uiState = book,
-                    coverWidth = AppComponentSize.HomeBookCoverWidth,
-                    coverHeight = AppComponentSize.HomeBookCoverHeight,
-                    cardWidth = AppComponentSize.HomeBookCardWidth,
+        when (state) {
+            is BookOnHomeSectionUiState.Content -> {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Content)) {
+                    items(state.value) { book ->
+                        BookOnBookCard(
+                            uiState = book,
+                            coverWidth = AppComponentSize.HomeBookCoverWidth,
+                            coverHeight = AppComponentSize.HomeBookCoverHeight,
+                            cardWidth = AppComponentSize.HomeBookCardWidth,
+                        )
+                    }
+                }
+            }
+
+            BookOnHomeSectionUiState.Loading -> {
+                BookOnHomeSectionFeedback()
+            }
+
+            BookOnHomeSectionUiState.Empty -> {
+                BookOnHomeSectionFeedback(message = emptyMessage)
+            }
+
+            is BookOnHomeSectionUiState.Error -> {
+                BookOnHomeSectionFeedback(
+                    message = state.message,
+                    retryText = retryText,
+                    onRetryClick = onRetryClick,
                 )
             }
         }

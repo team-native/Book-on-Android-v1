@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -9,8 +11,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.auth.presentation.signup.BookOnGender
 
 /**
@@ -29,8 +30,8 @@ fun BookOnGenderSelector(
     ) {
         Text(
             text = stringResource(R.string.gender),
-            style = BookOnTypography.fieldLabel,
-            color = BookOnColor.TextPrimary,
+            style = bookOnTypography.fieldLabel,
+            color = MaterialTheme.colorScheme.onSurface,
         )
         Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Content)) {
             BookOnGender.entries.forEach { gender ->
@@ -41,7 +42,7 @@ fun BookOnGenderSelector(
                     },
                     selected = selectedGender == gender,
                     onSelected = { onGenderSelected(gender) },
-                    selectedTextColor = BookOnColor.Primary,
+                    selectedTextColor = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.weight(1f),
                 )
             }
