@@ -63,7 +63,7 @@ fun BookOnHomeHeader(
 
             Text(
                 text = userName,
-                style = BookOnTypography.screenTitle,
+                style = BookOnTypography.sectionTitle,
                 color = BookOnColor.TextPrimary,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
