@@ -6,11 +6,11 @@ import com.teamnative.bookon.core.ui.component.bar.BookOnBottomNavigationBar
 /** 현재 메인 목적지에 맞춰 선택 상태가 반영된 하단 탭을 표시한다. */
 @Composable
 internal fun BookOnMainBottomBar(
-    currentRoute: String?,
+    current: BookOnDestination?,
     onDestinationSelected: (BookOnDestination) -> Unit,
 ) {
     val selectedIndex = mainDestinations
-        .indexOfFirst { destination -> destination.route == currentRoute }
+        .indexOfFirst { destination -> destination == current }
         .coerceAtLeast(0)
 
     BookOnBottomNavigationBar(
