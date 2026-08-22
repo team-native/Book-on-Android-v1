@@ -1,5 +1,8 @@
 package com.teamnative.bookon.navigation
 
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
@@ -82,6 +85,14 @@ private fun BookOnAuthNavDisplay(onAuthenticated: () -> Unit) {
     NavDisplay(
         backStack = backStack,
         onBack = { backStack.removeLastOrNull() },
+        // 인증 플로우의 push/pop 화면 전환은 애니메이션 없이 즉시 표시한다.
+        // predictive back(엣지 뒤로가기 제스처) 진행 중 피드백은 기본 동작을 유지한다.
+        transitionSpec = {
+            EnterTransition.None togetherWith ExitTransition.None
+        },
+        popTransitionSpec = {
+            EnterTransition.None togetherWith ExitTransition.None
+        },
         entryProvider = entryProvider {
             entry<BookOnDestination.Login> {
                 BookOnLoginRoute(
@@ -250,5 +261,13 @@ private fun BookOnMainNavDisplay(onLogout: () -> Unit) {
             },
         ),
         onBack = navigator::goBack,
+        // 메인 플로우의 push/pop 화면 전환은 애니메이션 없이 즉시 처리한다.
+        // predictive back(엣지 뒤로가기 제스처) 진행 중 피드백은 기본 동작을 유지한다.
+        transitionSpec = {
+            EnterTransition.None togetherWith ExitTransition.None
+        },
+        popTransitionSpec = {
+            EnterTransition.None togetherWith ExitTransition.None
+        },
     )
 }
