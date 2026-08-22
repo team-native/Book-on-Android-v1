@@ -19,7 +19,6 @@ import com.teamnative.bookon.feature.marathon.data.MarathonApiService
 import com.teamnative.bookon.feature.ranking.data.RankingApiService
 import com.teamnative.bookon.feature.community.data.CommunityAuthenticatedApiService
 import com.teamnative.bookon.feature.community.data.CommunityPublicApiService
-import com.teamnative.bookon.feature.media.data.ImageApiService
 import com.teamnative.bookon.feature.notification.data.NotificationApiService
 import com.teamnative.bookon.feature.oauth.data.OAuthAuthenticatedApiService
 import com.teamnative.bookon.feature.oauth.data.OAuthPublicApiService
@@ -158,8 +157,6 @@ object NetworkModule {
     fun provideRankingApiService(@Named(PublicRetrofit) retrofit: Retrofit): RankingApiService = retrofit.create(RankingApiService::class.java)
     @Provides @Singleton
     fun provideHealthApiService(@Named(PublicRetrofit) retrofit: Retrofit): HealthApiService = retrofit.create(HealthApiService::class.java)
-    @Provides @Singleton
-    fun provideImageApiService(@Named(PublicRetrofit) retrofit: Retrofit): ImageApiService = retrofit.create(ImageApiService::class.java)
     @Provides @Singleton
     fun provideSchoolApiService(@Named(PublicRetrofit) retrofit: Retrofit): SchoolApiService = retrofit.create(SchoolApiService::class.java)
     @Provides @Singleton

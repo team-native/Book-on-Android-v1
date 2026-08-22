@@ -50,34 +50,6 @@ class ApiExecutor @Inject constructor(
         NetworkResult.Failure(NetworkError.Network(exception))
     }
 
-    /** API envelope 없이 파일·바이너리를 반환하는 HTTP 응답을 공통 결과로 정규화한다. */
-    suspend fun <T> executeRaw(
-        request: suspend () -> Response<T>,
-    ): NetworkResult<T> = try {
-        val response = request()
-        if (response.isSuccessful) {
-            response.body()?.let { NetworkResult.Success(it) }
-                ?: NetworkResult.Failure(NetworkError.EmptyBody("응답 본문이 비어 있습니다."))
-        } else {
-            val error = response.errorBody()?.string()?.let { raw ->
-                runCatching { json.decodeFromString<ApiEnvelope<JsonElement>>(raw) }.getOrNull()
-            }
-            NetworkResult.Failure(
-                NetworkError.Http(
-                    statusCode = response.code(),
-                    errorCode = error?.errorCode,
-                    message = error?.message ?: response.message(),
-                ),
-            )
-        }
-    } catch (exception: CancellationException) {
-        throw exception
-    } catch (exception: SerializationException) {
-        NetworkResult.Failure(NetworkError.Serialization(exception))
-    } catch (exception: IOException) {
-        NetworkResult.Failure(NetworkError.Network(exception))
-    }
-
     /** 성공 응답의 data가 null인 명령형 API를 Unit 결과로 정규화한다. */
     suspend fun executeUnit(
         request: suspend () -> Response<ApiEnvelope<EmptyResponseDto>>,
