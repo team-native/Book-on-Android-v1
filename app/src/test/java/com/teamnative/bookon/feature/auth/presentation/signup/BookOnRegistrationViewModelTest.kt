@@ -1,5 +1,6 @@
 package com.teamnative.bookon.feature.auth.presentation.signup
 
+import com.teamnative.bookon.core.network.NetworkError
 import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.feature.auth.domain.AuthRepository
 import com.teamnative.bookon.feature.auth.domain.LinkRead365UseCase
@@ -21,6 +22,8 @@ import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
 import org.junit.Assert.assertEquals
+import org.junit.Assert.assertFalse
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 
@@ -62,14 +65,75 @@ class BookOnRegistrationViewModelTest {
         assertEquals("renewed-session", viewModel.state.value.sessionId)
         assertEquals(null, viewModel.state.value.errorMessage)
     }
+
+    @Test
+    fun `이미 사용 중인 이메일이면 이메일 단계 복귀와 오류 표시를 요청한다`() = runTest {
+        val repository = RegistrationRepository().apply {
+            registerResult = NetworkResult.Failure(
+                NetworkError.Http(
+                    statusCode = 409,
+                    errorCode = null,
+                    message = "이미 사용 중인 이메일입니다.",
+                ),
+            )
+        }
+        val viewModel = createViewModel(repository)
+        var returnedToEmailStep = false
+
+        viewModel.update {
+            it.copy(
+                email = "s26031",
+                name = "학생",
+                department = BookOnDepartment.AI,
+                gender = BookOnGender.FEMALE,
+                password = "Password1!",
+                passwordConfirm = "Password1!",
+            )
+        }
+        viewModel.requestVerification(
+            onSuccess = {},
+            onEmailAlreadyUsed = { returnedToEmailStep = true },
+        )
+
+        assertTrue(returnedToEmailStep)
+        assertEquals(BookOnRegistrationEmailError.AlreadyUsed, viewModel.state.value.emailError)
+        assertEquals(null, viewModel.state.value.errorMessage)
+        assertFalse(viewModel.state.value.isLoading)
+    }
+
+    @Test
+    fun `이메일 입력값이 변경되면 기존 이메일 오류를 지운다`() = runTest {
+        val viewModel = createViewModel(RegistrationRepository())
+        viewModel.update {
+            it.copy(emailError = BookOnRegistrationEmailError.AlreadyUsed)
+        }
+
+        viewModel.update { state -> state.copy(email = "new-email") }
+
+        assertEquals(null, viewModel.state.value.emailError)
+    }
+
+    private fun createViewModel(repository: RegistrationRepository): BookOnRegistrationViewModel {
+        return BookOnRegistrationViewModel(
+            registerUseCase = RegisterUseCase(repository),
+            verifyRegistrationUseCase = VerifyRegistrationUseCase(repository),
+        )
+    }
 }
 
 private class RegistrationRepository : AuthRepository {
     var registerRequests = 0
+    var registerResult: NetworkResult<RegistrationSession>? = null
 
     override suspend fun register(request: RegistrationDraft): NetworkResult<RegistrationSession> {
         registerRequests += 1
-        return NetworkResult.Success(RegistrationSession("renewed-session", "2026-07-22T00:00:00Z", request.email))
+        return registerResult ?: NetworkResult.Success(
+            RegistrationSession(
+                "renewed-session",
+                "2026-07-22T00:00:00Z",
+                request.email,
+            ),
+        )
     }
 
     override suspend fun verifyRegistration(sessionId: String, passcode: String): NetworkResult<RegisteredUser> = error("not used")

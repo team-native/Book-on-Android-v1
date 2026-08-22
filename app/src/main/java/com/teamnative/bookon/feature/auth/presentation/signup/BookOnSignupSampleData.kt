@@ -9,6 +9,7 @@ import com.teamnative.bookon.feature.auth.presentation.model.BookOnDropdownField
 @Composable
 internal fun defaultSignupUiState(
     email: String = "",
+    emailErrorText: String? = null,
     name: String = "",
     selectedGender: BookOnGender? = null,
     selectedDepartmentText: String = "",
@@ -22,6 +23,7 @@ internal fun defaultSignupUiState(
         label = stringResource(R.string.school_email),
         placeholder = stringResource(R.string.email_address),
         suffixText = stringResource(R.string.email_domain_gsm),
+        errorText = emailErrorText,
     ),
     name = BookOnTextFieldUiModel(
         value = name,

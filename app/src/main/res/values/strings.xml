@@ -61,6 +61,7 @@
     <string name="school_email">학교 이메일</string>
     <string name="email_address">이메일 주소</string>
     <string name="email_domain_gsm">@gsm.hs.kr</string>
+    <string name="error_signup_email_already_used">이미 사용 중인 이메일입니다.</string>
     <string name="name">이름</string>
     <string name="gender">성별</string>
     <string name="male">남자</string>

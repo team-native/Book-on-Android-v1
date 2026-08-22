@@ -18,6 +18,7 @@ fun BookOnPasswordSetupRoute(
     initialProgressStep: Int?,
     onBackClick: () -> Unit,
     onNextClick: () -> Unit,
+    onEmailAlreadyUsed: () -> Unit,
     viewModel: com.teamnative.bookon.feature.auth.presentation.signup.BookOnRegistrationViewModel = hiltViewModel(),
 ) {
     val registrationState by viewModel.state.collectAsStateWithLifecycle()
@@ -53,7 +54,12 @@ fun BookOnPasswordSetupRoute(
         onPasswordConfirmChange = { password -> viewModel.update { it.copy(passwordConfirm = password) } },
         onPrivacyCheckedChange = { accepted -> viewModel.update { it.copy(privacyAccepted = accepted) } },
         onPrivacyPolicyExpandedChange = { privacyPolicyExpanded = it },
-        onNextClick = { viewModel.requestVerification(onNextClick) },
+        onNextClick = {
+            viewModel.requestVerification(
+                onSuccess = onNextClick,
+                onEmailAlreadyUsed = onEmailAlreadyUsed,
+            )
+        },
         initialProgressStep = initialProgressStep,
     )
 }

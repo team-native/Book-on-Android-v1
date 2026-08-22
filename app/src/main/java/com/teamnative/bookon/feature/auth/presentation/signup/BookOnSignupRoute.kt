@@ -39,8 +39,16 @@ fun BookOnSignupRoute(
     val selectedDepartmentText = registrationState.department?.let { department ->
         stringResource(department.textResId)
     }.orEmpty()
+    val emailErrorText = when (registrationState.emailError) {
+        BookOnRegistrationEmailError.AlreadyUsed -> {
+            stringResource(R.string.error_signup_email_already_used)
+        }
+
+        null -> null
+    }
     val uiState = defaultSignupUiState(
         email = registrationState.email,
+        emailErrorText = emailErrorText,
         name = registrationState.name,
         selectedGender = registrationState.gender,
         selectedDepartmentText = selectedDepartmentText,
