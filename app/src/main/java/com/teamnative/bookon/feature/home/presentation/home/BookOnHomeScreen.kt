@@ -20,7 +20,6 @@ import com.teamnative.bookon.feature.home.presentation.component.BookOnHomeHeade
 import com.teamnative.bookon.feature.home.presentation.component.BookOnHomeNoticeCard
 import com.teamnative.bookon.feature.home.presentation.component.BookOnHomeSearchBar
 import com.teamnative.bookon.feature.home.presentation.component.BookOnPopularBooksSection
-import com.teamnative.bookon.feature.home.presentation.model.BookOnHomeNoticeUiModel
 
 /** 홈 상단 액션, 검색, 공지, 추천과 인기 책 섹션을 조립한다. */
 @Composable
@@ -33,14 +32,6 @@ fun BookOnHomeScreen(
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val fallbackNotice = BookOnHomeNoticeUiModel(
-        category = stringResource(R.string.library_notice),
-        dateText = stringResource(R.string.notice_date_author, "2026. 07. 01"),
-        title = stringResource(R.string.summer_vacation_loan_notice_title),
-        description = stringResource(R.string.summer_vacation_loan_notice_description),
-        badgeText = stringResource(R.string.badge_new),
-    )
-    val notice = uiState.notice ?: fallbackNotice
     val userName = uiState.userName.takeIf { name -> name.isNotBlank() }?.let { name ->
         stringResource(R.string.user_name_suffix, name)
     }.orEmpty()
@@ -89,11 +80,13 @@ fun BookOnHomeScreen(
                 )
             }
             }
-            item {
-                BookOnHomeNoticeCard(
-                    uiState = notice,
-                    actionText = stringResource(R.string.action_view_detail),
-                )
+            uiState.notice?.let { notice ->
+                item {
+                    BookOnHomeNoticeCard(
+                        uiState = notice,
+                        actionText = stringResource(R.string.action_view_detail),
+                    )
+                }
             }
             item {
                 BookOnBookSection(
