@@ -11,9 +11,13 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.HasDefaultViewModelProviderFactory
+import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
+import androidx.lifecycle.viewmodel.CreationExtras
+import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
@@ -40,6 +44,36 @@ import com.teamnative.bookon.feature.my.presentation.main.BookOnMyRoute
 import com.teamnative.bookon.feature.ranking.presentation.ranking.BookOnRankingRoute
 
 private const val PasswordSetupStep = 2
+
+/**
+ * 여러 NavKey가 공유하는 Hilt ViewModel을 위한 [ViewModelStoreOwner]를 만든다.
+ * Compose의 hiltViewModel()은 owner가 [HasDefaultViewModelProviderFactory]를 구현해야
+ * Hilt 팩토리를 찾을 수 있고, ViewModel이 `SavedStateHandle`을 주입받으려면 그 팩토리가
+ * 만드는 [CreationExtras]에 SavedStateRegistryOwner/ViewModelStoreOwner 정보가 있어야 한다.
+ * 이 두 키를 만드는 클래스는 Kotlin `internal`이라 직접 접근할 수 없으므로, 현재 컴포지션의
+ * 기본 owner(Activity)가 이미 올바르게 구성해 둔 [HasDefaultViewModelProviderFactory.defaultViewModelCreationExtras]를
+ * 그대로 위임한다. ViewModel 인스턴스 자체는 우리 자신의 [ViewModelStore]에 저장되므로 공유
+ * 범위에는 영향이 없다. 이 값을 반환한 Composable이 구성에서 사라지면 ViewModelStore를 clear한다.
+ */
+@Composable
+private fun rememberFlowViewModelStoreOwner(): ViewModelStoreOwner {
+    val defaultOwner = checkNotNull(LocalViewModelStoreOwner.current as? HasDefaultViewModelProviderFactory) {
+        "LocalViewModelStoreOwner가 HasDefaultViewModelProviderFactory를 구현하지 않았다."
+    }
+    val defaultFactory = defaultOwner.defaultViewModelProviderFactory
+    val defaultExtras = defaultOwner.defaultViewModelCreationExtras
+    val owner = remember {
+        object : ViewModelStoreOwner, HasDefaultViewModelProviderFactory {
+            override val viewModelStore = ViewModelStore()
+            override val defaultViewModelProviderFactory: ViewModelProvider.Factory = defaultFactory
+            override val defaultViewModelCreationExtras: CreationExtras = defaultExtras
+        }
+    }
+    DisposableEffect(Unit) {
+        onDispose { owner.viewModelStore.clear() }
+    }
+    return owner
+}
 
 /**
  * 앱의 최상위 Navigation 3 진입점이다.
@@ -71,29 +105,13 @@ private fun BookOnAuthNavDisplay(onAuthenticated: () -> Unit) {
     // 회원가입(Signup → PasswordSetup → VerificationCode) 3개 화면이 공유하는 ViewModel이다.
     // Activity 전체가 아니라 이 Composable(=인증 플로우)이 구성되어 있는 동안만 유지되도록
     // 직접 ViewModelStore를 만들고, 인증 플로우를 벗어나면(= 로그인 성공) clear한다.
-    val registrationViewModelStoreOwner = remember {
-        object : ViewModelStoreOwner {
-            override val viewModelStore = ViewModelStore()
-        }
-    }
-    DisposableEffect(Unit) {
-        onDispose { registrationViewModelStoreOwner.viewModelStore.clear() }
-    }
     val registrationViewModel: BookOnRegistrationViewModel =
-        hiltViewModel(viewModelStoreOwner = registrationViewModelStoreOwner)
+        hiltViewModel(viewModelStoreOwner = rememberFlowViewModelStoreOwner())
 
     // 비밀번호 재설정(이메일 → 인증코드 → 새 비밀번호) 3개 화면이 공유하는 ViewModel이다.
     // 이 흐름을 완전히 벗어나면(로그인 화면으로 복귀) clear한다.
-    val passwordResetViewModelStoreOwner = remember {
-        object : ViewModelStoreOwner {
-            override val viewModelStore = ViewModelStore()
-        }
-    }
-    DisposableEffect(Unit) {
-        onDispose { passwordResetViewModelStoreOwner.viewModelStore.clear() }
-    }
     val passwordResetViewModel: BookOnPasswordResetViewModel =
-        hiltViewModel(viewModelStoreOwner = passwordResetViewModelStoreOwner)
+        hiltViewModel(viewModelStoreOwner = rememberFlowViewModelStoreOwner())
 
     // Navigation 2의 savedStateHandle 결과 전달을 대체하는 회원가입 플로우 전용 상태이다.
     var progressStepOverride by remember { mutableIntStateOf(-1) }
@@ -216,16 +234,8 @@ private fun BookOnMainNavDisplay(onLogout: () -> Unit) {
 
     // 비밀번호 재설정(이메일 → 인증코드 → 새 비밀번호) 3개 화면이 공유하는 ViewModel이다.
     // 인증 전 흐름과는 별개의 인스턴스이며, 메인 플로우가 사라지면(로그아웃) clear한다.
-    val passwordResetViewModelStoreOwner = remember {
-        object : ViewModelStoreOwner {
-            override val viewModelStore = ViewModelStore()
-        }
-    }
-    DisposableEffect(Unit) {
-        onDispose { passwordResetViewModelStoreOwner.viewModelStore.clear() }
-    }
     val passwordResetViewModel: BookOnPasswordResetViewModel =
-        hiltViewModel(viewModelStoreOwner = passwordResetViewModelStoreOwner)
+        hiltViewModel(viewModelStoreOwner = rememberFlowViewModelStoreOwner())
 
     val bottomBar: @Composable () -> Unit = {
         BookOnMainBottomBar(
