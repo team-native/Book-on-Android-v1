@@ -45,10 +45,22 @@ class BookOnPasswordResetViewModelTest {
         viewModel.updateEmail("s26031")
         viewModel.sendVerificationCode { navigated = true }
 
-        assertEquals("s26031", repository.lastEmail)
+        assertEquals("s26031@gsm.hs.kr", repository.lastEmail)
+        assertEquals("s26031@gsm.hs.kr", viewModel.state.value.email)
         assertTrue(navigated)
         assertFalse(viewModel.state.value.isLoading)
         assertEquals(null, viewModel.state.value.error)
+    }
+
+    @Test
+    fun `이미 학교 이메일을 입력한 경우 도메인을 중복으로 추가하지 않는다`() = runTest {
+        val repository = PasswordResetRepository()
+        val viewModel = createViewModel(repository)
+
+        viewModel.updateEmail("s26031@gsm.hs.kr")
+        viewModel.sendVerificationCode {}
+
+        assertEquals("s26031@gsm.hs.kr", repository.lastEmail)
     }
 
     @Test
@@ -61,6 +73,7 @@ class BookOnPasswordResetViewModelTest {
         viewModel.resendVerificationCode()
 
         assertEquals("", viewModel.state.value.code)
+        assertEquals("s26031@gsm.hs.kr", repository.lastEmail)
         assertEquals(1, repository.sendEmailRequestCount)
 
         repository.sendEmailResult = NetworkResult.Failure(
@@ -84,7 +97,7 @@ class BookOnPasswordResetViewModelTest {
         viewModel.updatePasswordConfirm("Password1!")
         viewModel.resetPassword { completed = true }
 
-        assertEquals("s26031", repository.resetEmail)
+        assertEquals("s26031@gsm.hs.kr", repository.resetEmail)
         assertEquals("123456", repository.resetCode)
         assertEquals("Password1!", repository.resetPassword)
         assertTrue(completed)

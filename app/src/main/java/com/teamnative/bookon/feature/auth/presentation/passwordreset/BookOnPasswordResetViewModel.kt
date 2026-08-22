@@ -12,6 +12,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 
+private const val GsmEmailDomain = "@gsm.hs.kr"
+
 @HiltViewModel
 class BookOnPasswordResetViewModel @Inject constructor(
     private val sendEmail: SendPasswordResetEmailUseCase,
@@ -56,11 +58,15 @@ class BookOnPasswordResetViewModel @Inject constructor(
     fun sendVerificationCode(onSuccess: () -> Unit) {
         viewModelScope.launch {
             val value = mutableState.value
+            val requestEmail = value.email.toGsmEmailAddress()
             mutableState.value = value.copy(isLoading = true, error = null)
 
-            when (sendEmail(value.email)) {
+            when (sendEmail(requestEmail)) {
                 is NetworkResult.Success -> {
-                    mutableState.value = value.copy(isLoading = false)
+                    mutableState.value = value.copy(
+                        email = requestEmail,
+                        isLoading = false,
+                    )
                     onSuccess()
                 }
 
@@ -73,11 +79,13 @@ class BookOnPasswordResetViewModel @Inject constructor(
     fun resendVerificationCode() {
         viewModelScope.launch {
             val value = mutableState.value
+            val requestEmail = value.email.toGsmEmailAddress()
             mutableState.value = value.copy(isLoading = true, error = null)
 
-            when (sendEmail(value.email)) {
+            when (sendEmail(requestEmail)) {
                 is NetworkResult.Success -> {
                     mutableState.value = value.copy(
+                        email = requestEmail,
                         code = "",
                         error = null,
                         isLoading = false,
@@ -93,16 +101,36 @@ class BookOnPasswordResetViewModel @Inject constructor(
     fun resetPassword(onSuccess: () -> Unit) {
         viewModelScope.launch {
             val value = mutableState.value
+            val requestEmail = value.email.toGsmEmailAddress()
             mutableState.value = value.copy(isLoading = true, error = null)
 
-            when (resetPassword(value.email, value.code, value.password, value.confirm)) {
+            when (resetPassword(requestEmail, value.code, value.password, value.confirm)) {
                 is NetworkResult.Success -> {
-                    mutableState.value = value.copy(isLoading = false)
+                    mutableState.value = value.copy(
+                        email = requestEmail,
+                        isLoading = false,
+                    )
                     onSuccess()
                 }
 
                 is NetworkResult.Failure -> fail(value)
             }
+        }
+    }
+
+    /** 입력값이 아이디 부분이면 학교 이메일 도메인을 추가해 API 요청용 주소를 만든다. */
+    private fun String.toGsmEmailAddress(): String {
+        val trimmedEmail = trim()
+        val emailDomain = trimmedEmail.substringAfterLast('@', missingDelimiterValue = "")
+
+        return when {
+            trimmedEmail.isEmpty() -> trimmedEmail
+            emailDomain.equals(GsmEmailDomain.removePrefix("@"), ignoreCase = true) -> {
+                trimmedEmail.substringBeforeLast('@') + GsmEmailDomain
+            }
+
+            '@' in trimmedEmail -> trimmedEmail
+            else -> trimmedEmail + GsmEmailDomain
         }
     }
 
