@@ -5,9 +5,12 @@ import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
 import retrofit2.Response
 import retrofit2.http.Body
+import retrofit2.http.DELETE
 import retrofit2.http.GET
 import retrofit2.http.PATCH
+import retrofit2.http.POST
 import retrofit2.http.Query
+import okhttp3.RequestBody
 
 interface MyApiService {
     @GET("me")
@@ -18,20 +21,38 @@ interface MyApiService {
         @Body body: NotificationSettingsRequestDto,
     ): Response<ApiEnvelope<NotificationSettingsDto>>
 
+    @PATCH("me")
+    suspend fun updateProfile(
+        @Body body: UpdateMyProfileRequestDto,
+    ): Response<ApiEnvelope<UpdateMyProfileResponseDto>>
+
+    @POST("me/delete-request")
+    suspend fun requestAccountDeletion(
+        @Body body: AccountDeletionRequestDto,
+    ): Response<ApiEnvelope<AccountDeletionResponseDto>>
+
+    @POST("me/profile-image")
+    suspend fun uploadProfileImage(
+        @Body body: RequestBody,
+    ): Response<ApiEnvelope<ProfileImageDto>>
+
+    @DELETE("me/profile-image")
+    suspend fun deleteProfileImage(): Response<ApiEnvelope<ProfileImageDto>>
+
     @GET("me/loans/current")
     suspend fun currentLoans(): Response<ApiEnvelope<LoanListDto>>
 
     @GET("me/loans/history")
     suspend fun loanHistory(
-        @Query("page") page: Int,
-        @Query("size") size: Int,
-        @Query("status") status: String,
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null,
+        @Query("status") status: String? = null,
     ): Response<ApiEnvelope<LoanListDto>>
 
     @GET("me/favorite-books")
     suspend fun favorites(
-        @Query("page") page: Int,
-        @Query("size") size: Int,
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null,
     ): Response<ApiEnvelope<FavoriteBookPageDto>>
 }
 @Serializable
@@ -49,6 +70,41 @@ data class UserDto(
     @SerialName("name") val name: String,
     @SerialName("department") val department: String,
     @SerialName("gender") val gender: String,
+    @SerialName("grade") val grade: Int? = null,
+    @SerialName("classNo") val classNo: Int? = null,
+    @SerialName("studentNo") val studentNo: String? = null,
+    @SerialName("profileImageUrl") val profileImageUrl: String? = null,
+)
+
+@Serializable
+data class UpdateMyProfileRequestDto(
+    @SerialName("name") val name: String? = null,
+    @SerialName("department") val department: String? = null,
+    @SerialName("grade") val grade: Int? = null,
+    @SerialName("classNo") val classNo: Int? = null,
+    @SerialName("studentNo") val studentNo: String? = null,
+)
+
+@Serializable
+data class UpdateMyProfileResponseDto(
+    @SerialName("user") val user: UserDto,
+)
+
+@Serializable
+data class AccountDeletionRequestDto(
+    @SerialName("reason") val reason: String? = null,
+)
+
+@Serializable
+data class AccountDeletionResponseDto(
+    @SerialName("requestId") val requestId: Long,
+    @SerialName("status") val status: String,
+    @SerialName("requestedAt") val requestedAt: String,
+)
+
+@Serializable
+data class ProfileImageDto(
+    @SerialName("profileImageUrl") val profileImageUrl: String? = null,
 )
 
 @Serializable

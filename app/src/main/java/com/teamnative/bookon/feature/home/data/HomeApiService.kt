@@ -11,13 +11,13 @@ import retrofit2.http.Query
 interface HomeApiService {
     @GET("home")
     suspend fun home(
-        @Query("limit") limit: Int,
+        @Query("limit") limit: Int? = null,
     ): Response<ApiEnvelope<HomeDto>>
 
     @GET("notices")
     suspend fun notices(
-        @Query("page") page: Int,
-        @Query("size") size: Int,
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null,
     ): Response<ApiEnvelope<NoticePageDto>>
 }
 

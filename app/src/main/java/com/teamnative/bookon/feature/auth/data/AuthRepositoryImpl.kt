@@ -20,7 +20,17 @@ class AuthRepositoryImpl @Inject constructor(private val remote: AuthRemoteDataS
         is NetworkResult.Failure -> result
     }
     override suspend fun login(loginId: String, password: String): NetworkResult<LoginSession> = when (val result = remote.login(loginId, password)) {
-        is NetworkResult.Success -> NetworkResult.Success(LoginSession(result.data.accessToken, result.data.refreshToken))
+        is NetworkResult.Success -> NetworkResult.Success(
+            LoginSession(
+                accessToken = result.data.accessToken,
+                refreshToken = result.data.refreshToken,
+                userId = result.data.userId,
+                name = result.data.name,
+                email = result.data.email,
+                tokenType = result.data.tokenType,
+                expiresIn = result.data.expiresIn,
+            ),
+        )
         is NetworkResult.Failure -> result
     }
     override suspend fun logout(refreshToken: String): NetworkResult<Unit> = remote.logout(refreshToken)

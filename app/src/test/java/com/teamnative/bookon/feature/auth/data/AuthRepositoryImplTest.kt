@@ -57,14 +57,14 @@ private class RecordingAuthRemoteDataSource : AuthRemoteDataSource {
 
     override suspend fun logout(refreshToken: String): NetworkResult<Unit> = error("not used")
 
-    override suspend fun sendReset(email: String): NetworkResult<EmptyDto> = error("not used")
+    override suspend fun sendReset(email: String): NetworkResult<PasswordResetEmailResponseDto> = error("not used")
 
     override suspend fun reset(
         email: String,
         code: String,
         password: String,
         confirm: String,
-    ): NetworkResult<EmptyDto> = error("not used")
+    ): NetworkResult<PasswordResetResponseDto> = error("not used")
 
-    override suspend fun linkRead365(id: String, password: String): NetworkResult<EmptyDto> = error("not used")
+    override suspend fun linkRead365(id: String, password: String): NetworkResult<Read365LoginResponseDto> = error("not used")
 }

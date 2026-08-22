@@ -27,4 +27,8 @@ data class RefreshTokenResponseDto(
     val accessToken: String,
     @SerialName("refreshToken")
     val refreshToken: String,
+    @SerialName("tokenType")
+    val tokenType: String? = null,
+    @SerialName("expiresIn")
+    val expiresIn: Long? = null,
 )

@@ -17,6 +17,13 @@ import com.teamnative.bookon.feature.my.data.MyApiService
 import com.teamnative.bookon.feature.home.data.HomeApiService
 import com.teamnative.bookon.feature.marathon.data.MarathonApiService
 import com.teamnative.bookon.feature.ranking.data.RankingApiService
+import com.teamnative.bookon.feature.community.data.CommunityAuthenticatedApiService
+import com.teamnative.bookon.feature.community.data.CommunityPublicApiService
+import com.teamnative.bookon.feature.notification.data.NotificationApiService
+import com.teamnative.bookon.feature.oauth.data.OAuthAuthenticatedApiService
+import com.teamnative.bookon.feature.oauth.data.OAuthPublicApiService
+import com.teamnative.bookon.feature.school.data.SchoolApiService
+import com.teamnative.bookon.feature.system.data.HealthApiService
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -148,6 +155,20 @@ object NetworkModule {
     fun provideMarathonApiService(retrofit: Retrofit): MarathonApiService = retrofit.create(MarathonApiService::class.java)
     @Provides @Singleton
     fun provideRankingApiService(@Named(PublicRetrofit) retrofit: Retrofit): RankingApiService = retrofit.create(RankingApiService::class.java)
+    @Provides @Singleton
+    fun provideHealthApiService(@Named(PublicRetrofit) retrofit: Retrofit): HealthApiService = retrofit.create(HealthApiService::class.java)
+    @Provides @Singleton
+    fun provideSchoolApiService(@Named(PublicRetrofit) retrofit: Retrofit): SchoolApiService = retrofit.create(SchoolApiService::class.java)
+    @Provides @Singleton
+    fun provideOAuthAuthenticatedApiService(retrofit: Retrofit): OAuthAuthenticatedApiService = retrofit.create(OAuthAuthenticatedApiService::class.java)
+    @Provides @Singleton
+    fun provideOAuthPublicApiService(@Named(PublicRetrofit) retrofit: Retrofit): OAuthPublicApiService = retrofit.create(OAuthPublicApiService::class.java)
+    @Provides @Singleton
+    fun provideNotificationApiService(retrofit: Retrofit): NotificationApiService = retrofit.create(NotificationApiService::class.java)
+    @Provides @Singleton
+    fun provideCommunityAuthenticatedApiService(retrofit: Retrofit): CommunityAuthenticatedApiService = retrofit.create(CommunityAuthenticatedApiService::class.java)
+    @Provides @Singleton
+    fun provideCommunityPublicApiService(@Named(PublicRetrofit) retrofit: Retrofit): CommunityPublicApiService = retrofit.create(CommunityPublicApiService::class.java)
 
     private const val UnauthenticatedClient = "unauthenticated_client"
     private const val RefreshRetrofit = "refresh_retrofit"

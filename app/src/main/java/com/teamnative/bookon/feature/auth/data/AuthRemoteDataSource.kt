@@ -9,9 +9,9 @@ interface AuthRemoteDataSource {
     suspend fun verifyRegistration(sessionId: String, passcode: String): NetworkResult<RegistrationResponseDto>
     suspend fun login(id: String, password: String): NetworkResult<LoginResponseDto>
     suspend fun logout(refreshToken: String): NetworkResult<Unit>
-    suspend fun sendReset(email: String): NetworkResult<EmptyDto>
-    suspend fun reset(email: String, code: String, password: String, confirm: String): NetworkResult<EmptyDto>
-    suspend fun linkRead365(id: String, password: String): NetworkResult<EmptyDto>
+    suspend fun sendReset(email: String): NetworkResult<PasswordResetEmailResponseDto>
+    suspend fun reset(email: String, code: String, password: String, confirm: String): NetworkResult<PasswordResetResponseDto>
+    suspend fun linkRead365(id: String, password: String): NetworkResult<Read365LoginResponseDto>
 }
 class AuthRemoteDataSourceImpl @Inject constructor(
     private val api: AuthApiService,

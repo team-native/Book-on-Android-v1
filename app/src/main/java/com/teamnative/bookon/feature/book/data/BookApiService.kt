@@ -15,9 +15,9 @@ import retrofit2.http.Query
 interface BookPublicApiService {
     @GET("books")
     suspend fun books(
-        @Query("page") page: Int,
-        @Query("size") size: Int,
-        @Query("sort") sort: String,
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null,
+        @Query("sort") sort: String? = null,
         @Query("category") category: String?,
     ): Response<ApiEnvelope<BookPageDto>>
 
@@ -25,18 +25,26 @@ interface BookPublicApiService {
     suspend fun search(
         @Query("keyword") keyword: String?,
         @Query("libraryNumber") libraryNumber: String?,
-        @Query("page") page: Int,
-        @Query("size") size: Int,
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null,
     ): Response<ApiEnvelope<BookPageDto>>
 
     @GET("books/new")
     suspend fun newBooks(
-        @Query("page") page: Int,
-        @Query("size") size: Int,
+        @Query("page") page: Int? = null,
+        @Query("size") size: Int? = null,
     ): Response<ApiEnvelope<BookPageDto>>
 
     @GET("books/categories")
     suspend fun categories(): Response<ApiEnvelope<CategoryListDto>>
+
+    @GET("books/recommendations/today")
+    suspend fun todayRecommendations(): Response<ApiEnvelope<TodayRecommendationsDto>>
+
+    @GET("books/{bookId}/purchase-links")
+    suspend fun purchaseLinks(
+        @Path("bookId") bookId: Long,
+    ): Response<ApiEnvelope<PurchaseLinkListDto>>
 }
 
 /** access token이 있으면 첨부하고, 없으면 선택 인증 상세 조회만 허용하는 도서 HTTP 계약이다. */
@@ -60,6 +68,11 @@ interface BookAuthenticatedApiService {
     suspend fun loan(
         @Body body: LoanRequestDto,
     ): Response<ApiEnvelope<LoanDto>>
+
+    @POST("loans/{loanId}/extension")
+    suspend fun extendLoan(
+        @Path("loanId") loanId: Long,
+    ): Response<ApiEnvelope<LoanExtensionDto>>
 }
 
 @Serializable
@@ -86,6 +99,7 @@ data class BookDto(
     @SerialName("category") val category: String,
     @SerialName("libraryNumber") val libraryNumber: String,
     @SerialName("coverImageUrl") val coverImageUrl: String? = null,
+    @SerialName("coverUrl") val coverUrl: String? = null,
     @SerialName("loanAvailable") val loanAvailable: Boolean,
     @SerialName("status") val status: String,
 )
@@ -99,6 +113,7 @@ data class BookDetailDto(
     @SerialName("category") val category: String,
     @SerialName("libraryNumber") val libraryNumber: String,
     @SerialName("coverImageUrl") val coverImageUrl: String? = null,
+    @SerialName("coverUrl") val coverUrl: String? = null,
     @SerialName("loanAvailable") val loanAvailable: Boolean,
     @SerialName("status") val status: String,
     @SerialName("description") val description: String? = null,
@@ -132,6 +147,44 @@ data class LoanDto(
     @SerialName("dueDate") val dueDate: String,
     @SerialName("status") val status: String,
     @SerialName("title") val title: String,
+    @SerialName("extensionAvailable") val extensionAvailable: Boolean = false,
+)
+
+@Serializable
+data class LoanExtensionDto(
+    @SerialName("loanId") val loanId: Long,
+    @SerialName("previousDueDate") val previousDueDate: String,
+    @SerialName("newDueDate") val newDueDate: String,
+    @SerialName("extensionCount") val extensionCount: Int,
+    @SerialName("extensionAvailable") val extensionAvailable: Boolean,
+)
+
+@Serializable
+data class TodayRecommendationsDto(
+    @SerialName("recommendedAt") val recommendedAt: String,
+    @SerialName("items") val items: List<TodayRecommendationItemDto>,
+)
+
+@Serializable
+data class TodayRecommendationItemDto(
+    @SerialName("bookId") val bookId: Long,
+    @SerialName("title") val title: String,
+    @SerialName("author") val author: String,
+    @SerialName("coverImageUrl") val coverImageUrl: String? = null,
+    @SerialName("coverUrl") val coverUrl: String? = null,
+    @SerialName("reason") val reason: String? = null,
+)
+
+@Serializable
+data class PurchaseLinkListDto(
+    @SerialName("items") val items: List<PurchaseLinkDto>,
+)
+
+@Serializable
+data class PurchaseLinkDto(
+    @SerialName("provider") val provider: String,
+    @SerialName("label") val label: String,
+    @SerialName("url") val url: String,
 )
 
 @Serializable
