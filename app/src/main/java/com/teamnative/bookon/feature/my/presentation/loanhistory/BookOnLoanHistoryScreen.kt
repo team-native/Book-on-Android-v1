@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.my.presentation.loanhistory
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -16,9 +18,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.book.BookOnBookListItem
 import com.teamnative.bookon.core.ui.component.chip.BookOnFilterChip
@@ -33,7 +34,7 @@ fun BookOnLoanHistoryScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        containerColor = BookOnColor.Background,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BookOnTopBar(
                 title = stringResource(R.string.loan_return_history),
@@ -61,39 +62,68 @@ fun BookOnLoanHistoryScreen(
             }
             uiState.errorMessage?.let { errorMessage ->
                 item {
-                    Text(text = errorMessage, style = BookOnTypography.bodyMedium, color = BookOnColor.TextSecondary)
-                    TextButton(onClick = { onEvent(BookOnLoanHistoryScreenEvent.RetryClicked) }) {
+                    Text(
+                        text = errorMessage,
+                        style = bookOnTypography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+
+                    TextButton(
+                        onClick = {
+                            onEvent(BookOnLoanHistoryScreenEvent.RetryClicked)
+                        },
+                    ) {
                         Text(text = stringResource(R.string.action_retry))
                     }
                 }
             }
             if (uiState.errorMessage == null && uiState.currentLoans.isEmpty() && uiState.pastLoans.isEmpty()) {
-                item { Text(text = stringResource(R.string.empty_loan_history), style = BookOnTypography.bodyMedium, color = BookOnColor.TextSecondary) }
+                item {
+                    Text(
+                        text = stringResource(R.string.empty_loan_history),
+                        style = bookOnTypography.bodyMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
             }
             if (uiState.currentLoans.isNotEmpty()) {
-                item { SectionTitle(text = uiState.currentTitle) }
+                item {
+                    SectionTitle(text = uiState.currentTitle)
+                }
                 items(uiState.currentLoans) { book ->
                     BookOnBookListItem(
                         uiState = book,
-                        onClick = { onEvent(BookOnLoanHistoryScreenEvent.BookClicked(book.id)) },
+                        onClick = {
+                            onEvent(BookOnLoanHistoryScreenEvent.BookClicked(book.id))
+                        },
                     )
                 }
             }
             if (uiState.pastLoans.isNotEmpty()) {
-                item { SectionTitle(text = uiState.pastTitle) }
+                item {
+                    SectionTitle(text = uiState.pastTitle)
+                }
                 items(uiState.pastLoans) { book ->
                     BookOnBookListItem(
                         uiState = book,
-                        onClick = { onEvent(BookOnLoanHistoryScreenEvent.BookClicked(book.id)) },
+                        onClick = {
+                            onEvent(BookOnLoanHistoryScreenEvent.BookClicked(book.id))
+                        },
                     )
                 }
             }
             if (uiState.isPagingLoading) {
-                item { BookOnInlineLoadingIndicator() }
+                item {
+                    BookOnInlineLoadingIndicator()
+                }
             }
             if (uiState.hasNext && !uiState.isPagingLoading) {
                 item {
-                    Button(onClick = { onEvent(BookOnLoanHistoryScreenEvent.LoadMoreClicked) }) {
+                    Button(
+                        onClick = {
+                            onEvent(BookOnLoanHistoryScreenEvent.LoadMoreClicked)
+                        },
+                    ) {
                         Text(text = stringResource(R.string.action_load_more))
                     }
                 }
@@ -104,7 +134,11 @@ fun BookOnLoanHistoryScreen(
 
 @Composable
 private fun SectionTitle(text: String) {
-    Text(text = text, style = BookOnTypography.bodySemiBold, color = BookOnColor.TextPrimary)
+    Text(
+        text = text,
+        style = bookOnTypography.bodySemiBold,
+        color = MaterialTheme.colorScheme.onSurface,
+    )
 }
 
 @Preview(showBackground = true)

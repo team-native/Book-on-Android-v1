@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.signupcomplete
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,8 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupCompleteCheckIcon
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupCompleteHeroBackground
@@ -40,7 +41,7 @@ fun BookOnSignupCompleteScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        containerColor = BookOnColor.Background,
+        containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
         Box(
             modifier = Modifier
@@ -63,8 +64,8 @@ fun BookOnSignupCompleteScreen(
 
                 Text(
                     text = uiState.title,
-                    style = BookOnTypography.screenTitle,
-                    color = BookOnColor.TextPrimary,
+                    style = bookOnTypography.screenTitle,
+                    color = MaterialTheme.colorScheme.onSurface,
                     textAlign = TextAlign.Center,
                 )
 
@@ -72,8 +73,8 @@ fun BookOnSignupCompleteScreen(
 
                 Text(
                     text = uiState.message,
-                    style = BookOnTypography.bodyMedium,
-                    color = BookOnColor.TextSecondary,
+                    style = bookOnTypography.bodyMedium,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                 )
 

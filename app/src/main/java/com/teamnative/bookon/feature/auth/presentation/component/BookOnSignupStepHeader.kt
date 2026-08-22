@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
@@ -9,9 +11,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.core.ui.component.bar.BookOnStepProgress
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 private const val SignupTotalStep = 3
 
@@ -43,13 +44,13 @@ fun BookOnSignupStepHeader(
         Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Small)) {
             Text(
                 text = title,
-                style = BookOnTypography.screenTitle,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.screenTitle,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Text(
                 text = description,
-                style = BookOnTypography.bodyMedium,
-                color = BookOnColor.TextSecondary,
+                style = bookOnTypography.bodyMedium,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

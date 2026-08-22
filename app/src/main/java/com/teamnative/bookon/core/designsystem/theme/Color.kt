@@ -2,39 +2,38 @@ package com.teamnative.bookon.core.designsystem.theme
 
 import androidx.compose.ui.graphics.Color
 
-val ButtonColor = Color(0xFF8DC73F)
-val DisabledButtonColor = Color(0xFFEBEBEB)
-val InputPlaceholderTextColor = Color(0xFFAEAEB2)
-val InputTextColor = Color(0xFF000000)
-val WarningTextColor = Color(0xFFB60000)
-val DescriptionTextColor = Color(0xFFB60000)
-val DarkGrayTextColor = Color(0xFF404040)
-val ErrorBackgroundColor = Color(0xFFFFF1F1)
+// Light theme palette
+val LightPrimary = Color(0xFF8DC73F)
+val LightPrimaryPressed = Color(0xFF7BAB1F)
+val LightPrimaryContainer = Color(0xFFF7F9EF)
+val LightBackground = Color(0xFFFBFBFC)
+val LightSurface = Color(0xFFFFFFFF)
+val LightSurfaceVariant = Color(0xFFF1F1F4)
+val LightOutline = Color(0xFFEAEAEC)
+val LightOnBackground = Color(0xFF000000)
+val LightOnSurface = Color(0xFF000000)
+val LightOnSurfaceVariant = Color(0xFF8E8E93)
+val LightError = Color(0xFFB60000)
+val LightErrorContainer = Color(0xFFFFF1F1)
+val LightTertiaryContainer = Color(0xFFE8E0D8)
+val LightSurfaceContainerHighest = Color(0xFFE8E8EA)
+val LightOutlineVariant = Color(0xFFF2F2F4)
+val LightNavigationDivider = Color(0xFFF1F1F0)
 
-object BookOnColor {
-    val Primary = ButtonColor
-    val PrimaryDark = Color(0xFF72A21D)
-    val PrimaryPressed = Color(0xFF7BAB1F)
-    val PrimaryLight = Color(0xFFEFF6E3)
-    val PrimaryContainer = Color(0xFFF7F9EF)
-    val Disabled = DisabledButtonColor
-    val Background = Color(0xFFFBFBFC)
-    val Surface = Color(0xFFFFFFFF)
-    val SurfaceAlt = Color(0xFFF1F1F4)
-    val SurfaceBorder = Color(0xFFEAEAEC)
-    val MarathonCardBorder = Color(0xFFF3F3F5)
-    val Divider = Color(0xFFF2F2F4)
-    val TextPrimary = InputTextColor
-    val TextSecondary = Color(0xFF8E8E93)
-    val TextTertiary = Color(0xFF9A9AA1)
-    val TextPlaceholder = InputPlaceholderTextColor
-    val TextDarkGray = DarkGrayTextColor
-    val Error = WarningTextColor
-    val ErrorContainer = ErrorBackgroundColor
-    val NavigationInactive = Color(0xFFB0B0B5)
-    val SwitchOff = Color(0xFFD9D9D9)
-    val BookCoverPlaceholder = Color(0xFF6B4329)
-    val BookCoverSmallPlaceholder = Color(0xFFE8E0D8)
-    val IconContainer = Color(0xFFE8E8EA)
-    val StatusAvailableContainer = PrimaryLight
-}
+// Dark theme palette
+val DarkPrimary = Color(0xFFA9D866)
+val DarkPrimaryPressed = Color(0xFFB6DD76)
+val DarkPrimaryContainer = Color(0xFF314D10)
+val DarkBackground = Color(0xFF121212)
+val DarkSurface = Color(0xFF1C1C1E)
+val DarkSurfaceVariant = Color(0xFF303035)
+val DarkOutline = Color(0xFF909095)
+val DarkOnBackground = Color(0xFFF4F4F5)
+val DarkOnSurface = Color(0xFFF4F4F5)
+val DarkOnSurfaceVariant = Color(0xFFC7C7CC)
+val DarkError = Color(0xFFFFB4AB)
+val DarkErrorContainer = Color(0xFF93000A)
+val DarkTertiaryContainer = Color(0xFF6B4329)
+val DarkSurfaceContainerHighest = Color(0xFF45454B)
+val DarkOutlineVariant = Color(0xFF48484D)
+val DarkNavigationDivider = DarkOutlineVariant

@@ -2,6 +2,7 @@ package com.teamnative.bookon.feature.auth.presentation.passwordreset
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -13,9 +14,8 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.auth.presentation.component.AuthTitleTopSpacing
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
@@ -59,8 +59,8 @@ fun BookOnPasswordResetEmailScreen(
         uiState.errorText?.let { errorText ->
             Text(
                 text = errorText,
-                style = BookOnTypography.bodyMedium,
-                color = BookOnColor.Error,
+                style = bookOnTypography.bodyMedium,
+                color = MaterialTheme.colorScheme.error,
             )
         }
 

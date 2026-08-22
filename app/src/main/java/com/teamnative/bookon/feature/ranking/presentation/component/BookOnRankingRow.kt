@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.ranking.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -24,8 +26,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.ranking.presentation.model.BookOnRankingMemberUiModel
 
 /**
@@ -44,8 +45,8 @@ fun BookOnRankingRow(
         Text(
             modifier = Modifier.width(AppIconSize.Default),
             text = member.rank.toString(),
-            style = BookOnTypography.bodySemiBold,
-            color = BookOnColor.TextSecondary,
+            style = bookOnTypography.bodySemiBold,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             textAlign = TextAlign.Center,
         )
 
@@ -62,15 +63,15 @@ fun BookOnRankingRow(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = member.name,
-                style = BookOnTypography.bodySemiBold,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.bodySemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
             Text(
                 text = member.description,
-                style = BookOnTypography.caption,
-                color = BookOnColor.TextTertiary,
+                style = bookOnTypography.caption,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -80,8 +81,8 @@ fun BookOnRankingRow(
 
         Text(
             text = member.bookCountText,
-            style = BookOnTypography.caption,
-            color = BookOnColor.TextPrimary,
+            style = bookOnTypography.caption,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
         )
     }
@@ -96,7 +97,7 @@ private fun RankingAvatar(
     Box(
         modifier = modifier
             .clip(CircleShape)
-            .background(BookOnColor.IconContainer),
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
         contentAlignment = Alignment.Center,
     ) {
         if (avatarRes != null) {
@@ -111,7 +112,7 @@ private fun RankingAvatar(
                 modifier = Modifier
                     .size(AppIconSize.Default)
                     .clip(CircleShape)
-                    .background(BookOnColor.Surface),
+                    .background(MaterialTheme.colorScheme.surface),
             )
         }
     }

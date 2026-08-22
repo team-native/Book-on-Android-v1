@@ -44,7 +44,7 @@ fun BookOnVerificationCodeScreen(
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
 
         BookOnSignupStepHeader(
-            step = 1,
+            step = 2,
             title = uiState.title,
             description = uiState.description,
             initialProgressStep = initialProgressStep,

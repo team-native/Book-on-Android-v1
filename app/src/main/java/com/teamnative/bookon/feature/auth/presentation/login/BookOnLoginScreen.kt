@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.login
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -17,9 +19,8 @@ import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthPasswordField
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnEmailField
@@ -40,7 +41,7 @@ fun BookOnLoginScreen(
 ) {
     Scaffold(
         modifier = modifier,
-        containerColor = BookOnColor.Background,
+        containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
         Column(
             modifier = Modifier
@@ -51,14 +52,14 @@ fun BookOnLoginScreen(
 
             Spacer(modifier = Modifier.height(LoginTitleTopSpacing))
 
-            Text(text = uiState.title, style = BookOnTypography.screenTitle, color = BookOnColor.TextPrimary)
+            Text(text = uiState.title, style = bookOnTypography.screenTitle, color = MaterialTheme.colorScheme.onSurface)
 
             Spacer(modifier = Modifier.height(AppSpacing.Small))
 
             Text(
                 text = stringResource(R.string.login_description),
-                style = BookOnTypography.bodySemiBold,
-                color = BookOnColor.TextTertiary,
+                style = bookOnTypography.bodySemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
             Spacer(modifier = Modifier.height(AppSpacing.Section + AppSpacing.Content))
@@ -75,8 +76,8 @@ fun BookOnLoginScreen(
                     .padding(top = AppSpacing.Item)
                     .clickable(role = Role.Button, onClick = onForgotPasswordClick),
                 text = stringResource(R.string.forgot_password),
-                style = BookOnTypography.caption,
-                color = BookOnColor.Primary,
+                style = bookOnTypography.caption,
+                color = MaterialTheme.colorScheme.primary,
             )
 
             Spacer(modifier = Modifier.weight(1f))
@@ -95,8 +96,8 @@ fun BookOnLoginScreen(
                     .align(Alignment.CenterHorizontally)
                     .clickable(role = Role.Button, onClick = onSignupClick),
                 text = stringResource(R.string.go_to_signup),
-                style = BookOnTypography.caption.copy(textDecoration = TextDecoration.Underline),
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.caption.copy(textDecoration = TextDecoration.Underline),
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             Spacer(modifier = Modifier.height(AppSpacing.Section))

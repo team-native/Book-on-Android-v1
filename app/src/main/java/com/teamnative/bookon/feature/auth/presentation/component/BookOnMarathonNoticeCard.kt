@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
@@ -28,8 +30,7 @@ import com.teamnative.bookon.core.designsystem.theme.AppAnimationDuration
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 private val MarathonNoticeHeight = 55.dp
 
@@ -40,7 +41,7 @@ internal fun BookOnMarathonNoticeCard(
     modifier: Modifier = Modifier,
 ) {
     val backgroundColor by animateColorAsState(
-        targetValue = if (isLinked) BookOnColor.PrimaryContainer else BookOnColor.Surface,
+        targetValue = if (isLinked) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.surface,
         animationSpec = tween(AppAnimationDuration.Medium),
         label = "marathonNoticeBackgroundColor",
     )
@@ -57,8 +58,8 @@ internal fun BookOnMarathonNoticeCard(
     ) {
         Text(
             text = stringResource(R.string.info_mark),
-            style = BookOnTypography.caption,
-            color = if (isLinked) BookOnColor.PrimaryPressed else BookOnColor.TextTertiary,
+            style = bookOnTypography.caption,
+            color = if (isLinked) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurfaceVariant,
         )
 
         Spacer(modifier = Modifier.width(AppSpacing.Small))
@@ -74,8 +75,8 @@ internal fun BookOnMarathonNoticeCard(
         ) { noticeText ->
             Text(
                 text = noticeText,
-                style = BookOnTypography.caption,
-                color = if (isLinked) BookOnColor.TextDarkGray else BookOnColor.TextSecondary,
+                style = bookOnTypography.caption,
+                color = if (isLinked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

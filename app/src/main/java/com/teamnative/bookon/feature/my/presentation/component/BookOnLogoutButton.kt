@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.my.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
@@ -11,9 +13,8 @@ import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 /**
  * 마이페이지에서 토큰 반납과 세션 정리로 이어질 로그아웃 요청을 전달하는 텍스트 버튼이다.
@@ -29,8 +30,8 @@ fun BookOnLogoutButton(
             .clip(RoundedCornerShape(AppRadius.Small))
             .clickable(role = Role.Button, onClick = onLogoutRequest),
         text = stringResource(R.string.action_logout),
-        style = BookOnTypography.bodySemiBold,
-        color = BookOnColor.Error,
+        style = bookOnTypography.bodySemiBold,
+        color = MaterialTheme.colorScheme.error,
     )
 }
 

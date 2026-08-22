@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -26,8 +28,7 @@ import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import kotlinx.coroutines.launch
 
 /** 모든 비밀번호 입력 화면에서 같은 규칙을 안내하는 접근 가능한 툴팁 트리거다. */
@@ -46,20 +47,20 @@ internal fun BookOnPasswordPolicyTooltip(modifier: Modifier = Modifier) {
                 title = {
                     Text(
                         text = stringResource(R.string.password_precaution),
-                        style = BookOnTypography.topBarTitle,
+                        style = bookOnTypography.topBarTitle,
                     )
                 },
                 caretShape = null,
                 maxWidth = 240.dp,
                 shape = RoundedCornerShape(AppRadius.LargeCard),
                 colors = TooltipDefaults.richTooltipColors(
-                    containerColor = BookOnColor.Surface,
-                    contentColor = BookOnColor.TextPrimary,
-                    titleContentColor = BookOnColor.TextPrimary,
+                    containerColor = MaterialTheme.colorScheme.surface,
+                    contentColor = MaterialTheme.colorScheme.onSurface,
+                    titleContentColor = MaterialTheme.colorScheme.onSurface,
                 ),
                 shadowElevation = AppElevation.Field,
             ) {
-                Text(text = stringResource(R.string.password_rule), style = BookOnTypography.bodyMedium)
+                Text(text = stringResource(R.string.password_rule), style = bookOnTypography.bodyMedium)
             }
         },
         state = tooltipState,
@@ -83,16 +84,16 @@ internal fun BookOnPasswordPolicyTooltip(modifier: Modifier = Modifier) {
         ) {
             Text(
                 text = stringResource(R.string.password_warning_action),
-                style = BookOnTypography.caption.copy(fontWeight = FontWeight.Normal),
-                color = BookOnColor.TextTertiary,
+                style = bookOnTypography.caption.copy(fontWeight = FontWeight.Normal),
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
 
             Spacer(modifier = Modifier.width(AppSpacing.Tiny))
 
             Text(
                 text = stringResource(R.string.info_mark),
-                style = BookOnTypography.caption,
-                color = BookOnColor.TextTertiary,
+                style = bookOnTypography.caption,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
     }

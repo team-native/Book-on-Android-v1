@@ -1,5 +1,6 @@
 package com.teamnative.bookon.core.ui.component.card
 
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,9 +23,8 @@ import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.book.BookOnRemoteBookCover
 import com.teamnative.bookon.core.ui.model.BookOnBookCardUiModel
 
@@ -36,11 +36,11 @@ import com.teamnative.bookon.core.ui.model.BookOnBookCardUiModel
 fun BookOnBookCard(
     uiState: BookOnBookCardUiModel,
     modifier: Modifier = Modifier,
-    titleStyle: TextStyle = BookOnTypography.bookTitle,
+    titleStyle: TextStyle = bookOnTypography.bookTitle,
     coverWidth: Dp = AppComponentSize.BookCoverWidth,
     coverHeight: Dp = AppComponentSize.BookCoverHeight,
     cardWidth: Dp = coverWidth,
-    placeholderColor: Color = BookOnColor.BookCoverPlaceholder,
+    placeholderColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
 ) {
     BookOnBookCard(
         title = uiState.title,
@@ -64,12 +64,12 @@ fun BookOnBookCard(
     title: String,
     author: String,
     modifier: Modifier = Modifier,
-    titleStyle: TextStyle = BookOnTypography.bookTitle,
+    titleStyle: TextStyle = bookOnTypography.bookTitle,
     coverWidth: Dp = AppComponentSize.BookCoverWidth,
     coverHeight: Dp = AppComponentSize.BookCoverHeight,
     cardWidth: Dp = coverWidth,
     coverImageUrl: String? = null,
-    placeholderColor: Color = BookOnColor.BookCoverPlaceholder,
+    placeholderColor: Color = MaterialTheme.colorScheme.tertiaryContainer,
 ) {
     Column(modifier = modifier.width(cardWidth)) {
         Box(
@@ -96,14 +96,14 @@ fun BookOnBookCard(
         Text(
             text = title,
             style = titleStyle,
-            color = BookOnColor.TextPrimary,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 2,
             overflow = TextOverflow.Ellipsis,
         )
         Text(
             text = author,
-            style = BookOnTypography.bookMeta,
-            color = BookOnColor.TextPrimary,
+            style = bookOnTypography.bookMeta,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

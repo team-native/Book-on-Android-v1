@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.ranking.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -28,9 +30,8 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.ranking.presentation.model.BookOnRankingMemberUiModel
 import com.teamnative.bookon.feature.ranking.presentation.model.BookOnRankingPodiumUiModel
 
@@ -72,21 +73,21 @@ fun BookOnRankingPodium(
             pedestalRes = R.drawable.rank_2,
             pedestalHeight = AppComponentSize.RankingSecondPedestalHeight,
             avatarSize = AppIconSize.PodiumSecondaryAvatar,
-            bookCountColor = BookOnColor.TextTertiary,
+            bookCountColor = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         RankingPodiumPlace(
             member = first,
             pedestalRes = R.drawable.rank_1,
             pedestalHeight = AppComponentSize.RankingFirstPedestalHeight,
             avatarSize = AppIconSize.Avatar,
-            bookCountColor = BookOnColor.PrimaryPressed,
+            bookCountColor = MaterialTheme.colorScheme.secondary,
         )
         RankingPodiumPlace(
             member = third,
             pedestalRes = R.drawable.rank_3,
             pedestalHeight = AppComponentSize.RankingThirdPedestalHeight,
             avatarSize = AppIconSize.PodiumSecondaryAvatar,
-            bookCountColor = BookOnColor.TextTertiary,
+            bookCountColor = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
@@ -114,14 +115,14 @@ private fun RankingPodiumPlace(
 
         Text(
             text = member.name,
-            style = BookOnTypography.bodySemiBold,
-            color = BookOnColor.TextPrimary,
+            style = bookOnTypography.bodySemiBold,
+            color = MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
         Text(
             text = member.bookCountText,
-            style = BookOnTypography.caption,
+            style = bookOnTypography.caption,
             color = bookCountColor,
             maxLines = 1,
         )
@@ -148,7 +149,7 @@ private fun RankingAvatar(
     Box(
         modifier = modifier
             .clip(CircleShape)
-            .background(BookOnColor.IconContainer),
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
         contentAlignment = Alignment.Center,
     ) {
         if (avatarRes != null) {
@@ -163,7 +164,7 @@ private fun RankingAvatar(
                 modifier = Modifier
                     .size(AppIconSize.Default)
                     .clip(CircleShape)
-                    .background(BookOnColor.Surface),
+                    .background(MaterialTheme.colorScheme.surface),
             )
         }
     }

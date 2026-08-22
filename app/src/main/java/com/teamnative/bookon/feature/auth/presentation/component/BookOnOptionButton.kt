@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -24,9 +26,8 @@ import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.auth.presentation.model.BookOnOptionButtonUiModel
 
 /**
@@ -59,7 +60,7 @@ fun BookOnOptionButton(
     onSelected: () -> Unit,
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
-    selectedTextColor: Color = BookOnColor.PrimaryPressed,
+    selectedTextColor: Color = MaterialTheme.colorScheme.secondary,
 ) {
     Box(
         modifier = modifier
@@ -69,7 +70,7 @@ fun BookOnOptionButton(
                 shape = RoundedCornerShape(AppRadius.Chip),
             )
             .clip(RoundedCornerShape(AppRadius.Chip))
-            .background(BookOnColor.Surface)
+            .background(MaterialTheme.colorScheme.surface)
             .selectable(
                 selected = selected,
                 enabled = enabled,
@@ -81,8 +82,8 @@ fun BookOnOptionButton(
     ) {
         Text(
             text = text,
-            style = BookOnTypography.bodySemiBold,
-            color = if (selected) selectedTextColor else BookOnColor.TextPlaceholder,
+            style = bookOnTypography.bodySemiBold,
+            color = if (selected) selectedTextColor else MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

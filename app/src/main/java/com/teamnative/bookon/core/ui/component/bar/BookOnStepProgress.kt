@@ -1,5 +1,7 @@
 package com.teamnative.bookon.core.ui.component.bar
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -27,9 +29,8 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 private const val StepProgressSegmentAnimationMillis = 720
 private const val StepProgressSegmentDelayMillis = 240
@@ -113,13 +114,13 @@ fun BookOnStepProgress(
                         .weight(1f)
                         .height(AppStrokeWidth.Progress)
                         .clip(RoundedCornerShape(AppRadius.Progress))
-                        .background(BookOnColor.SurfaceBorder),
+                        .background(MaterialTheme.colorScheme.outline),
                 ) {
                     Box(
                         modifier = Modifier
                             .fillMaxWidth(segmentProgresses[index].value)
                             .height(AppStrokeWidth.Progress)
-                            .background(BookOnColor.Primary),
+                            .background(MaterialTheme.colorScheme.primary),
                     )
                 }
             }
@@ -129,8 +130,8 @@ fun BookOnStepProgress(
 
         Text(
             text = stringResource(R.string.step_progress, stackedStep, safeTotal),
-            style = BookOnTypography.caption,
-            color = BookOnColor.TextTertiary,
+            style = bookOnTypography.caption,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }

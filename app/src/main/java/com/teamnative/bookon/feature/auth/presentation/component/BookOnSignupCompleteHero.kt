@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,7 +18,6 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 
 private val SignupCompleteHeroHeight = 276.dp
 private val SignupCompleteIconSize = 100.dp
@@ -38,7 +39,7 @@ fun BookOnSignupCompleteHeroBackground(modifier: Modifier = Modifier) {
             .height(SignupCompleteHeroHeight)
             .background(
                 Brush.verticalGradient(
-                    colors = listOf(BookOnColor.PrimaryLight, BookOnColor.Background),
+                    colors = listOf(MaterialTheme.colorScheme.tertiaryContainer, MaterialTheme.colorScheme.background),
                 ),
             ),
     )
@@ -47,18 +48,20 @@ fun BookOnSignupCompleteHeroBackground(modifier: Modifier = Modifier) {
 /** 가입 성공을 알리는 녹색 원형 체크 마크를 표시한다. */
 @Composable
 fun BookOnSignupCompleteCheckIcon(modifier: Modifier = Modifier) {
+    val checkColor = MaterialTheme.colorScheme.surface
+
     Box(
         modifier = modifier
             .size(SignupCompleteIconSize)
             .shadow(AppElevation.Card, CircleShape)
             .clip(CircleShape)
-            .background(BookOnColor.Primary),
+            .background(MaterialTheme.colorScheme.primary),
         contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.size(SignupCompleteCheckCanvasSize)) {
             val strokeWidth = SignupCompleteCheckStrokeWidth.toPx()
             drawLine(
-                color = BookOnColor.Surface,
+                color = checkColor,
                 start = androidx.compose.ui.geometry.Offset(
                     SignupCompleteCheckStartX.toPx(),
                     SignupCompleteCheckStartY.toPx(),
@@ -71,7 +74,7 @@ fun BookOnSignupCompleteCheckIcon(modifier: Modifier = Modifier) {
                 cap = StrokeCap.Round,
             )
             drawLine(
-                color = BookOnColor.Surface,
+                color = checkColor,
                 start = androidx.compose.ui.geometry.Offset(
                     SignupCompleteCheckMiddleX.toPx(),
                     SignupCompleteCheckMiddleY.toPx(),

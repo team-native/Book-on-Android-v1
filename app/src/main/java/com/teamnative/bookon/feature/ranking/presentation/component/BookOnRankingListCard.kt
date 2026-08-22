@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.ranking.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -16,7 +18,6 @@ import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.feature.ranking.presentation.model.BookOnRankingListUiModel
 import com.teamnative.bookon.feature.ranking.presentation.model.BookOnRankingMemberUiModel
@@ -59,7 +60,7 @@ fun BookOnRankingListCard(
                 shape = RoundedCornerShape(AppRadius.Card),
             )
             .clip(RoundedCornerShape(AppRadius.Card))
-            .background(BookOnColor.Surface)
+            .background(MaterialTheme.colorScheme.surface)
             .padding(horizontal = AppSpacing.Content),
     ) {
         members.forEachIndexed { index, member ->
@@ -72,7 +73,7 @@ fun BookOnRankingListCard(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(RankingListDividerHeight)
-                        .background(BookOnColor.Divider),
+                        .background(MaterialTheme.colorScheme.outlineVariant),
                 )
             }
         }

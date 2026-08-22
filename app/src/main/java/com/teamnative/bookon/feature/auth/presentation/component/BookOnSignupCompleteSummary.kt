@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -16,8 +18,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 private val SignupSummaryCardWidth = 141.dp
 private val SignupSummaryCardHeight = 64.dp
@@ -43,8 +44,8 @@ fun BookOnSignupCompleteSummary(
             .width(SignupSummaryCardWidth)
             .height(SignupSummaryCardHeight),
         shape = RoundedCornerShape(AppRadius.Chip),
-        color = BookOnColor.SurfaceAlt,
-        border = BorderStroke(SignupSummaryBorderWidth, BookOnColor.SurfaceBorder),
+        color = MaterialTheme.colorScheme.surfaceVariant,
+        border = BorderStroke(SignupSummaryBorderWidth, MaterialTheme.colorScheme.outline),
     ) {
         Row(modifier = Modifier.fillMaxSize()) {
             SignupSummaryItem(
@@ -57,7 +58,7 @@ fun BookOnSignupCompleteSummary(
                     .height(SignupSummaryDividerHeight)
                     .width(SignupSummaryDividerWidth)
                     .align(Alignment.CenterVertically)
-                    .background(BookOnColor.SwitchOff),
+                    .background(MaterialTheme.colorScheme.outlineVariant),
             )
             SignupSummaryItem(
                 title = marathonStatusText,
@@ -82,14 +83,14 @@ private fun SignupSummaryItem(
     ) {
         Text(
             text = title,
-            style = BookOnTypography.bodySemiBold,
-            color = BookOnColor.PrimaryPressed,
+            style = bookOnTypography.bodySemiBold,
+            color = MaterialTheme.colorScheme.secondary,
         )
         androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(SignupSummaryTextSpacing))
         Text(
             text = description,
-            style = BookOnTypography.privacyNotice,
-            color = BookOnColor.TextTertiary,
+            style = bookOnTypography.privacyNotice,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
     }
 }
