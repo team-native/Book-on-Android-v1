@@ -168,6 +168,7 @@ private fun BookOnAuthNavDisplay(onAuthenticated: () -> Unit) {
                     initialProgressStep = progressStepOverride.takeIf { it >= 0 },
                     onBackClick = { backStack.removeLastOrNull() },
                     onNextClick = { backStack.add(BookOnDestination.VerificationCode) },
+                    onEmailAlreadyUsed = { backStack.removeLastOrNull() },
                     viewModel = registrationViewModel,
                 )
             }
