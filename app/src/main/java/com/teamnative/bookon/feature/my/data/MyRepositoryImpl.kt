@@ -11,7 +11,20 @@ import com.teamnative.bookon.feature.my.domain.NotificationSettings
 import javax.inject.Inject
 
 class MyRepositoryImpl @Inject constructor(private val remote: MyRemoteDataSource) : MyRepository {
-    override suspend fun profile(): NetworkResult<MyProfile> = remote.me().map { MyProfile(it.user.name, it.user.department, it.loanSummary.currentLoanCount, it.loanSummary.overdueCount, NotificationSettings(it.notificationSettings.dueDateReminder, it.notificationSettings.newBookReminder)) }
+    /** 마이페이지 서버 응답을 화면에서 사용할 사용자·대출 요약 도메인 모델로 변환한다. */
+    override suspend fun profile(): NetworkResult<MyProfile> = remote.me().map { myPage ->
+        MyProfile(
+            name = myPage.user.name,
+            department = myPage.user.department,
+            currentLoanCount = myPage.loanSummary.currentLoanCount,
+            overdueCount = myPage.loanSummary.overdueCount,
+            totalLoanCount = myPage.loanSummary.totalLoanCount,
+            notificationSettings = NotificationSettings(
+                dueDateReminder = myPage.notificationSettings.dueDateReminder,
+                newBookReminder = myPage.notificationSettings.newBookReminder,
+            ),
+        )
+    }
     override suspend fun updateNotificationSettings(dueDateReminder: Boolean, newBookReminder: Boolean): NetworkResult<NotificationSettings> = remote.updateNotificationSettings(dueDateReminder, newBookReminder).map { NotificationSettings(it.dueDateReminder, it.newBookReminder) }
     override suspend fun currentLoans(): NetworkResult<List<MyLoan>> = remote.currentLoans().map { loans -> loans.items.map { it.toDomain() } }
     override suspend fun loanHistory(page: Int, size: Int, status: String): NetworkResult<MyLoanPage> = remote.loanHistory(page, size, status).map { loans -> MyLoanPage(loans.items.map { it.toDomain() }, loans.pagination?.page ?: page, loans.pagination?.hasNext ?: false) }

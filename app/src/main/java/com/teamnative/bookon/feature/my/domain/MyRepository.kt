@@ -9,7 +9,14 @@ interface MyRepository {
     suspend fun loanHistory(page: Int, size: Int, status: String): NetworkResult<MyLoanPage>
     suspend fun favorites(page: Int, size: Int): NetworkResult<FavoriteBookPage>
 }
-data class MyProfile(val name: String, val department: String, val currentLoanCount: Int, val overdueCount: Int, val notificationSettings: NotificationSettings)
+data class MyProfile(
+    val name: String,
+    val department: String,
+    val currentLoanCount: Int,
+    val overdueCount: Int,
+    val totalLoanCount: Int,
+    val notificationSettings: NotificationSettings,
+)
 data class NotificationSettings(val dueDateReminder: Boolean, val newBookReminder: Boolean)
 data class MyLoan(
     val loanId: Long,
