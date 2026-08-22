@@ -2,7 +2,6 @@ package com.teamnative.bookon.app
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.key
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
@@ -23,6 +22,10 @@ import com.teamnative.bookon.navigation.BookOnNavHost
 /**
  * 앱의 최상위 Compose 진입점이다.
  * 화면 전환 정의는 navigation 패키지의 BookOnNavHost가 담당한다.
+ *
+ * BookOnNavHost는 세션 상태가 처음 확정될 때(Checking → Authenticated/Unauthenticated) 딱 한 번만
+ * 구성(compose)된다. 이후 로그인/로그아웃 전환은 BookOnNavHost 내부에서 back stack을 직접
+ * clear+push하는 방식으로 처리하므로, 세션 상태가 바뀔 때마다 이 함수에서 NavHost를 다시 만들 필요가 없다.
  */
 @Composable
 fun BookOnApp() {
@@ -30,12 +33,14 @@ fun BookOnApp() {
     val sessionUiState by sessionViewModel.uiState.collectAsStateWithLifecycle()
     when (sessionUiState) {
         BookOnSessionUiState.Checking -> BookOnLoadingScreen()
-        BookOnSessionUiState.Authenticated -> key(sessionUiState) {
-            BookOnNavHost(isInitiallyAuthenticated = true, onLogout = sessionViewModel::logout)
-        }
-        BookOnSessionUiState.Unauthenticated -> key(sessionUiState) {
-            BookOnNavHost(isInitiallyAuthenticated = false, onLogout = sessionViewModel::logout)
-        }
+        BookOnSessionUiState.Authenticated -> BookOnNavHost(
+            isInitiallyAuthenticated = true,
+            onLogout = sessionViewModel::logout,
+        )
+        BookOnSessionUiState.Unauthenticated -> BookOnNavHost(
+            isInitiallyAuthenticated = false,
+            onLogout = sessionViewModel::logout,
+        )
         BookOnSessionUiState.RetryableError -> BookOnSessionRetryScreen(
             onRetryClick = sessionViewModel::retryAutoLogin,
             onLoginClick = sessionViewModel::logout,
