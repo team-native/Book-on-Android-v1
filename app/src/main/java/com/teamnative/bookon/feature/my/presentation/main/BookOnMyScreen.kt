@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.my.presentation.main
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -13,7 +15,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.card.BookOnStatSummaryCard
@@ -35,7 +36,7 @@ fun BookOnMyScreen(
     Scaffold(
         modifier = modifier,
         bottomBar = bottomBar,
-        containerColor = BookOnColor.Background,
+        containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BookOnTopBar(
                 title = stringResource(R.string.my_library_title),
@@ -50,7 +51,7 @@ fun BookOnMyScreen(
         ) {
             uiState.errorMessage?.let { message ->
                 item {
-                    androidx.compose.material3.Text(text = message.resolve(), color = BookOnColor.TextSecondary)
+                    androidx.compose.material3.Text(text = message.resolve(), color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Button(onClick = { onEvent(BookOnMyScreenEvent.RetryClicked) }) {
                         androidx.compose.material3.Text(text = stringResource(R.string.action_retry))
                     }

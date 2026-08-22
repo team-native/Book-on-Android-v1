@@ -1,5 +1,7 @@
 package com.teamnative.bookon.core.ui.component.chip
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -18,9 +20,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.model.BookOnFilterChipUiModel
 
 /**
@@ -56,15 +57,15 @@ fun BookOnFilterChip(
         modifier = modifier
             .height(AppComponentSize.ChipHeight)
             .clip(RoundedCornerShape(AppRadius.Chip))
-            .background(if (selected) BookOnColor.PrimaryPressed else BookOnColor.SurfaceAlt)
+            .background(if (selected) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.surfaceVariant)
             .clickable(role = Role.Button, onClick = onClick)
             .padding(horizontal = AppSpacing.Content),
         contentAlignment = Alignment.Center,
     ) {
         Text(
             text = text,
-            style = BookOnTypography.chip,
-            color = if (selected) BookOnColor.Surface else BookOnColor.TextDarkGray,
+            style = bookOnTypography.chip,
+            color = if (selected) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurface,
         )
     }
 }

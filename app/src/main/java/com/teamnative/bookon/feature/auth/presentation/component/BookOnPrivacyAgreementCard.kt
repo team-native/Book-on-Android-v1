@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.animation.animateContentSize
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Image
@@ -33,8 +35,7 @@ import com.teamnative.bookon.core.designsystem.theme.AppAnimationDuration
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 private val PrivacyAgreementHeaderMinHeight = 24.dp
 private val PrivacyAgreementIndicatorWidth = 13.dp
@@ -53,8 +54,8 @@ internal fun BookOnPrivacyAgreementCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AppRadius.Field))
-            .background(BookOnColor.Surface)
-            .border(AppStrokeWidth.Divider, BookOnColor.SurfaceBorder, RoundedCornerShape(AppRadius.Field))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(AppStrokeWidth.Divider, MaterialTheme.colorScheme.outline, RoundedCornerShape(AppRadius.Field))
             .animateContentSize(animationSpec = tween(durationMillis = AppAnimationDuration.Medium))
             .padding(AppSpacing.Content),
     ) {
@@ -78,8 +79,8 @@ internal fun BookOnPrivacyAgreementCard(
             Text(
                 modifier = Modifier.weight(1f),
                 text = stringResource(R.string.privacy_policy_title),
-                style = BookOnTypography.caption,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.caption,
+                color = MaterialTheme.colorScheme.onSurface,
             )
             Image(
                 modifier = Modifier.size(
@@ -152,12 +153,12 @@ private fun BookOnPrivacyPolicyDetails() {
         modifier = Modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AppRadius.Small))
-            .background(BookOnColor.Background)
-            .border(AppStrokeWidth.Divider, BookOnColor.SurfaceBorder, RoundedCornerShape(AppRadius.Small))
+            .background(MaterialTheme.colorScheme.background)
+            .border(AppStrokeWidth.Divider, MaterialTheme.colorScheme.outline, RoundedCornerShape(AppRadius.Small))
             .padding(AppSpacing.Item),
         text = stringResource(R.string.privacy_refusal_notice),
-        style = BookOnTypography.privacyNotice,
-        color = BookOnColor.TextSecondary,
+        style = bookOnTypography.privacyNotice,
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
@@ -166,14 +167,14 @@ private fun BookOnPrivacyPolicyDetail(
     title: String,
     body: String,
 ) {
-    Text(text = title, style = BookOnTypography.caption, color = BookOnColor.TextPrimary)
+    Text(text = title, style = bookOnTypography.caption, color = MaterialTheme.colorScheme.onSurface)
 
     Spacer(modifier = Modifier.height(AppSpacing.Small))
 
     Text(
         text = body,
-        style = BookOnTypography.caption.copy(fontWeight = FontWeight.Normal),
-        color = BookOnColor.TextSecondary,
+        style = bookOnTypography.caption.copy(fontWeight = FontWeight.Normal),
+        color = MaterialTheme.colorScheme.onSurfaceVariant,
     )
 }
 
@@ -209,8 +210,8 @@ private fun BookOnCheckTextRow(
         Text(
             modifier = Modifier.weight(1f),
             text = text,
-            style = BookOnTypography.caption.copy(fontWeight = FontWeight.Medium),
-            color = BookOnColor.TextPrimary,
+            style = bookOnTypography.caption.copy(fontWeight = FontWeight.Medium),
+            color = MaterialTheme.colorScheme.onSurface,
         )
     }
 }

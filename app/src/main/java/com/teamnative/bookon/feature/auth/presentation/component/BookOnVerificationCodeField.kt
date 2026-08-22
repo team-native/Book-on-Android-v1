@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -21,9 +23,8 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 private const val VerificationCodeLength = 6
 
@@ -48,12 +49,12 @@ fun BookOnVerificationCodeField(
         },
         modifier = modifier.fillMaxWidth(),
         singleLine = true,
-        textStyle = BookOnTypography.sectionTitle.copy(
-            color = BookOnColor.TextPrimary.copy(alpha = 0f),
+        textStyle = bookOnTypography.sectionTitle.copy(
+            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0f),
             textAlign = TextAlign.Center,
         ),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
-        cursorBrush = SolidColor(BookOnColor.Primary.copy(alpha = 0f)),
+        cursorBrush = SolidColor(MaterialTheme.colorScheme.primary.copy(alpha = 0f)),
         decorationBox = { innerTextField ->
             Box(modifier = Modifier.fillMaxWidth()) {
                 innerTextField()
@@ -65,9 +66,9 @@ fun BookOnVerificationCodeField(
                     repeat(VerificationCodeLength) { index ->
                         val character = code.getOrNull(index)?.toString().orEmpty()
                         val underlineColor = when {
-                            isError -> BookOnColor.Error
-                            index < code.length -> BookOnColor.TextPrimary
-                            else -> BookOnColor.TextPlaceholder
+                            isError -> MaterialTheme.colorScheme.error
+                            index < code.length -> MaterialTheme.colorScheme.onSurface
+                            else -> MaterialTheme.colorScheme.onSurfaceVariant
                         }
 
                         Box(
@@ -87,7 +88,7 @@ fun BookOnVerificationCodeField(
                         ) {
                             Text(
                                 text = character,
-                                style = BookOnTypography.sectionTitle,
+                                style = bookOnTypography.sectionTitle,
                                 color = underlineColor,
                                 textAlign = TextAlign.Center,
                             )

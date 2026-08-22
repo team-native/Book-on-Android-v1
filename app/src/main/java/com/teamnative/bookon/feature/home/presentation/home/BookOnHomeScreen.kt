@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Button
 import androidx.compose.material3.Text
@@ -13,7 +14,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.feature.home.presentation.component.BookOnBookSection
 import com.teamnative.bookon.feature.home.presentation.component.BookOnHomeHeader
@@ -39,7 +39,7 @@ fun BookOnHomeScreen(
     Scaffold(
         modifier = modifier,
         bottomBar = bottomBar,
-        containerColor = BookOnColor.Background,
+        containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
@@ -53,12 +53,12 @@ fun BookOnHomeScreen(
         ) {
             uiState.errorMessage?.let { errorMessage ->
                 item {
-                    Text(text = errorMessage, color = BookOnColor.TextSecondary)
+                    Text(text = errorMessage, color = MaterialTheme.colorScheme.onSurfaceVariant)
                     Button(onClick = onRetryClick) { Text(text = stringResource(R.string.action_retry)) }
                 }
             }
             if (uiState.errorMessage == null && uiState.notice == null && uiState.aiRecommendedBooks.isEmpty() && uiState.popularBooks.isEmpty()) {
-                item { Text(text = stringResource(R.string.empty_home), color = BookOnColor.TextSecondary) }
+                item { Text(text = stringResource(R.string.empty_home), color = MaterialTheme.colorScheme.onSurfaceVariant) }
             }
             if (uiState.errorMessage == null) {
             item {

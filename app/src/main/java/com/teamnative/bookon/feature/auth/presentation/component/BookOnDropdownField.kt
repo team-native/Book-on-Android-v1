@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Row
@@ -28,9 +30,8 @@ import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.auth.presentation.model.BookOnDropdownFieldUiModel
 
 private val DropdownIndicatorWidth = 13.dp
@@ -78,15 +79,15 @@ fun BookOnDropdownField(
                 shape = RoundedCornerShape(AppRadius.Field),
             )
             .clip(RoundedCornerShape(AppRadius.Field))
-            .background(BookOnColor.Surface)
+            .background(MaterialTheme.colorScheme.surface)
             .alpha(if (enabled) 1f else 0.55f)
             .padding(horizontal = AppSpacing.Content),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = text.ifEmpty { placeholder },
-            style = BookOnTypography.fieldText,
-            color = if (text.isEmpty()) BookOnColor.TextPlaceholder else BookOnColor.TextPrimary,
+            style = bookOnTypography.fieldText,
+            color = if (text.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

@@ -1,5 +1,7 @@
 package com.teamnative.bookon.core.ui.component.textfield
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -48,9 +50,8 @@ import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.model.BookOnPasswordFieldUiModel
 
 /**
@@ -116,21 +117,21 @@ fun BookOnPasswordField(
     val shape = RoundedCornerShape(AppRadius.Field)
     val borderColor by animateColorAsState(
         targetValue = when {
-            isError -> BookOnColor.ErrorContainer
-            isFocused -> BookOnColor.Primary
-            else -> BookOnColor.Surface
+            isError -> MaterialTheme.colorScheme.errorContainer
+            isFocused -> MaterialTheme.colorScheme.primary
+            else -> MaterialTheme.colorScheme.surface
         },
     )
     val containerColor by animateColorAsState(
-        targetValue = if (isError) BookOnColor.ErrorContainer else BookOnColor.Surface,
+        targetValue = if (isError) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surface,
     )
 
     Column(modifier = modifier.fillMaxWidth()) {
         if (label != null) {
             Text(
                 text = label,
-                style = BookOnTypography.fieldLabel,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.fieldLabel,
+                color = MaterialTheme.colorScheme.onSurface,
             )
 
             Spacer(modifier = Modifier.height(AppSpacing.Small))
@@ -159,14 +160,14 @@ fun BookOnPasswordField(
                 },
             enabled = enabled,
             singleLine = true,
-            textStyle = BookOnTypography.fieldText.copy(color = BookOnColor.TextPrimary),
+            textStyle = bookOnTypography.fieldText.copy(color = MaterialTheme.colorScheme.onSurface),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (passwordVisible) {
                 VisualTransformation.None
             } else {
                 PasswordVisualTransformation()
             },
-            cursorBrush = SolidColor(BookOnColor.Primary),
+            cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             interactionSource = textFieldInteractionSource,
             decorationBox = { innerTextField ->
                 Row(
@@ -194,8 +195,8 @@ fun BookOnPasswordField(
                         if (value.isEmpty()) {
                             Text(
                                 text = placeholder,
-                                style = BookOnTypography.fieldPlaceholder,
-                                color = BookOnColor.TextPlaceholder,
+                                style = bookOnTypography.fieldPlaceholder,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
                         }
                         innerTextField()
@@ -227,8 +228,8 @@ fun BookOnPasswordField(
 
             Text(
                 text = errorText,
-                style = BookOnTypography.caption,
-                color = BookOnColor.Error,
+                style = bookOnTypography.caption,
+                color = MaterialTheme.colorScheme.error,
             )
         }
     }

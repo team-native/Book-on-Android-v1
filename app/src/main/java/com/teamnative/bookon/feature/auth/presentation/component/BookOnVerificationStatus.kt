@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -8,8 +10,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.semantics.Role
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 /**
  * 인증번호 입력 아래의 오류, 만료 시간, 재전송 액션 상태를 표시한다.
@@ -30,20 +31,20 @@ fun BookOnVerificationStatus(
         if (errorText != null) {
             Text(
                 text = errorText,
-                style = BookOnTypography.caption,
-                color = BookOnColor.Error,
+                style = bookOnTypography.caption,
+                color = MaterialTheme.colorScheme.error,
             )
         }
         Text(
             text = expireText,
-            style = BookOnTypography.caption,
-            color = BookOnColor.TextSecondary,
+            style = bookOnTypography.caption,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
             modifier = Modifier.clickable(role = Role.Button, onClick = onResendClick),
             text = resendText,
-            style = BookOnTypography.caption,
-            color = BookOnColor.PrimaryPressed,
+            style = bookOnTypography.caption,
+            color = MaterialTheme.colorScheme.secondary,
         )
     }
 }

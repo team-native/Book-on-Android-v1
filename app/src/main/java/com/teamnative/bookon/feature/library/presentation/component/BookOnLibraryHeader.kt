@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.library.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -21,8 +23,7 @@ import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.model.BookOnFilterChipUiModel
 
 /** 도서실 제목과 인기순·신간순 정렬 토글을 함께 표시한다. */
@@ -34,7 +35,7 @@ fun BookOnLibraryHeader(
     modifier: Modifier = Modifier,
 ) {
     Row(modifier = modifier, verticalAlignment = Alignment.CenterVertically) {
-        Text(text = title, style = BookOnTypography.screenTitle, color = BookOnColor.TextPrimary)
+        Text(text = title, style = bookOnTypography.screenTitle, color = MaterialTheme.colorScheme.onSurface)
 
         Spacer(modifier = Modifier.weight(1f))
 
@@ -43,7 +44,7 @@ fun BookOnLibraryHeader(
                 .width(AppComponentSize.LibrarySortToggleWidth)
                 .height(AppComponentSize.LibrarySortToggleHeight)
                 .clip(RoundedCornerShape(AppRadius.Button))
-                .background(BookOnColor.SurfaceAlt)
+                .background(MaterialTheme.colorScheme.surfaceVariant)
                 .padding(AppSpacing.Tiny),
             horizontalArrangement = Arrangement.spacedBy(AppSpacing.Tiny),
             verticalAlignment = Alignment.CenterVertically,
@@ -58,9 +59,9 @@ fun BookOnLibraryHeader(
                             if (option.selected) {
                                 Modifier
                                     .shadow(AppElevation.Field, RoundedCornerShape(AppRadius.Button))
-                                    .background(BookOnColor.Surface)
+                                    .background(MaterialTheme.colorScheme.surface)
                             } else {
-                                Modifier.background(BookOnColor.SurfaceAlt)
+                                Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
                             },
                         )
                         .clickable(role = Role.Button, onClick = { onSortClick(index) })
@@ -69,8 +70,8 @@ fun BookOnLibraryHeader(
                 ) {
                     Text(
                         text = option.text,
-                        style = BookOnTypography.caption,
-                        color = if (option.selected) BookOnColor.TextPrimary else BookOnColor.TextSecondary,
+                        style = bookOnTypography.caption,
+                        color = if (option.selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
             }

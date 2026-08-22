@@ -16,6 +16,7 @@ object AppSpacing {
     val XLarge = 32.dp
     val Small = 8.dp
     val Tiny = 4.dp
+    val NavigationDividerToIcon = 21.dp
 }
 
 object AppRadius {

@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -29,8 +31,7 @@ import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 private val MarathonCardHeight = 92.dp
 
@@ -47,8 +48,8 @@ internal fun BookOnMarathonToggleCard(
             .fillMaxWidth()
             .height(MarathonCardHeight)
             .clip(RoundedCornerShape(AppRadius.Field))
-            .background(BookOnColor.Background)
-            .border(AppStrokeWidth.SelectedBorder, BookOnColor.Divider, RoundedCornerShape(AppRadius.Field))
+            .background(MaterialTheme.colorScheme.background)
+            .border(AppStrokeWidth.SelectedBorder, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(AppRadius.Field))
             .padding(AppSpacing.Content),
         verticalAlignment = Alignment.CenterVertically,
     ) {
@@ -56,7 +57,7 @@ internal fun BookOnMarathonToggleCard(
             modifier = Modifier
                 .size(AppIconSize.XLarge)
                 .clip(RoundedCornerShape(AppRadius.IconButton))
-                .background(BookOnColor.Surface)
+                .background(MaterialTheme.colorScheme.surface)
                 .padding(6.dp),
             contentAlignment = Alignment.Center,
         ) {
@@ -71,11 +72,11 @@ internal fun BookOnMarathonToggleCard(
         Spacer(modifier = Modifier.width(AppSpacing.Content))
 
         Column(modifier = Modifier.weight(1f)) {
-            Text(text = title, style = BookOnTypography.bodySemiBold, color = BookOnColor.TextPrimary)
+            Text(text = title, style = bookOnTypography.bodySemiBold, color = MaterialTheme.colorScheme.onSurface)
 
             Spacer(modifier = Modifier.height(AppSpacing.Tiny))
 
-            Text(text = description, style = BookOnTypography.caption, color = BookOnColor.TextTertiary)
+            Text(text = description, style = bookOnTypography.caption, color = MaterialTheme.colorScheme.onSurfaceVariant)
         }
         Switch(
             checked = checked,

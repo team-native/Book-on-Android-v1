@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -20,8 +22,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 private val HomeAiBadgeHeight = 22.dp
 
@@ -44,8 +45,8 @@ fun BookOnHomeAiSectionHeader(
         ) {
             Text(
                 text = title,
-                style = BookOnTypography.sectionTitle,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.sectionTitle,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -57,14 +58,14 @@ fun BookOnHomeAiSectionHeader(
                     modifier = Modifier
                         .height(HomeAiBadgeHeight)
                         .clip(RoundedCornerShape(AppRadius.Small))
-                        .background(BookOnColor.Primary)
+                        .background(MaterialTheme.colorScheme.primary)
                         .padding(horizontal = AppSpacing.Small),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
                         text = "+ $badgeText",
-                        style = BookOnTypography.badge,
-                        color = BookOnColor.Surface,
+                        style = bookOnTypography.badge,
+                        color = MaterialTheme.colorScheme.surface,
                     )
                 }
             }
@@ -78,8 +79,8 @@ fun BookOnHomeAiSectionHeader(
                         .clickable(role = Role.Button, onClick = onActionClick)
                         .padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Tiny),
                     text = actionText,
-                    style = BookOnTypography.caption,
-                    color = BookOnColor.PrimaryPressed,
+                    style = bookOnTypography.caption,
+                    color = MaterialTheme.colorScheme.secondary,
                 )
             }
         }
@@ -88,8 +89,8 @@ fun BookOnHomeAiSectionHeader(
 
         Text(
             text = description,
-            style = BookOnTypography.caption,
-            color = BookOnColor.TextSecondary,
+            style = bookOnTypography.caption,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )

@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.book.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -20,9 +22,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.book.presentation.model.BookOnBookDetailInfoItemUiModel
 import com.teamnative.bookon.feature.book.presentation.model.BookOnBookDetailInfoRowUiModel
 
@@ -79,15 +80,15 @@ private fun BookOnBookDetailInfoItem(
         modifier = modifier
             .height(BookDetailInfoItemHeight)
             .clip(RoundedCornerShape(AppRadius.Small))
-            .background(BookOnColor.SurfaceAlt)
+            .background(MaterialTheme.colorScheme.surfaceVariant)
             .padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Item),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center,
     ) {
         Text(
             text = item.label,
-            style = BookOnTypography.caption,
-            color = BookOnColor.TextSecondary,
+            style = bookOnTypography.caption,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,
@@ -97,8 +98,8 @@ private fun BookOnBookDetailInfoItem(
 
         Text(
             text = item.value,
-            style = BookOnTypography.bodySemiBold,
-            color = if (item.highlighted) BookOnColor.PrimaryPressed else BookOnColor.TextPrimary,
+            style = bookOnTypography.bodySemiBold,
+            color = if (item.highlighted) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurface,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
             textAlign = TextAlign.Center,

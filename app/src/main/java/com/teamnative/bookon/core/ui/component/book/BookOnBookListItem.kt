@@ -1,5 +1,7 @@
 package com.teamnative.bookon.core.ui.component.book
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -26,9 +28,8 @@ import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.model.BookOnBookListItemUiModel
 
 /**
@@ -84,7 +85,7 @@ fun BookOnBookListItem(
                 shape = RoundedCornerShape(AppRadius.Card),
             )
             .clip(RoundedCornerShape(AppRadius.Card))
-            .background(BookOnColor.Surface)
+            .background(MaterialTheme.colorScheme.surface)
             .then(
                 if (onClick != null) {
                     Modifier.clickable(role = Role.Button, onClick = onClick)
@@ -104,7 +105,7 @@ fun BookOnBookListItem(
         ) {
             BookOnRemoteBookCover(
                 coverImageUrl = coverImageUrl,
-                placeholderColor = BookOnColor.BookCoverSmallPlaceholder,
+                placeholderColor = MaterialTheme.colorScheme.tertiaryContainer,
             )
         }
 
@@ -116,8 +117,8 @@ fun BookOnBookListItem(
         ) {
             Text(
                 text = title,
-                style = BookOnTypography.bodySemiBold,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.bodySemiBold,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -126,8 +127,8 @@ fun BookOnBookListItem(
 
             Text(
                 text = metaText,
-                style = BookOnTypography.caption,
-                color = BookOnColor.TextSecondary,
+                style = bookOnTypography.caption,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -162,9 +163,9 @@ private fun BookStatusBadge(
             .clip(RoundedCornerShape(AppRadius.Chip))
             .background(
                 if (available) {
-                    BookOnColor.StatusAvailableContainer
+                    MaterialTheme.colorScheme.tertiaryContainer
                 } else {
-                    BookOnColor.SurfaceAlt
+                    MaterialTheme.colorScheme.surfaceVariant
                 },
             )
             .padding(horizontal = AppSpacing.Item),
@@ -172,8 +173,8 @@ private fun BookStatusBadge(
     ) {
         Text(
             text = text,
-            style = BookOnTypography.badge,
-            color = if (available) BookOnColor.PrimaryPressed else BookOnColor.TextPlaceholder,
+            style = bookOnTypography.badge,
+            color = if (available) MaterialTheme.colorScheme.secondary else MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
         )
     }

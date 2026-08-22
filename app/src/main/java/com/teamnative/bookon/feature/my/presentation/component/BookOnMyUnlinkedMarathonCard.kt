@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.my.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -38,8 +40,7 @@ import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.AppAnimationDuration
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.my.presentation.model.BookOnMyMarathonUiModel
 import kotlinx.coroutines.delay
 
@@ -70,8 +71,8 @@ fun BookOnMyUnlinkedMarathonCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AppRadius.Card))
-            .background(BookOnColor.Surface)
-            .border(AppStrokeWidth.Divider, BookOnColor.MarathonCardBorder, RoundedCornerShape(AppRadius.Card))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(AppStrokeWidth.Divider, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(AppRadius.Card))
             .padding(AppSpacing.Content),
     ) {
         Row(
@@ -90,8 +91,8 @@ fun BookOnMyUnlinkedMarathonCard(
             Text(
                 modifier = Modifier.weight(1f),
                 text = uiState.title,
-                style = BookOnTypography.topBarTitle,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.topBarTitle,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -105,9 +106,9 @@ fun BookOnMyUnlinkedMarathonCard(
                     testTag = "my_marathon_link_switch"
                 },
                 colors = SwitchDefaults.colors(
-                    uncheckedThumbColor = BookOnColor.Surface,
-                    uncheckedTrackColor = BookOnColor.SwitchOff,
-                    uncheckedBorderColor = BookOnColor.SwitchOff,
+                    uncheckedThumbColor = MaterialTheme.colorScheme.surface,
+                    uncheckedTrackColor = MaterialTheme.colorScheme.outlineVariant,
+                    uncheckedBorderColor = MaterialTheme.colorScheme.outlineVariant,
                 ),
             )
         }
@@ -121,8 +122,8 @@ fun BookOnMyUnlinkedMarathonCard(
             Text(
                 modifier = Modifier.weight(1f),
                 text = uiState.progressText,
-                style = BookOnTypography.bodySemiBold,
-                color = BookOnColor.TextSecondary,
+                style = bookOnTypography.bodySemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -131,8 +132,8 @@ fun BookOnMyUnlinkedMarathonCard(
 
             Text(
                 text = uiState.percentText,
-                style = BookOnTypography.bodySemiBold,
-                color = BookOnColor.PrimaryPressed,
+                style = bookOnTypography.bodySemiBold,
+                color = MaterialTheme.colorScheme.secondary,
                 maxLines = 1,
             )
         }
@@ -150,8 +151,8 @@ fun BookOnMyUnlinkedMarathonCard(
 
         Text(
             text = uiState.remainingText,
-            style = BookOnTypography.caption,
-            color = BookOnColor.TextSecondary,
+            style = bookOnTypography.caption,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -167,14 +168,14 @@ private fun MyMarathonProgressBar(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(AppRadius.Progress))
-            .background(BookOnColor.SwitchOff),
+            .background(MaterialTheme.colorScheme.outlineVariant),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(progress.coerceIn(0f, 1f))
                 .height(AppSpacing.Item)
                 .clip(RoundedCornerShape(AppRadius.Progress))
-                .background(BookOnColor.Primary),
+                .background(MaterialTheme.colorScheme.primary),
         )
     }
 }

@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.my.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -19,9 +21,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 
 /**
  * 내 서재 상단의 사용자 이름, 학생 정보, 프로필 placeholder를 표시한다.
@@ -41,8 +42,8 @@ fun BookOnMyProfileHeader(
         Column(modifier = Modifier.weight(1f)) {
             Text(
                 text = userNameText,
-                style = BookOnTypography.sectionTitle,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.sectionTitle,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -51,8 +52,8 @@ fun BookOnMyProfileHeader(
 
             Text(
                 text = studentInfoText,
-                style = BookOnTypography.caption,
-                color = BookOnColor.TextSecondary,
+                style = bookOnTypography.caption,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -74,7 +75,7 @@ private fun MyAvatarPlaceholder() {
         modifier = Modifier
             .size(AppIconSize.Avatar)
             .clip(CircleShape)
-            .background(BookOnColor.IconContainer),
+            .background(MaterialTheme.colorScheme.surfaceContainerHighest),
     )
 }
 

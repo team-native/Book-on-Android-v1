@@ -2,6 +2,9 @@ package com.teamnative.bookon.core.designsystem.theme
 
 import androidx.compose.material3.Typography as MaterialTypography
 import androidx.compose.material3.Typography
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
@@ -42,90 +45,122 @@ val Typography = Typography(
     labelSmall = DefaultTypography.labelSmall.copy(fontFamily = PretendardFontFamily),
 )
 
-object BookOnTypography {
-    val screenTitle = TextStyle(
+@Immutable
+data class BookOnExtraTypography(
+    val screenTitle: TextStyle,
+    val homeUserName: TextStyle,
+    val sectionTitle: TextStyle,
+    val topBarTitle: TextStyle,
+    val button: TextStyle,
+    val fieldLabel: TextStyle,
+    val fieldText: TextStyle,
+    val fieldPlaceholder: TextStyle,
+    val bodyMedium: TextStyle,
+    val bodySemiBold: TextStyle,
+    val caption: TextStyle,
+    val privacyNotice: TextStyle,
+    val chip: TextStyle,
+    val badge: TextStyle,
+    val bookTitle: TextStyle,
+    val bookMeta: TextStyle,
+)
+
+internal val DefaultBookOnExtraTypography = BookOnExtraTypography(
+    screenTitle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 28.sp,
         lineHeight = 32.sp,
-    )
-    val homeUserName = TextStyle(
+    ),
+    homeUserName = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 24.sp,
         lineHeight = 20.sp,
-    )
-    val sectionTitle = TextStyle(
+    ),
+    sectionTitle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 20.sp,
         lineHeight = 22.sp,
-    )
-    val topBarTitle = TextStyle(
+    ),
+    topBarTitle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 16.sp,
-    )
-    val button = TextStyle(
+    ),
+    button = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 14.sp,
-    )
-    val fieldLabel = TextStyle(
+    ),
+    fieldLabel = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 14.sp,
-    )
-    val fieldText = TextStyle(
+    ),
+    fieldText = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 14.sp,
-    )
-    val fieldPlaceholder = TextStyle(
+    ),
+    fieldPlaceholder = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 12.sp,
-    )
-    val bodyMedium = TextStyle(
+    ),
+    bodyMedium = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 20.sp,
-    )
-    val bodySemiBold = bodyMedium.copy(fontWeight = FontWeight.SemiBold)
+    ),
+    bodySemiBold = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+    ),
 
-    val caption = TextStyle(
+    caption = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 12.sp,
-    )
-    val privacyNotice = TextStyle(
+    ),
+    privacyNotice = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 8.sp,
         lineHeight = 10.sp,
-    )
-    val chip = TextStyle(
+    ),
+    chip = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.SemiBold,
         fontSize = 13.sp,
         lineHeight = 16.sp,
-    )
-    val badge = TextStyle(
+    ),
+    badge = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Bold,
         fontSize = 11.sp,
-    )
-    val bookTitle = TextStyle(
+    ),
+    bookTitle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,
         fontSize = 14.sp,
         lineHeight = 22.sp,
-    )
-    val bookMeta = TextStyle(
+    ),
+    bookMeta = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Normal,
         fontSize = 10.sp,
         lineHeight = 22.sp,
     )
+)
+
+val LocalBookOnExtraTypography = staticCompositionLocalOf<BookOnExtraTypography> {
+    error("BookOnExtraTypography is not provided.")
 }
+
+val bookOnTypography: BookOnExtraTypography
+    @Composable get() = LocalBookOnExtraTypography.current

@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.my.presentation.component
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -26,8 +28,7 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
-import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.my.presentation.model.BookOnMyMarathonUiModel
 
 private val MyMarathonCardIconSize = 40.dp
@@ -46,8 +47,8 @@ fun BookOnMyMarathonCard(
         modifier = modifier
             .fillMaxWidth()
             .clip(RoundedCornerShape(AppRadius.Card))
-            .background(BookOnColor.Surface)
-            .border(AppStrokeWidth.Divider, BookOnColor.MarathonCardBorder, RoundedCornerShape(AppRadius.Card))
+            .background(MaterialTheme.colorScheme.surface)
+            .border(AppStrokeWidth.Divider, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(AppRadius.Card))
             .padding(AppSpacing.Content),
     ) {
         Row(
@@ -66,8 +67,8 @@ fun BookOnMyMarathonCard(
             Text(
                 modifier = Modifier.weight(1f),
                 text = uiState.title,
-                style = BookOnTypography.topBarTitle,
-                color = BookOnColor.TextPrimary,
+                style = bookOnTypography.topBarTitle,
+                color = MaterialTheme.colorScheme.onSurface,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -85,8 +86,8 @@ fun BookOnMyMarathonCard(
             Text(
                 modifier = Modifier.weight(1f),
                 text = uiState.progressText,
-                style = BookOnTypography.bodySemiBold,
-                color = BookOnColor.TextSecondary,
+                style = bookOnTypography.bodySemiBold,
+                color = MaterialTheme.colorScheme.onSurfaceVariant,
                 maxLines = 1,
                 overflow = TextOverflow.Ellipsis,
             )
@@ -95,8 +96,8 @@ fun BookOnMyMarathonCard(
 
             Text(
                 text = uiState.percentText,
-                style = BookOnTypography.bodySemiBold,
-                color = BookOnColor.PrimaryPressed,
+                style = bookOnTypography.bodySemiBold,
+                color = MaterialTheme.colorScheme.secondary,
                 maxLines = 1,
             )
         }
@@ -114,8 +115,8 @@ fun BookOnMyMarathonCard(
         
         Text(
             text = uiState.remainingText,
-            style = BookOnTypography.caption,
-            color = BookOnColor.TextSecondary,
+            style = bookOnTypography.caption,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -130,14 +131,14 @@ private fun MyMarathonProgressBar(
     Box(
         modifier = modifier
             .clip(RoundedCornerShape(AppRadius.Progress))
-            .background(BookOnColor.SwitchOff),
+            .background(MaterialTheme.colorScheme.outlineVariant),
     ) {
         Box(
             modifier = Modifier
                 .fillMaxWidth(progress.coerceIn(0f, 1f))
                 .height(AppSpacing.Item)
                 .clip(RoundedCornerShape(AppRadius.Progress))
-                .background(BookOnColor.Primary),
+                .background(MaterialTheme.colorScheme.primary),
         )
     }
 }
@@ -149,7 +150,7 @@ private fun MyMarathonStatusBadge(
     Box(
         modifier = Modifier
             .clip(RoundedCornerShape(AppRadius.Small))
-            .background(BookOnColor.StatusAvailableContainer)
+            .background(MaterialTheme.colorScheme.tertiaryContainer)
             .padding(
                 horizontal = MyMarathonCardBadgeHorizontalPadding,
                 vertical = MyMarathonCardBadgeVerticalPadding,
@@ -158,8 +159,8 @@ private fun MyMarathonStatusBadge(
     ) {
         Text(
             text = text,
-            style = BookOnTypography.badge,
-            color = BookOnColor.PrimaryPressed,
+            style = bookOnTypography.badge,
+            color = MaterialTheme.colorScheme.secondary,
             maxLines = 1,
         )
     }

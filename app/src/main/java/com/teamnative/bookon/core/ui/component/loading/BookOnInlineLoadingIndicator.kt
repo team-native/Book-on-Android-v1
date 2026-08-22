@@ -1,5 +1,7 @@
 package com.teamnative.bookon.core.ui.component.loading
 
+import androidx.compose.material3.MaterialTheme
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -15,7 +17,6 @@ import androidx.compose.ui.semantics.progressBarRangeInfo
 import androidx.compose.ui.semantics.semantics
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 
 /** 목록의 다음 페이지 요청처럼 기존 콘텐츠를 유지해야 할 때 표시하는 진행 상태다. */
 @Composable
@@ -36,7 +37,7 @@ fun BookOnInlineLoadingIndicator(
         verticalAlignment = Alignment.CenterVertically,
     ) {
         CircularProgressIndicator(
-            color = BookOnColor.Primary,
+            color = MaterialTheme.colorScheme.primary,
             modifier = Modifier,
         )
     }
