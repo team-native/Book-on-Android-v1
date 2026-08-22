@@ -26,7 +26,6 @@ import com.teamnative.bookon.feature.auth.presentation.component.AuthOauthTopSpa
 import com.teamnative.bookon.feature.auth.presentation.component.AuthTitleTopSpacing
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthPasswordField
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnThirdPartyAgreementRow
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnPasswordPolicyTooltip
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 
 /**
@@ -74,7 +73,6 @@ fun BookOnReadingMarathonLinkScreen(
         BookOnTextField(uiState = uiState.marathonId, onValueChange = onIdChange)
 
         BookOnAuthPasswordField(uiState = uiState.password, onValueChange = onPasswordChange)
-        BookOnPasswordPolicyTooltip()
 
         BookOnThirdPartyAgreementRow(
             checked = uiState.agreement.checked,

@@ -20,7 +20,10 @@ import androidx.navigation3.ui.NavDisplay
 import com.teamnative.bookon.feature.auth.presentation.signup.BookOnRegistrationViewModel
 import com.teamnative.bookon.feature.auth.presentation.login.BookOnLoginRoute
 import com.teamnative.bookon.feature.auth.presentation.passwordsetup.BookOnPasswordSetupRoute
-import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetRoute
+import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetEmailRoute
+import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetNewPasswordRoute
+import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetVerificationRoute
+import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetViewModel
 import com.teamnative.bookon.feature.auth.presentation.readingmarathonlink.BookOnReadingMarathonLinkRoute
 import com.teamnative.bookon.feature.auth.presentation.readingmarathonsignup.BookOnReadingMarathonSignupRoute
 import com.teamnative.bookon.feature.auth.presentation.signupcomplete.BookOnSignupCompleteRoute
@@ -79,6 +82,19 @@ private fun BookOnAuthNavDisplay(onAuthenticated: () -> Unit) {
     val registrationViewModel: BookOnRegistrationViewModel =
         hiltViewModel(viewModelStoreOwner = registrationViewModelStoreOwner)
 
+    // 비밀번호 재설정(이메일 → 인증코드 → 새 비밀번호) 3개 화면이 공유하는 ViewModel이다.
+    // 이 흐름을 완전히 벗어나면(로그인 화면으로 복귀) clear한다.
+    val passwordResetViewModelStoreOwner = remember {
+        object : ViewModelStoreOwner {
+            override val viewModelStore = ViewModelStore()
+        }
+    }
+    DisposableEffect(Unit) {
+        onDispose { passwordResetViewModelStoreOwner.viewModelStore.clear() }
+    }
+    val passwordResetViewModel: BookOnPasswordResetViewModel =
+        hiltViewModel(viewModelStoreOwner = passwordResetViewModelStoreOwner)
+
     // Navigation 2의 savedStateHandle 결과 전달을 대체하는 회원가입 플로우 전용 상태이다.
     var progressStepOverride by remember { mutableIntStateOf(-1) }
 
@@ -102,7 +118,25 @@ private fun BookOnAuthNavDisplay(onAuthenticated: () -> Unit) {
                 )
             }
             entry<BookOnDestination.PasswordReset> {
-                BookOnPasswordResetRoute(onNavigateBack = { backStack.removeLastOrNull() })
+                BookOnPasswordResetEmailRoute(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToVerification = { backStack.add(BookOnDestination.PasswordResetVerification) },
+                    viewModel = passwordResetViewModel,
+                )
+            }
+            entry<BookOnDestination.PasswordResetVerification> {
+                BookOnPasswordResetVerificationRoute(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onNavigateToNewPassword = { backStack.add(BookOnDestination.PasswordResetNewPassword) },
+                    viewModel = passwordResetViewModel,
+                )
+            }
+            entry<BookOnDestination.PasswordResetNewPassword> {
+                BookOnPasswordResetNewPasswordRoute(
+                    onNavigateBack = { backStack.removeLastOrNull() },
+                    onResetCompleted = { repeat(3) { backStack.removeLastOrNull() } },
+                    viewModel = passwordResetViewModel,
+                )
             }
             entry<BookOnDestination.Signup> {
                 BookOnSignupRoute(
@@ -180,6 +214,19 @@ private fun BookOnMainNavDisplay(onLogout: () -> Unit) {
     )
     val navigator = remember(navigationState) { BookOnMainNavigator(navigationState) }
 
+    // 비밀번호 재설정(이메일 → 인증코드 → 새 비밀번호) 3개 화면이 공유하는 ViewModel이다.
+    // 인증 전 흐름과는 별개의 인스턴스이며, 메인 플로우가 사라지면(로그아웃) clear한다.
+    val passwordResetViewModelStoreOwner = remember {
+        object : ViewModelStoreOwner {
+            override val viewModelStore = ViewModelStore()
+        }
+    }
+    DisposableEffect(Unit) {
+        onDispose { passwordResetViewModelStoreOwner.viewModelStore.clear() }
+    }
+    val passwordResetViewModel: BookOnPasswordResetViewModel =
+        hiltViewModel(viewModelStoreOwner = passwordResetViewModelStoreOwner)
+
     val bottomBar: @Composable () -> Unit = {
         BookOnMainBottomBar(
             current = navigationState.topLevelRoute,
@@ -249,7 +296,25 @@ private fun BookOnMainNavDisplay(onLogout: () -> Unit) {
                     )
                 }
                 entry<BookOnDestination.PasswordReset> {
-                    BookOnPasswordResetRoute(onNavigateBack = navigator::goBack)
+                    BookOnPasswordResetEmailRoute(
+                        onNavigateBack = navigator::goBack,
+                        onNavigateToVerification = { navigator.push(BookOnDestination.PasswordResetVerification) },
+                        viewModel = passwordResetViewModel,
+                    )
+                }
+                entry<BookOnDestination.PasswordResetVerification> {
+                    BookOnPasswordResetVerificationRoute(
+                        onNavigateBack = navigator::goBack,
+                        onNavigateToNewPassword = { navigator.push(BookOnDestination.PasswordResetNewPassword) },
+                        viewModel = passwordResetViewModel,
+                    )
+                }
+                entry<BookOnDestination.PasswordResetNewPassword> {
+                    BookOnPasswordResetNewPasswordRoute(
+                        onNavigateBack = navigator::goBack,
+                        onResetCompleted = { repeat(3) { navigator.goBack() } },
+                        viewModel = passwordResetViewModel,
+                    )
                 }
                 entry<BookOnDestination.ReadingMarathonLink> {
                     BookOnReadingMarathonLinkRoute(

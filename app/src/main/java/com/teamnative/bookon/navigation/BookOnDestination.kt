@@ -13,7 +13,16 @@ internal sealed interface BookOnDestination : NavKey {
     @Serializable data object Signup : BookOnDestination
     @Serializable data object VerificationCode : BookOnDestination
     @Serializable data object PasswordSetup : BookOnDestination
+
+    /** 비밀번호 재설정 1단계(이메일 입력)이다. */
     @Serializable data object PasswordReset : BookOnDestination
+
+    /** 비밀번호 재설정 2단계(인증코드 확인)이다. */
+    @Serializable data object PasswordResetVerification : BookOnDestination
+
+    /** 비밀번호 재설정 3단계(새 비밀번호 설정)이다. */
+    @Serializable data object PasswordResetNewPassword : BookOnDestination
+
     @Serializable data object ReadingMarathonSignup : BookOnDestination
 
     /** [openedFromMy]가 true이면 마이페이지에서 진입한 것이므로 완료/건너뛰기 시 가입 완료 화면 대신 뒤로 돌아간다. */
