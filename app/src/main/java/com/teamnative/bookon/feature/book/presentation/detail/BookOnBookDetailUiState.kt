@@ -7,6 +7,7 @@ import com.teamnative.bookon.feature.book.presentation.model.BookOnBookDetailInf
 data class BookOnBookDetailScreenUiState(
     val title: String,
     val author: String,
+    val coverImageUrl: String? = null,
     val info: BookOnBookDetailInfoRowUiModel,
     val intro: String,
     val loanAvailable: Boolean,

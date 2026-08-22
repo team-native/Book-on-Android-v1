@@ -32,6 +32,10 @@ fun BookOnHomeScreen(
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val userName = uiState.userName.takeIf { name -> name.isNotBlank() }?.let { name ->
+        stringResource(R.string.user_name_suffix, name)
+    }.orEmpty()
+
     Scaffold(
         modifier = modifier,
         bottomBar = bottomBar,
@@ -59,8 +63,10 @@ fun BookOnHomeScreen(
             if (uiState.errorMessage == null) {
             item {
                 BookOnHomeHeader(
-                    greeting = uiState.greeting,
-                    userName = uiState.userName,
+                    greeting = uiState.greeting.ifBlank {
+                        stringResource(R.string.home_greeting_evening)
+                    },
+                    userName = userName,
                     notificationContentDescription = stringResource(R.string.home_notification_description),
                     profileContentDescription = stringResource(R.string.home_profile_description),
                     onNotificationClick = onNotificationClick,

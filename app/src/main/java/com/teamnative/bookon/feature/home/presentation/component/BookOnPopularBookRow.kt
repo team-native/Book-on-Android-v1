@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -28,33 +27,31 @@ import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnColor
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.BookOnTypography
+import com.teamnative.bookon.core.ui.component.book.BookOnRemoteBookCover
 import com.teamnative.bookon.feature.home.presentation.model.BookOnPopularBookRowUiModel
 
 private val PopularBookRowWidth = 206.dp
 private val PopularBookRowHeight = 76.dp
 
 /**
- * 홈의 인기 책 영역처럼 작은 표지 placeholder와 책 정보를 가로 카드로 표시한다.
- * cover slot을 통해 실제 표지 로더를 연결할 수 있지만 기본값은 placeholder이다.
+ * 홈의 인기 책 영역처럼 서버 표지와 책 정보를 가로 카드로 표시한다.
  */
 @Composable
 fun BookOnPopularBookRow(
     uiState: BookOnPopularBookRowUiModel,
     modifier: Modifier = Modifier,
-    cover: @Composable () -> Unit = { PopularBookCoverPlaceholder() },
 ) {
     BookOnPopularBookRow(
         title = uiState.title,
         metaText = uiState.metaText,
         modifier = modifier,
         statusText = uiState.statusText,
-        cover = cover,
+        coverImageUrl = uiState.coverImageUrl,
     )
 }
 
 /**
- * 홈의 인기 책 영역처럼 작은 표지 placeholder와 책 정보를 가로 카드로 표시한다.
- * cover slot을 통해 실제 표지 로더를 연결할 수 있지만 기본값은 placeholder이다.
+ * 홈의 인기 책 영역처럼 서버 표지와 책 정보를 가로 카드로 표시한다.
  */
 @Composable
 fun BookOnPopularBookRow(
@@ -62,7 +59,7 @@ fun BookOnPopularBookRow(
     metaText: String,
     modifier: Modifier = Modifier,
     statusText: String? = null,
-    cover: @Composable () -> Unit = { PopularBookCoverPlaceholder() },
+    coverImageUrl: String? = null,
 ) {
     Row(
         modifier = modifier
@@ -84,7 +81,10 @@ fun BookOnPopularBookRow(
                 .clip(RoundedCornerShape(AppRadius.IconButton)),
             contentAlignment = Alignment.Center,
         ) {
-            cover()
+            BookOnRemoteBookCover(
+                coverImageUrl = coverImageUrl,
+                placeholderColor = BookOnColor.BookCoverSmallPlaceholder,
+            )
         }
 
         Spacer(modifier = Modifier.width(AppSpacing.Small))
@@ -123,15 +123,6 @@ fun BookOnPopularBookRow(
             }
         }
     }
-}
-
-@Composable
-private fun PopularBookCoverPlaceholder() {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .background(BookOnColor.BookCoverSmallPlaceholder),
-    )
 }
 
 @Preview(showBackground = true)
