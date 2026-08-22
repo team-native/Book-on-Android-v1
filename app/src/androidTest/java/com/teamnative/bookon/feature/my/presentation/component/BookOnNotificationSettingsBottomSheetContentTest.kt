@@ -2,6 +2,7 @@ package com.teamnative.bookon.feature.my.presentation.component
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
@@ -21,7 +22,7 @@ class BookOnNotificationSettingsBottomSheetContentTest {
     @Test
     fun notificationSwitches_updateTheirOwnSelection() {
         composeTestRule.setContent {
-            var selections by mutableStateOf(listOf(true, true, false))
+            var selections by remember { mutableStateOf(listOf(true, true, false)) }
 
             BookOnTheme {
                 BookOnNotificationSettingsBottomSheetContent(
