@@ -3,7 +3,11 @@ package com.teamnative.bookon.feature.auth.data.di
 import com.teamnative.bookon.feature.auth.data.AuthRemoteDataSource
 import com.teamnative.bookon.feature.auth.data.AuthRemoteDataSourceImpl
 import com.teamnative.bookon.feature.auth.data.AuthRepositoryImpl
+import com.teamnative.bookon.feature.auth.data.Read365RemoteDataSource
+import com.teamnative.bookon.feature.auth.data.Read365RemoteDataSourceImpl
+import com.teamnative.bookon.feature.auth.data.Read365RepositoryImpl
 import com.teamnative.bookon.feature.auth.domain.AuthRepository
+import com.teamnative.bookon.feature.auth.domain.Read365Repository
 import dagger.Binds
 import dagger.Module
 import dagger.hilt.InstallIn
@@ -13,4 +17,6 @@ import dagger.hilt.components.SingletonComponent
 abstract class AuthDataModule {
     @Binds abstract fun bindAuthRemoteDataSource(impl: AuthRemoteDataSourceImpl): AuthRemoteDataSource
     @Binds abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
+    @Binds abstract fun bindRead365RemoteDataSource(impl: Read365RemoteDataSourceImpl): Read365RemoteDataSource
+    @Binds abstract fun bindRead365Repository(impl: Read365RepositoryImpl): Read365Repository
 }

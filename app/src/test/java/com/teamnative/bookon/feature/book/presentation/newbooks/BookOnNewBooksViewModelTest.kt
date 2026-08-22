@@ -9,6 +9,8 @@ import com.teamnative.bookon.feature.book.domain.BookRepository
 import com.teamnative.bookon.feature.book.domain.BookSort
 import com.teamnative.bookon.feature.book.domain.GetNewBooksUseCase
 import com.teamnative.bookon.feature.book.domain.Loan
+import com.teamnative.bookon.feature.book.domain.PurchaseLink
+import com.teamnative.bookon.feature.book.domain.TodayRecommendation
 import com.teamnative.bookon.feature.home.presentation.newbooks.BookOnNewBooksViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -95,9 +97,15 @@ private class NewBooksRepository(
 
     override suspend fun categories(): NetworkResult<List<BookCategory>> = error("not used")
 
+    override suspend fun todayRecommendations(): NetworkResult<List<TodayRecommendation>> = error("not used")
+
+    override suspend fun purchaseLinks(bookId: Long): NetworkResult<List<PurchaseLink>> = error("not used")
+
     override suspend fun book(bookId: Long): NetworkResult<BookDetail> = error("not used")
 
     override suspend fun favorite(bookId: Long, favorite: Boolean): NetworkResult<Boolean> = error("not used")
 
     override suspend fun loan(bookId: Long): NetworkResult<Loan> = error("not used")
+
+    override suspend fun extendLoan(loanId: Long): NetworkResult<com.teamnative.bookon.feature.book.domain.LoanExtension> = error("not used")
 }

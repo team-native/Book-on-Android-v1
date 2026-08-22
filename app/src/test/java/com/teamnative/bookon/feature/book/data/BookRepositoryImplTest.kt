@@ -17,9 +17,12 @@ class BookRepositoryImplTest {
                 override suspend fun books(page: Int, size: Int, sort: String, category: String?) = error("not used")
                 override suspend fun search(keyword: String?, libraryNumber: String?, page: Int, size: Int) = error("not used")
                 override suspend fun newBooks(page: Int, size: Int) = error("not used")
+                override suspend fun todayRecommendations() = error("not used")
+                override suspend fun purchaseLinks(bookId: Long) = error("not used")
                 override suspend fun book(bookId: Long) = error("not used")
                 override suspend fun favorite(bookId: Long, favorite: Boolean) = error("not used")
                 override suspend fun loan(bookId: Long) = error("not used")
+                override suspend fun extendLoan(loanId: Long) = error("not used")
             },
         )
 

@@ -23,4 +23,12 @@ data class RegistrationDraft(
 data class RegistrationSession(val sessionId: String, val expiresAt: String, val email: String)
 data class RegisteredUser(val userId: Long, val email: String, val name: String)
 
-data class LoginSession(val accessToken: String, val refreshToken: String)
+data class LoginSession(
+    val accessToken: String,
+    val refreshToken: String,
+    val userId: Long? = null,
+    val name: String? = null,
+    val email: String? = null,
+    val tokenType: String? = null,
+    val expiresIn: Long? = null,
+)

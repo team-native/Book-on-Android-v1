@@ -16,4 +16,8 @@ interface MarathonApiService {
 data class Read365MyInfoDto(
     @SerialName("read365Id")
     val read365Id: String,
+    @SerialName("memberKey")
+    val memberKey: String? = null,
+    @SerialName("schoolKey")
+    val schoolKey: String? = null,
 )

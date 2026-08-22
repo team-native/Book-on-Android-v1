@@ -6,4 +6,8 @@ interface MarathonRepository {
     suspend fun read365MyInfo(): NetworkResult<Read365MyInfo>
 }
 
-data class Read365MyInfo(val read365Id: String)
+data class Read365MyInfo(
+    val read365Id: String,
+    val memberKey: String? = null,
+    val schoolKey: String? = null,
+)
