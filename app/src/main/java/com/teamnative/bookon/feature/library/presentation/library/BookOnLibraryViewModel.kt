@@ -36,7 +36,7 @@ class BookOnLibraryViewModel @Inject constructor(
     val uiState: StateFlow<BookOnLibraryScreenUiState> = mutableUiState.asStateFlow()
 
     private var categories: List<BookCategory> = emptyList()
-    private var selectedCategoryIndex = AllCategoryIndex
+    private var selectedCategoryCode: String? = null
     private var selectedSortIndex = PopularSortIndex
     private var nextPage = FirstPage
 
@@ -49,7 +49,7 @@ class BookOnLibraryViewModel @Inject constructor(
     fun onEvent(event: BookOnLibraryScreenEvent) {
         when (event) {
             is BookOnLibraryScreenEvent.CategoryClicked -> {
-                selectedCategoryIndex = event.categoryIndex
+                selectedCategoryCode = event.categoryCode
                 nextPage = FirstPage
                 load(append = false)
             }
@@ -97,10 +97,9 @@ class BookOnLibraryViewModel @Inject constructor(
             isPagingLoading = append,
             errorMessage = null,
         )
-        val categoryCode = categories.getOrNull(selectedCategoryIndex - 1)?.code
         val sort = if (selectedSortIndex == PopularSortIndex) BookSort.POPULAR else BookSort.NEW
 
-        when (val result = getBooks(nextPage, PageSize, sort, categoryCode)) {
+        when (val result = getBooks(nextPage, PageSize, sort, selectedCategoryCode)) {
             is NetworkResult.Success -> {
                 nextPage = result.data.page + 1
                 mutableUiState.value = BookOnLibraryScreenUiState(
@@ -126,11 +125,21 @@ class BookOnLibraryViewModel @Inject constructor(
         }
     }
 
-    private fun categoryUiModels(): List<BookOnFilterChipUiModel> =
-        listOf(BookOnFilterChipUiModel("전체", selectedCategoryIndex == AllCategoryIndex)) +
-            categories.mapIndexed { index, category ->
-                BookOnFilterChipUiModel(category.name, selectedCategoryIndex == index + 1)
-            }
+    /** 전체 카테고리는 null, 서버 카테고리는 API 응답의 code를 선택값으로 유지한다. */
+    private fun categoryUiModels(): List<BookOnLibraryCategoryUiModel> =
+        listOf(
+            BookOnLibraryCategoryUiModel(
+                code = null,
+                name = "전체",
+                selected = selectedCategoryCode == null,
+            ),
+        ) + categories.map { category ->
+            BookOnLibraryCategoryUiModel(
+                code = category.code,
+                name = category.name,
+                selected = selectedCategoryCode == category.code,
+            )
+        }
 
     private fun sortUiModels(): List<BookOnFilterChipUiModel> =
         listOf("인기순", "신간순").mapIndexed { index, title ->
@@ -143,7 +152,6 @@ private fun NetworkError.toUiMessage(): BookOnUiMessage = when (this) {
     else -> BookOnUiMessage.Resource(R.string.error_load_books)
 }
 
-private const val AllCategoryIndex = 0
 private const val PopularSortIndex = 0
 private const val FirstPage = 1
 private const val PageSize = 20

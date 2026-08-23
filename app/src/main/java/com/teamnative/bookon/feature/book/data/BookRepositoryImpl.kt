@@ -17,7 +17,16 @@ class BookRepositoryImpl @Inject constructor(private val remote: BookRemoteDataS
     override suspend fun books(page: Int, size: Int, sort: BookSort, category: String?) = remote.books(page, size, sort.name, category).map { it.toDomain() }
     override suspend fun search(keyword: String?, libraryNumber: String?, page: Int, size: Int) = remote.search(keyword, libraryNumber, page, size).map { it.toDomain() }
     override suspend fun newBooks(page: Int, size: Int) = remote.newBooks(page, size).map { it.toDomain() }
-    override suspend fun categories() = remote.categories().map { response -> response.items.map { BookCategory(it.code, it.name) } }
+    override suspend fun categories() = remote.categories().map { response ->
+        response.items.map { category ->
+            BookCategory(
+                categoryId = category.categoryId,
+                code = category.code,
+                name = category.name,
+                bookCount = category.bookCount,
+            )
+        }
+    }
     override suspend fun todayRecommendations() = remote.todayRecommendations().map { response ->
         response.items.map { item ->
             TodayRecommendation(

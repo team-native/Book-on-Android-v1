@@ -78,11 +78,11 @@ fun BookOnLibraryScreen(
             ) {
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Small)) {
                     items(uiState.categories.size) { index ->
+                        val category = uiState.categories[index]
                         BookOnFilterChip(
-                            uiState = uiState.categories[index],
-                            onClick = {
-                                onEvent(BookOnLibraryScreenEvent.CategoryClicked(index))
-                            },
+                            text = category.name,
+                            selected = category.selected,
+                            onClick = { onEvent(BookOnLibraryScreenEvent.CategoryClicked(category.code)) },
                         )
                     }
                 }

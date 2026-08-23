@@ -28,6 +28,8 @@ class BookRepositoryImplTest {
 
         val result = repository.categories() as NetworkResult.Success
 
+        assertEquals(7L, result.data.single().categoryId)
         assertEquals(listOf("NOVEL" to "소설"), result.data.map { it.code to it.name })
+        assertEquals(10, result.data.single().bookCount)
     }
 }
