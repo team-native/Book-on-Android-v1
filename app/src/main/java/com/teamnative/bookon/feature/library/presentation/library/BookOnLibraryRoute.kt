@@ -8,7 +8,7 @@ import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 
 
 /**
- * 도서실 Route는 서버 목록 연동 전 카테고리와 정렬의 선택 인덱스를 관리해 Screen에 전달한다.
+ * 도서실 Route는 ViewModel의 서버 목록 상태를 Screen에 전달한다.
  */
 @Composable
 fun BookOnLibraryRoute(

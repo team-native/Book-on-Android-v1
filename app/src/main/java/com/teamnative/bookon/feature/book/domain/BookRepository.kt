@@ -17,7 +17,12 @@ interface BookRepository {
 enum class BookSort { POPULAR, NEW }
 data class Book(val id: Long, val title: String, val author: String, val publisher: String, val category: String, val libraryNumber: String, val coverImageUrl: String?, val loanAvailable: Boolean, val status: String)
 data class BookPage(val items: List<Book>, val page: Int, val hasNext: Boolean, val totalCount: Int)
-data class BookCategory(val code: String, val name: String)
+data class BookCategory(
+    val categoryId: Long,
+    val code: String,
+    val name: String,
+    val bookCount: Int,
+)
 data class BookDetail(val book: Book, val description: String?, val favorite: Boolean, val locationName: String?, val returnPlanDate: String?)
 data class Loan(
     val id: Long,

@@ -7,7 +7,7 @@ import com.teamnative.bookon.core.ui.model.BookOnUiMessage
 
 @Immutable
 data class BookOnLibraryScreenUiState(
-    val categories: List<BookOnFilterChipUiModel>,
+    val categories: List<BookOnLibraryCategoryUiModel>,
     val sortOptions: List<BookOnFilterChipUiModel>,
     val books: List<BookOnBookCardUiModel>,
     val isInitialLoading: Boolean = false,

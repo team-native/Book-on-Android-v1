@@ -8,7 +8,11 @@ internal fun sampleLibraryUiState(
     selectedSortIndex: Int = POPULAR_SORT_INDEX,
 ) = BookOnLibraryScreenUiState(
     categories = categoryNames.mapIndexed { index, categoryName ->
-        BookOnFilterChipUiModel(categoryName, selected = index == selectedCategoryIndex)
+        BookOnLibraryCategoryUiModel(
+            code = categoryCodes[index],
+            name = categoryName,
+            selected = index == selectedCategoryIndex,
+        )
     },
     sortOptions = listOf("인기순", "신간순").mapIndexed { index, sortName ->
         BookOnFilterChipUiModel(sortName, selected = index == selectedSortIndex)
@@ -22,6 +26,7 @@ internal fun sampleLibraryUiState(
 )
 
 private val categoryNames = listOf("전체", "소설", "과학", "역사", "개발")
+private val categoryCodes = listOf(null, "NOVEL", "SCIENCE", "HISTORY", "DEVELOPMENT")
 
 private const val ALL_CATEGORY_INDEX = 0
 private const val POPULAR_SORT_INDEX = 0
