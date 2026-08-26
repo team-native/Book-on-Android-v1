@@ -1,20 +1,27 @@
 package com.teamnative.bookon.feature.my.presentation.main
 
-import androidx.compose.material3.MaterialTheme
-
 import android.app.AlertDialog
+import android.content.ContentResolver
+import android.graphics.Bitmap
+import android.graphics.ImageDecoder
+import android.net.Uri
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.PickVisualMediaRequest
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import androidx.compose.material3.ModalBottomSheet
-import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalContext
@@ -23,11 +30,20 @@ import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 import com.teamnative.bookon.feature.my.presentation.component.BookOnNotificationSettingsBottomSheetContent
+import java.io.ByteArrayOutputStream
+import java.io.IOException
+import kotlin.math.roundToInt
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 private const val PasswordChangeMenuIndex = 0
 private const val LoanHistoryMenuIndex = 1
 private const val FavoriteMenuIndex = 2
 private const val NotificationSettingsMenuIndex = 3
+private const val MAX_PROFILE_IMAGE_DIMENSION = 1_024
+private const val PROFILE_IMAGE_JPEG_QUALITY = 85
+private const val MAX_PROFILE_IMAGE_BYTES = 5 * 1024 * 1024
 private val InitialNotificationSelections = listOf(false, false)
 
 /** 내 서재 샘플 상태와 메뉴·로그아웃 이벤트를 연결한다. */
@@ -50,6 +66,29 @@ fun BookOnMyRoute(
     if (uiState.isInitialLoading) {
         BookOnLoadingScreen()
         return
+    }
+
+    val applicationContext = LocalContext.current.applicationContext
+    val coroutineScope = rememberCoroutineScope()
+    val imagePickerLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.PickVisualMedia(),
+    ) { selectedUri ->
+        if (selectedUri != null) {
+            coroutineScope.launch {
+                val uploadPayload = withContext(Dispatchers.IO) {
+                    applicationContext.contentResolver.readProfileImageUpload(selectedUri)
+                }
+
+                if (uploadPayload == null) {
+                    viewModel.showProfileImageSelectionError()
+                } else {
+                    viewModel.uploadProfileImage(
+                        contentType = uploadPayload.contentType,
+                        imageBytes = uploadPayload.imageBytes,
+                    )
+                }
+            }
+        }
     }
 
     BookOnMyScreen(
@@ -88,6 +127,13 @@ fun BookOnMyRoute(
                             isNotificationSettingsVisible = true
                         }
                     }
+                }
+                BookOnMyScreenEvent.ProfileImageEditClicked -> {
+                    imagePickerLauncher.launch(
+                        PickVisualMediaRequest(
+                            ActivityResultContracts.PickVisualMedia.ImageOnly,
+                        ),
+                    )
                 }
                 BookOnMyScreenEvent.ReadingMarathonLinkRequested -> onReadingMarathonLinkClick()
                 BookOnMyScreenEvent.LogoutClicked -> isLogoutDialogVisible = true
@@ -128,6 +174,67 @@ fun BookOnMyRoute(
                 },
             )
         }
+    }
+}
+
+private data class ProfileImageUploadPayload(
+    val contentType: String,
+    val imageBytes: ByteArray,
+)
+
+/** 선택한 이미지를 제한된 크기의 JPEG 바이트로 변환해 업로드 메모리 사용량을 제한한다. */
+private fun ContentResolver.readProfileImageUpload(uri: Uri): ProfileImageUploadPayload? {
+    val selectedContentType = getType(uri) ?: return null
+    if (!selectedContentType.startsWith("image/")) {
+        return null
+    }
+
+    return try {
+        val imageSource = ImageDecoder.createSource(this, uri)
+        val decodedBitmap = ImageDecoder.decodeBitmap(imageSource) { decoder, imageInfo, _ ->
+            decoder.allocator = ImageDecoder.ALLOCATOR_SOFTWARE
+
+            val sourceWidth = imageInfo.size.width
+            val sourceHeight = imageInfo.size.height
+            val sourceMaxDimension = maxOf(sourceWidth, sourceHeight)
+
+            if (sourceMaxDimension > MAX_PROFILE_IMAGE_DIMENSION) {
+                val scale = MAX_PROFILE_IMAGE_DIMENSION.toFloat() / sourceMaxDimension
+                decoder.setTargetSize(
+                    (sourceWidth * scale).roundToInt(),
+                    (sourceHeight * scale).roundToInt(),
+                )
+            }
+        }
+
+        try {
+            ByteArrayOutputStream().use { outputStream ->
+                if (!decodedBitmap.compress(
+                        Bitmap.CompressFormat.JPEG,
+                        PROFILE_IMAGE_JPEG_QUALITY,
+                        outputStream,
+                    )
+                ) {
+                    return null
+                }
+
+                val imageBytes = outputStream.toByteArray()
+                if (imageBytes.size > MAX_PROFILE_IMAGE_BYTES) {
+                    return null
+                }
+
+                ProfileImageUploadPayload(
+                    contentType = "image/jpeg",
+                    imageBytes = imageBytes,
+                )
+            }
+        } finally {
+            decodedBitmap.recycle()
+        }
+    } catch (exception: IOException) {
+        null
+    } catch (exception: RuntimeException) {
+        null
     }
 }
 

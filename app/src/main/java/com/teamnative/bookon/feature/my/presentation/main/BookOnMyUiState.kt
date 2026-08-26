@@ -11,6 +11,7 @@ import com.teamnative.bookon.core.ui.model.BookOnUiMessage
 data class BookOnMyScreenUiState(
     val userNameText: String,
     val studentInfoText: String,
+    val profileImageUrl: String? = null,
     val stats: List<BookOnStatItemUiModel>,
     val marathon: BookOnMyMarathonUiModel,
     val menus: List<BookOnMenuRowUiModel>,
@@ -19,6 +20,8 @@ data class BookOnMyScreenUiState(
         newBookReminder = false,
     ),
     val isReadingMarathonLinked: Boolean = false,
+    val isProfileImageUploading: Boolean = false,
     val isInitialLoading: Boolean = false,
     val errorMessage: BookOnUiMessage? = null,
+    val profileImageErrorMessage: BookOnUiMessage? = null,
 )

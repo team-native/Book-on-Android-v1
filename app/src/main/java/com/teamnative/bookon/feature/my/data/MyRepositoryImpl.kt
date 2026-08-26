@@ -19,6 +19,7 @@ class MyRepositoryImpl @Inject constructor(private val remote: MyRemoteDataSourc
         MyProfile(
             name = myPage.user.name,
             department = myPage.user.department,
+            profileImageUrl = myPage.user.profileImageUrl,
             currentLoanCount = myPage.loanSummary.currentLoanCount,
             overdueCount = myPage.loanSummary.overdueCount,
             totalLoanCount = myPage.loanSummary.totalLoanCount,

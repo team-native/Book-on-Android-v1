@@ -1,14 +1,14 @@
 package com.teamnative.bookon.feature.my.presentation.main
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
@@ -19,11 +19,11 @@ import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.card.BookOnStatSummaryCard
 import com.teamnative.bookon.core.ui.component.row.BookOnMenuRow
+import com.teamnative.bookon.core.ui.model.resolve
 import com.teamnative.bookon.feature.my.presentation.component.BookOnLogoutButton
 import com.teamnative.bookon.feature.my.presentation.component.BookOnMyMarathonCard
 import com.teamnative.bookon.feature.my.presentation.component.BookOnMyProfileHeader
 import com.teamnative.bookon.feature.my.presentation.component.BookOnMyUnlinkedMarathonCard
-import com.teamnative.bookon.core.ui.model.resolve
 
 /** 프로필, 통계, 독서마라톤, 메뉴와 알림 설정을 표시한다. */
 @Composable
@@ -51,43 +51,70 @@ fun BookOnMyScreen(
         ) {
             uiState.errorMessage?.let { message ->
                 item {
-                    androidx.compose.material3.Text(text = message.resolve(), color = MaterialTheme.colorScheme.onSurfaceVariant)
+                    Text(
+                        text = message.resolve(),
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
                     Button(onClick = { onEvent(BookOnMyScreenEvent.RetryClicked) }) {
-                        androidx.compose.material3.Text(text = stringResource(R.string.action_retry))
+                        Text(text = stringResource(R.string.action_retry))
                     }
                 }
             }
             if (uiState.errorMessage == null) {
-            item {
-                BookOnMyProfileHeader(
-                    userNameText = uiState.userNameText,
-                    studentInfoText = uiState.studentInfoText,
-                )
-            }
-            item { BookOnStatSummaryCard(items = uiState.stats) }
-            item {
-                if (uiState.marathon.linked) {
-                    BookOnMyMarathonCard(uiState = uiState.marathon)
-                } else {
-                    BookOnMyUnlinkedMarathonCard(
-                        uiState = uiState.marathon,
-                        onLinkRequest = { onEvent(BookOnMyScreenEvent.ReadingMarathonLinkRequested) },
+                item {
+                    BookOnMyProfileHeader(
+                        userNameText = uiState.userNameText,
+                        studentInfoText = uiState.studentInfoText,
+                        profileImageUrl = uiState.profileImageUrl,
+                        isProfileImageUploading = uiState.isProfileImageUploading,
+                        onProfileImageEditClick = {
+                            onEvent(BookOnMyScreenEvent.ProfileImageEditClicked)
+                        },
                     )
                 }
-            }
-            item {
-                Column {
-                    uiState.menus.forEachIndexed { index, menu ->
-                        BookOnMenuRow(
-                            title = menu.title,
-                            onClick = { onEvent(BookOnMyScreenEvent.MenuClicked(index)) },
-                            destructive = menu.destructive,
-                            showDivider = menu.showDivider,
+
+                uiState.profileImageErrorMessage?.let { message ->
+                    item {
+                        Text(
+                            text = message.resolve(),
+                            color = MaterialTheme.colorScheme.error,
                         )
                     }
                 }
-            }
-            item { BookOnLogoutButton(onLogoutRequest = { onEvent(BookOnMyScreenEvent.LogoutClicked) }) }
+                item { BookOnStatSummaryCard(items = uiState.stats) }
+                item {
+                    if (uiState.marathon.linked) {
+                        BookOnMyMarathonCard(uiState = uiState.marathon)
+                    } else {
+                        BookOnMyUnlinkedMarathonCard(
+                            uiState = uiState.marathon,
+                            onLinkRequest = {
+                                onEvent(BookOnMyScreenEvent.ReadingMarathonLinkRequested)
+                            },
+                        )
+                    }
+                }
+                item {
+                    Column {
+                        uiState.menus.forEachIndexed { index, menu ->
+                            BookOnMenuRow(
+                                title = menu.title,
+                                onClick = {
+                                    onEvent(BookOnMyScreenEvent.MenuClicked(index))
+                                },
+                                destructive = menu.destructive,
+                                showDivider = menu.showDivider,
+                            )
+                        }
+                    }
+                }
+                item {
+                    BookOnLogoutButton(
+                        onLogoutRequest = {
+                            onEvent(BookOnMyScreenEvent.LogoutClicked)
+                        },
+                    )
+                }
             }
         }
     }

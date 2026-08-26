@@ -22,6 +22,7 @@ interface MyRepository {
 data class MyProfile(
     val name: String,
     val department: String,
+    val profileImageUrl: String?,
     val currentLoanCount: Int,
     val overdueCount: Int,
     val totalLoanCount: Int,
