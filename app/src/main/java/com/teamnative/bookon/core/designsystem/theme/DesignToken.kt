@@ -54,6 +54,7 @@ object AppIconSize {
     val XLarge = 36.dp
     val Loading = 64.dp
     val Avatar = 64.dp
+    val ProfileEditBadge = 24.dp
     val PodiumSecondaryAvatar = 52.dp
 }
 
