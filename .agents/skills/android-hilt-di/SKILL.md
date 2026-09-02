@@ -9,6 +9,22 @@ description: Android 프로젝트에서 Hilt 주입 구조를 추가하거나 �
 
 - 생성자 주입, binding, provider 선언을 한 줄로 압축하지 않는다. 의존성이 둘 이상이면 매개변수마다 줄을 나눈다.
 
+## 실행 Hook
+
+### `BeforeMutation`
+
+- 새 의존성의 생성 방식이 `@Inject constructor`, `@Binds`, `@Provides` 중 무엇인지 결정한다.
+- scope·Context qualifier·동일 타입 binding 충돌 여부를 확인한 뒤 Module을 수정한다.
+
+### `AfterChange`
+
+- Interface와 구현체의 모든 binding, 주입 지점 qualifier, Singleton의 참조 대상을 점검한다.
+- ViewModel을 Module에서 직접 제공하지 않았는지 확인한다.
+
+### `BeforeHandoff`
+
+- 실제 Hilt/KSP compile을 실행해 graph 누락·중복 binding을 확인하고 결과를 기록한다.
+
 ## 기본 원칙
 
 - 직접 생성 가능한 프로젝트 클래스는 `@Inject constructor`를 우선한다.

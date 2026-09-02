@@ -12,6 +12,27 @@ description: Android 앱에서 Firebase Cloud Messaging(FCM) 알림·리마인�
 - FID는 물리 기기 식별자가 아니라 **앱 설치 식별자**다. 재설치, 앱 데이터 삭제, Firebase Installations 삭제 시 바뀔 수 있으므로 사용자 계정과 1:1로 고정하지 않는다.
 - FCM 발송 권한·서비스 계정 키·OAuth access token은 Android 앱에 넣지 않는다. 앱은 FID를 인증된 자체 서버에 등록하고, 서버만 Firebase Admin SDK 또는 FCM HTTP v1로 전송한다.
 
+## 실행 Hook
+
+### `BeforeWork`
+
+- Firebase BoM·서비스·Manifest·권한·서버 등록·딥링크의 현재 상태를 확인한다.
+- `FirebaseMessagingService`나 장기 수명 객체를 추가하면 `android-memory-safety`를 먼저 적용한다.
+
+### `BeforeMutation`
+
+- FID 등록·삭제의 서버 계약, 인증 상태, WorkManager 재시도 정책, 로그아웃 해제 정책을 확정한다.
+- Android 앱에 서비스 계정 키·OAuth token·FID 원문 로그가 들어가지 않는지 확인한다.
+
+### `AfterChange`
+
+- 등록 callback에서 서버 UseCase 흐름을 우회하지 않는지와 서비스가 네트워크를 직접 호출하지 않는지 점검한다.
+- 권한 거부·FID 변경·중복 등록·stale 설치·알림 탭 실패 경로를 확인한다.
+
+### `BeforeHandoff`
+
+- Android 버전별 권한·채널·포그라운드/백그라운드·딥링크 검증 결과와 미실행 항목을 기록한다.
+
 ## 구현 전 확인
 
 1. Firebase Android BoM과 `firebase-messaging` 의존성, `google-services.json`, Google Services Gradle Plugin 적용 여부를 확인한다.

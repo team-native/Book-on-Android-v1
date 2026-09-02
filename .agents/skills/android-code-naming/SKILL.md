@@ -5,6 +5,18 @@ description: Android Kotlin·Jetpack Compose 코드의 변수, 함수, 클래스
 
 # Android Code Naming
 
+## 실행 Hook
+
+### `BeforeMutation`
+
+- 새 public 타입·파일·함수·상수의 역할과 기존 명명 패턴을 먼저 확인한다.
+- 이름만 보고 값과 동작을 이해할 수 있는지 검토한 뒤 생성·수정을 시작한다.
+
+### `AfterChange`
+
+- 파일명과 대표 public 타입명이 일치하는지 확인한다.
+- `StateFlow` backing property, Boolean 접두사, UseCase 접미사, 패키지 규칙을 재검사한다.
+
 ## 기본 규칙
 
 | 대상 | 규칙 | 예시 |

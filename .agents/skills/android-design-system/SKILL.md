@@ -23,6 +23,27 @@ description: Compose의 색상, MaterialTheme, Light·Dark·System 테마 모드
 
 - 토큰과 UI 리소스 선언의 객체 생성·조건 분기를 한 줄로 압축하지 않는다.
 
+## 실행 Hook
+
+### `BeforeWork`
+
+- 기존 `MaterialTheme` semantic slot, `strings.xml`, spacing·radius·typography token을 먼저 검색한다.
+- 동일한 역할의 token이 있으면 새 값을 만들지 않고 기존 token을 재사용한다.
+
+### `BeforeMutation`
+
+- 새 색상·문자열·반복 수치가 정말 디자인 시스템 책임인지와 Light/Dark/System 동작을 확정한다.
+- feature에서 직접 색상·문자열·반복 dimension을 추가하지 않을 경로를 정한다.
+
+### `AfterChange`
+
+- feature 하드코딩, resource 누락, semantic 역할 불일치, Light/Dark 대비 문제를 확인한다.
+- 새 public token의 파일명·명명과 기존 Theme provider 연결을 확인한다.
+
+### `BeforeHandoff`
+
+- 가능한 Preview 또는 screenshot 검증과 resource·theme 빌드 결과를 기록한다.
+
 ## 색상 구조
 
 색상 원본과 의미 기반 사용 위치를 분리한다. 색상 값을 담는 별도 `object`를 만들어 화면에서 꺼내 쓰지 않는다. Light/Dark 테마에서 사용할 색상은 역할별 변수로 선언하고, 최상위 theme에서 `ColorScheme`에 매핑한다.

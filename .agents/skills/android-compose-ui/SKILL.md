@@ -9,12 +9,36 @@ description: Jetpack Compose 화면, Route, Screen, UiState, UiModel, 공용 Com
 
 - Composable 본문, 조건문, 상태 갱신, 객체 생성은 한 줄로 압축하지 않는다. 인자 또는 UI 요소가 둘 이상이면 줄바꿈과 들여쓰기를 사용한다.
 
+## 실행 Hook
+
+이 Skill은 화면 수정 중 Hook을 통과하지 못하면 다음 UI 단계로 진행하지 않는다.
+
+### `BeforeWork`
+
+- 기존 Route·Screen·Component·UiState·ScreenEvent 구조와 적용 중인 디자인 token을 확인한다.
+- 다이얼로그·BottomSheet·Navigation 변경이면 관련 Skill을 함께 읽는다.
+
+### `BeforeMutation`
+
+- Route가 상태 수집·이벤트 분기·오버레이 상태를 소유하고 Screen은 stateless UI인지 확정한다.
+- 새 UI 문자열·색상·반복 수치는 resource 또는 디자인 token의 기존 경로를 확인한다.
+
+### `AfterChange`
+
+- `Screen → onEvent → Route → ViewModel` 흐름, lifecycle-aware 수집, inset·접근성·Component 파일 분리를 점검한다.
+- Screen·Component에 ViewModel·Repository·ApiService·직접 네트워크 호출이 새지 않았는지 확인한다.
+
+### `BeforeHandoff`
+
+- 정상·로딩·오류 상태와 필요한 Preview/UI 검증 여부를 확인하고, 실행하지 못한 검증은 명시한다.
+
 ## 기본 구조
 
 ```text
-Navigation
+Navigation (Navigation 3, `$android-navigation` 참고)
 → Route
 → Screen
+→ Content (선택, Component 2개 이상을 묶을 때만)
 → Component
 ```
 
@@ -105,8 +129,8 @@ fun ProjectRoute(
 ## Screen 규칙
 
 - 상태와 callback만 매개변수로 받는 stateless UI를 우선한다.
-- Screen은 feature UI Component를 조합하고 state와 event를 전달하는 역할만 담당한다.
-- Screen은 `Scaffold` 등 화면 최상위 레이아웃을 직접 호출하고, 그 안에서 feature Component를 조합한다. `Text`, `Image`처럼 화면 의미나 스타일을 갖는 표현은 새로 만들지 않고 Component로 분리해 사용한다.
+- Screen은 `Scaffold`를 포함해 화면 전체를 조립하는 최상위 레이아웃을 직접 배치한다. 화면 전체를 구성하는 책임은 Screen에 있다.
+- Screen은 그 안에서 feature Component(그리고 필요하면 Content)를 조합하고 state와 event를 전달한다. `Text`, `Image`처럼 화면 의미나 스타일을 갖는 표현은 새로 만들지 않고 Component로 분리해 사용한다.
 - 최상위 컨테이너는 특별한 이유가 없으면 `Scaffold`를 사용한다.
 - `innerPadding`을 실제 content에 전달한다.
 - 시스템 바 inset을 `Scaffold`와 content에 중복 적용하지 않는다.
@@ -142,6 +166,14 @@ data class ProjectUiState(
 - 독립된 Component는 반드시 Component별 별도 Kotlin 파일에 선언한다. 하나의 파일에 여러 Component를 선언해 함께 관리하지 않는다.
 - 예외는 해당 파일의 public Composable을 보조하는 `private` 구현뿐이다. 이 private Composable도 재사용 가능성, 독립 Preview 필요성, 독립 interaction 책임 중 하나가 생기면 즉시 별도 Component 파일로 분리한다.
 - Component는 Route, ViewModel, NavController, Repository를 참조하지 않는다. 받은 state와 callback으로만 동작한다.
+
+## Content 규칙
+
+- `Content`는 화면 전체를 감싸는 최상위 레이아웃 용도로 만들지 않는다. 화면 전체 조립은 Screen이 직접 담당한다.
+- `Content`는 서로 관련된 UI 요소 2개 이상을 하나의 재사용 가능한 논리 단위로 묶을 때만 사용한다. 예: 이메일 입력 필드 아래 비밀번호 입력 필드를 묶은 로그인 폼.
+- Component가 하나만 필요한 영역에는 Content를 만들지 않는다.
+- Content도 독립된 UI 단위이므로 별도 Kotlin 파일에 선언하며, 이름은 묶는 논리 단위의 책임을 드러내도록 `...Content`로 끝낸다.
+- Content는 Route, ViewModel, NavController, Repository를 참조하지 않는다. 받은 state와 callback으로만 동작한다.
 
 ## Component 분리 기준
 
@@ -184,8 +216,9 @@ data class ProjectUiState(
 ## 완료 체크
 
 - Route와 Screen이 분리되어 있다.
-- 각 독립 Component가 별도 Kotlin 파일에 있다.
-- Route·Screen·Component는 `view/`, ViewModel·UiState·ScreenEvent·UiModel은 `viewmodel/` 폴더에 있다.
+- Screen이 화면 전체 조립(Scaffold 포함)을 직접 담당하고, Content는 2개 이상 Component를 묶는 용도로만 쓰였다.
+- 각 독립 Component와 Content가 각각 별도 Kotlin 파일에 있다.
+- Route·Screen·Component·Content는 `view/`, ViewModel·UiState·ScreenEvent·UiModel은 `viewmodel/` 폴더에 있다.
 - 다이얼로그는 Screen이 아닌 Route에서 관리한다.
 - Screen은 ViewModel을 모른다.
 - UiState 수집은 lifecycle-aware 방식이다.

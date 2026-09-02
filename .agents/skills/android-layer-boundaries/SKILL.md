@@ -14,6 +14,22 @@ description: Android MVVM 계층을 설계·리뷰·리팩터링하거나 Reposi
 각 계층이 무엇을 알고 무엇을 몰라야 하는지 기준을 세운다.
 중복 책임과 계층 건너뛰기를 찾아 최소한의 구조 수정으로 바로잡는다.
 
+## 실행 Hook
+
+### `BeforeMutation`
+
+- 새 타입의 계층과 입력·출력 타입, 의존 방향을 먼저 표로 정리한다.
+- DataStore·Cipher·Room·Retrofit 기술 세부사항이 RepositoryImpl이나 Domain으로 새지 않을 경계를 확정한다.
+
+### `AfterChange`
+
+- `RepositoryImpl → RemoteDataSource → ApiExecutor → ApiService` 호출 경로를 확인한다.
+- DTO·Retrofit 타입의 Presentation/Domain 노출, ApiService 직접 호출, 중복 오류 변환을 검사한다.
+
+### `BeforeHandoff`
+
+- 새 UseCase·Repository Interface·RemoteDataSource Interface/Impl·Hilt binding 누락을 확인한다.
+
 ## 책임 판단표
 
 | 구성 요소 | 핵심 책임 | 하면 안 되는 일 |
