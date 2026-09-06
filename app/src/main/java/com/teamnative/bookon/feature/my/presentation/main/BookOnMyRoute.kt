@@ -29,8 +29,10 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
+import com.teamnative.bookon.core.ui.model.BookOnMenuRowUiModel
 import com.teamnative.bookon.core.ui.model.BookOnStatItemUiModel
 import com.teamnative.bookon.feature.my.presentation.component.BookOnNotificationSettingsBottomSheetContent
+import com.teamnative.bookon.feature.my.presentation.model.BookOnMyMarathonUiModel
 import java.io.ByteArrayOutputStream
 import java.io.IOException
 import kotlin.math.roundToInt
@@ -92,9 +94,39 @@ fun BookOnMyRoute(
         }
     }
 
+    val marathonUiState = if (uiState.isReadingMarathonLinked) {
+        BookOnMyMarathonUiModel(
+            title = stringResource(R.string.reading_marathon),
+            statusText = stringResource(R.string.reading_marathon_linked_status),
+            progressText = stringResource(R.string.reading_marathon_information_unavailable),
+            remainingText = stringResource(R.string.reading_marathon_information_later),
+            percentText = "",
+            linked = true,
+            progress = 0f,
+        )
+    } else {
+        BookOnMyMarathonUiModel(
+            title = stringResource(R.string.reading_marathon),
+            statusText = "",
+            progressText = stringResource(R.string.reading_marathon_not_linked),
+            remainingText = stringResource(R.string.reading_marathon_link_toggle_description),
+            percentText = "",
+            linked = false,
+            progress = 0f,
+        )
+    }
+    val menuRows = listOf(
+        BookOnMenuRowUiModel(stringResource(R.string.change_password)),
+        BookOnMenuRowUiModel(stringResource(R.string.loan_return_history)),
+        BookOnMenuRowUiModel(stringResource(R.string.favorite_books)),
+        BookOnMenuRowUiModel(stringResource(R.string.notification_settings)),
+        BookOnMenuRowUiModel(stringResource(R.string.usage_guide)),
+    )
     val screenUiState = uiState.copy(
-        userNameText = uiState.userNameText.ifBlank {
+        userNameText = if (uiState.userNameText.isBlank()) {
             stringResource(R.string.my_profile_unavailable)
+        } else {
+            stringResource(R.string.user_name_suffix_spaced, uiState.userNameText)
         },
         studentInfoText = uiState.studentInfoText.ifBlank {
             stringResource(R.string.action_retry_description)
@@ -115,22 +147,8 @@ fun BookOnMyRoute(
                 ),
             )
         },
-        marathon = uiState.marathon.copy(
-            statusText = if (uiState.isReadingMarathonLinked) uiState.marathon.statusText else "",
-            progressText = if (uiState.isReadingMarathonLinked) {
-                uiState.marathon.progressText
-            } else {
-                stringResource(R.string.reading_marathon_not_linked)
-            },
-            remainingText = if (uiState.isReadingMarathonLinked) {
-                uiState.marathon.remainingText
-            } else {
-                stringResource(R.string.reading_marathon_link_toggle_description)
-            },
-            percentText = if (uiState.isReadingMarathonLinked) uiState.marathon.percentText else "",
-            linked = uiState.isReadingMarathonLinked,
-            progress = if (uiState.isReadingMarathonLinked) uiState.marathon.progress else 0f,
-        ),
+        marathon = marathonUiState,
+        menus = menuRows,
     )
 
     BookOnMyScreen(

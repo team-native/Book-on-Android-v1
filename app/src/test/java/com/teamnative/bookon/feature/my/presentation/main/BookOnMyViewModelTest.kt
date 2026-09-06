@@ -18,6 +18,7 @@ import com.teamnative.bookon.feature.my.domain.NotificationSettings
 import com.teamnative.bookon.feature.my.domain.ProfileImage
 import com.teamnative.bookon.feature.my.domain.UpdateNotificationSettingsUseCase
 import com.teamnative.bookon.feature.my.domain.UploadProfileImageUseCase
+import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -63,6 +64,42 @@ class BookOnMyViewModelTest {
             "https://example.com/profile.jpg",
             viewModel.uiState.value.profileImageUrl,
         )
+        assertEquals("홍길동", viewModel.uiState.value.userNameText)
+    }
+
+    @Test
+    fun `Read365 연동 성공 시 샘플 진행률 없이 연동 상태만 반영한다`() = runTest {
+        val viewModel = createViewModel(
+            repository = MyRepositoryFake(),
+            marathonRepository = MarathonRepositoryFake(),
+        )
+
+        advanceUntilIdle()
+
+        assertTrue(viewModel.uiState.value.isReadingMarathonLinked)
+        assertEquals("", viewModel.uiState.value.marathon.progressText)
+        assertEquals(0f, viewModel.uiState.value.marathon.progress)
+    }
+
+    @Test
+    fun `재시도 시 프로필과 Read365 연동 상태를 함께 다시 조회한다`() = runTest {
+        val profileCallCount = AtomicInteger(0)
+        val read365CallCount = AtomicInteger(0)
+        val viewModel = createViewModel(
+            repository = MyRepositoryFake(
+                onProfile = { profileCallCount.incrementAndGet() },
+            ),
+            marathonRepository = MarathonRepositoryFake(
+                onRead365MyInfo = { read365CallCount.incrementAndGet() },
+            ),
+        )
+
+        advanceUntilIdle()
+        viewModel.refresh()
+        advanceUntilIdle()
+
+        assertEquals(2, profileCallCount.get())
+        assertEquals(2, read365CallCount.get())
     }
 
     @Test
@@ -106,11 +143,14 @@ class BookOnMyViewModelTest {
         assertTrue(viewModel.uiState.value.profileImageErrorMessage is BookOnUiMessage.Resource)
     }
 
-    private fun createViewModel(repository: MyRepositoryFake): BookOnMyViewModel {
+    private fun createViewModel(
+        repository: MyRepositoryFake,
+        marathonRepository: MarathonRepository = MarathonRepositoryFake(),
+    ): BookOnMyViewModel {
         return BookOnMyViewModel(
             getMyProfile = GetMyProfileUseCase(repository),
             updateNotificationSettings = UpdateNotificationSettingsUseCase(repository),
-            getRead365MyInfo = GetRead365MyInfoUseCase(MarathonRepositoryFake()),
+            getRead365MyInfo = GetRead365MyInfoUseCase(marathonRepository),
             uploadProfileImageUseCase = UploadProfileImageUseCase(repository),
         )
     }
@@ -129,8 +169,11 @@ private fun profile() = MyProfile(
     ),
 )
 
-private class MarathonRepositoryFake : MarathonRepository {
+private class MarathonRepositoryFake(
+    private val onRead365MyInfo: () -> Unit = {},
+) : MarathonRepository {
     override suspend fun read365MyInfo(): NetworkResult<Read365MyInfo> {
+        onRead365MyInfo()
         return NetworkResult.Success(
             Read365MyInfo(read365Id = "read365-id"),
         )
@@ -143,8 +186,10 @@ private class MyRepositoryFake(
         ProfileImage("https://example.com/profile.jpg"),
     ),
     private val onUploadProfileImage: (String, ByteArray) -> Unit = { _, _ -> },
+    private val onProfile: () -> Unit = {},
 ) : MyRepository {
     override suspend fun profile(): NetworkResult<MyProfile> {
+        onProfile()
         return profileResult
     }
 

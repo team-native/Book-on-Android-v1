@@ -124,7 +124,7 @@ fun BookOnMyScreen(
 private fun BookOnMyScreenPreview() {
     BookOnTheme {
         BookOnMyScreen(
-            uiState = defaultMyUiState(),
+            uiState = sampleMyUiState(),
             bottomBar = {},
             onEvent = {},
         )
