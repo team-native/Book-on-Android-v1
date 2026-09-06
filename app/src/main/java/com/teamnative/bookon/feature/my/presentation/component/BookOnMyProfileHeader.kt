@@ -1,5 +1,6 @@
 package com.teamnative.bookon.feature.my.presentation.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -21,10 +21,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.teamnative.bookon.R
+import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
@@ -100,13 +102,21 @@ private fun ProfileImageWithEditButton(
                 .clip(CircleShape),
         )
 
-        IconButton(
-            onClick = onEditClick,
-            enabled = !isUploading,
-            modifier = Modifier.align(Alignment.BottomEnd),
+        // 48dp 클릭 영역 안의 우측 하단에 작은 배지를 배치해 접근성과 시각 위치를 함께 유지한다.
+        Box(
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .size(AppComponentSize.MinTouchTarget)
+                .clickable(
+                    enabled = !isUploading,
+                    role = Role.Button,
+                    onClick = onEditClick,
+                ),
         ) {
             Surface(
-                modifier = Modifier.size(AppIconSize.ProfileEditBadge),
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(AppIconSize.ProfileEditBadge),
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.surface,
                 shadowElevation = AppElevation.Button,
@@ -116,6 +126,7 @@ private fun ProfileImageWithEditButton(
                         painter = painterResource(R.drawable.ic_edit_profile),
                         contentDescription = stringResource(R.string.profile_image_edit_description),
                         tint = MaterialTheme.colorScheme.onSurface,
+                        modifier = Modifier.size(AppIconSize.Small),
                     )
                 }
             }
