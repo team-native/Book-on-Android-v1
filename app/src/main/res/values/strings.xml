@@ -193,6 +193,9 @@
 
     <!-- My page -->
     <string name="my_library_title">내 서재</string>
+    <string name="my_profile_unavailable">정보를 불러오지 못했어요</string>
+    <string name="action_retry_description">다시 시도해 주세요</string>
+    <string name="value_unavailable">-</string>
     <string name="user_name_suffix_spaced">%1$s 님</string>
     <string name="student_generation_department">%1$d기 · %2$s</string>
     <string name="loaning">대출 중</string>

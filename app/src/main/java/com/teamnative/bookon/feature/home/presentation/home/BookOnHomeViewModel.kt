@@ -50,7 +50,13 @@ class BookOnHomeViewModel @Inject constructor(
         val popularResult = async { getBooks(FirstPage, HomeLimit, BookSort.POPULAR, null) }
         val newBooksResult = async { getNewBooks(FirstPage, HomeLimit) }
         val profileResult = async { getMyProfile() }
-        val results = listOf(homeResult.await(), noticesResult.await(), popularResult.await(), newBooksResult.await())
+        val results = listOf(
+            homeResult.await(),
+            noticesResult.await(),
+            popularResult.await(),
+            newBooksResult.await(),
+            profileResult.await(),
+        )
         val errorMessage = results.filterIsInstance<NetworkResult.Failure>().firstOrNull()?.error?.toUserMessage()
         val home = homeResult.await() as? NetworkResult.Success
         val notices = noticesResult.await() as? NetworkResult.Success

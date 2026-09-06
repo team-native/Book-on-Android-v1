@@ -57,10 +57,8 @@ fun BookOnHomeScreen(
                     Button(onClick = onRetryClick) { Text(text = stringResource(R.string.action_retry)) }
                 }
             }
-            if (uiState.errorMessage == null && uiState.notice == null && uiState.aiRecommendedBooks.isEmpty() && uiState.popularBooks.isEmpty()) {
-                item { Text(text = stringResource(R.string.empty_home), color = MaterialTheme.colorScheme.onSurfaceVariant) }
-            }
-            if (uiState.errorMessage == null) {
+            // 공지 카드는 데이터가 없어도 기본 형식으로 항상 노출되므로, 별도의 "표시할 홈 정보가 없어요" 전체 빈 상태는 더 이상 필요하지 않다.
+            // 특정 섹션(공지 등)이 실패해도 상단 탐색 UI는 항상 노출한다.
             item {
                 BookOnHomeHeader(
                     greeting = uiState.greeting.ifBlank {
@@ -79,12 +77,20 @@ fun BookOnHomeScreen(
                     onClick = onSearchClick,
                 )
             }
-            }
-            uiState.notice?.let { notice ->
-                item {
+            item {
+                val notice = uiState.notice
+                if (notice != null) {
                     BookOnHomeNoticeCard(
                         uiState = notice,
                         actionText = stringResource(R.string.action_view_detail),
+                    )
+                } else {
+                    // 공지 조회가 실패했거나 등록된 공지가 없어도 공지 카드의 기본 형식은 유지한다.
+                    BookOnHomeNoticeCard(
+                        category = stringResource(R.string.library_notice),
+                        dateText = null,
+                        title = stringResource(R.string.empty_notice_title),
+                        description = stringResource(R.string.empty_notice_description),
                     )
                 }
             }

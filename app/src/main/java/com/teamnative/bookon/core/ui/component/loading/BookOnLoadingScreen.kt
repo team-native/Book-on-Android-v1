@@ -30,6 +30,7 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppAnimationDuration
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
+import com.teamnative.bookon.core.designsystem.theme.BookOnThemeMode
 
 /**
  * 전체 콘텐츠 영역 중앙에 일정한 속도로 회전하는 원호형 로딩 인디케이터를 표시한다.
@@ -86,7 +87,7 @@ private val LoadingArcStrokeWidth = 8.dp
 @Preview(showBackground = true)
 @Composable
 private fun BookOnLoadingScreenLightPreview() {
-    BookOnTheme(darkTheme = false) {
+    BookOnTheme(themeMode = BookOnThemeMode.LIGHT) {
         BookOnLoadingScreen()
     }
 }
@@ -98,7 +99,7 @@ private fun BookOnLoadingScreenLightPreview() {
 )
 @Composable
 private fun BookOnLoadingScreenDarkPreview() {
-    BookOnTheme(darkTheme = true) {
+    BookOnTheme(themeMode = BookOnThemeMode.DARK) {
         BookOnLoadingScreen()
     }
 }

@@ -29,6 +29,7 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
+import com.teamnative.bookon.core.ui.model.BookOnStatItemUiModel
 import com.teamnative.bookon.feature.my.presentation.component.BookOnNotificationSettingsBottomSheetContent
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -46,7 +47,7 @@ private const val PROFILE_IMAGE_JPEG_QUALITY = 85
 private const val MAX_PROFILE_IMAGE_BYTES = 5 * 1024 * 1024
 private val InitialNotificationSelections = listOf(false, false)
 
-/** 내 서재 샘플 상태와 메뉴·로그아웃 이벤트를 연결한다. */
+/** 서버에서 받은 내 서재 상태와 메뉴·로그아웃 이벤트를 화면에 연결한다. */
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun BookOnMyRoute(
@@ -91,25 +92,49 @@ fun BookOnMyRoute(
         }
     }
 
-    BookOnMyScreen(
-        uiState = uiState.copy(
-            marathon = uiState.marathon.copy(
-                statusText = if (uiState.isReadingMarathonLinked) uiState.marathon.statusText else "",
-                progressText = if (uiState.isReadingMarathonLinked) {
-                    uiState.marathon.progressText
-                } else {
-                    stringResource(R.string.reading_marathon_not_linked)
-                },
-                remainingText = if (uiState.isReadingMarathonLinked) {
-                    uiState.marathon.remainingText
-                } else {
-                    stringResource(R.string.reading_marathon_link_toggle_description)
-                },
-                percentText = if (uiState.isReadingMarathonLinked) uiState.marathon.percentText else "",
-                linked = uiState.isReadingMarathonLinked,
-                progress = if (uiState.isReadingMarathonLinked) uiState.marathon.progress else 0f,
-            ),
+    val screenUiState = uiState.copy(
+        userNameText = uiState.userNameText.ifBlank {
+            stringResource(R.string.my_profile_unavailable)
+        },
+        studentInfoText = uiState.studentInfoText.ifBlank {
+            stringResource(R.string.action_retry_description)
+        },
+        stats = uiState.stats.ifEmpty {
+            listOf(
+                BookOnStatItemUiModel(
+                    label = stringResource(R.string.loaning),
+                    value = stringResource(R.string.value_unavailable),
+                ),
+                BookOnStatItemUiModel(
+                    label = stringResource(R.string.return_due_soon),
+                    value = stringResource(R.string.value_unavailable),
+                ),
+                BookOnStatItemUiModel(
+                    label = stringResource(R.string.total_loan),
+                    value = stringResource(R.string.value_unavailable),
+                ),
+            )
+        },
+        marathon = uiState.marathon.copy(
+            statusText = if (uiState.isReadingMarathonLinked) uiState.marathon.statusText else "",
+            progressText = if (uiState.isReadingMarathonLinked) {
+                uiState.marathon.progressText
+            } else {
+                stringResource(R.string.reading_marathon_not_linked)
+            },
+            remainingText = if (uiState.isReadingMarathonLinked) {
+                uiState.marathon.remainingText
+            } else {
+                stringResource(R.string.reading_marathon_link_toggle_description)
+            },
+            percentText = if (uiState.isReadingMarathonLinked) uiState.marathon.percentText else "",
+            linked = uiState.isReadingMarathonLinked,
+            progress = if (uiState.isReadingMarathonLinked) uiState.marathon.progress else 0f,
         ),
+    )
+
+    BookOnMyScreen(
+        uiState = screenUiState,
         bottomBar = bottomBar,
         modifier = if (isLogoutDialogVisible) Modifier.blur(radius = 8.dp) else Modifier,
         onEvent = { event ->

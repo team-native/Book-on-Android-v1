@@ -54,34 +54,33 @@ fun BookOnRankingScreen(
                     }
                 }
             }
-            if (uiState.errorMessage == null && uiState.list.members.isEmpty()) {
+            // 랭킹 조회가 실패하거나 데이터가 비어 있어도 제목·포디움 등 기본 랭킹 UI는 항상 노출한다.
+            item {
+                Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Tiny)) {
+                    Text(
+                        text = stringResource(R.string.ranking_title),
+                        style = bookOnTypography.screenTitle,
+                        color = MaterialTheme.colorScheme.onSurface,
+                    )
+                    Text(
+                        text = uiState.description.ifBlank { stringResource(R.string.ranking_description) },
+                        style = bookOnTypography.caption,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    )
+                }
+            }
+            item {
+                BookOnRankingPodium(uiState = uiState.podium)
+            }
+            item {
+                BookOnRankingListCard(uiState = uiState.list)
+            }
+            if (uiState.list.members.isEmpty()) {
                 item {
                     Text(
                         text = stringResource(R.string.empty_ranking),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
-                }
-            }
-            if (uiState.errorMessage == null && uiState.list.members.isNotEmpty()) {
-                item {
-                    Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Tiny)) {
-                        Text(
-                            text = stringResource(R.string.ranking_title),
-                            style = bookOnTypography.screenTitle,
-                            color = MaterialTheme.colorScheme.onSurface,
-                        )
-                        Text(
-                            text = uiState.description,
-                            style = bookOnTypography.caption,
-                            color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        )
-                    }
-                }
-                item {
-                    BookOnRankingPodium(uiState = uiState.podium)
-                }
-                item {
-                    BookOnRankingListCard(uiState = uiState.list)
                 }
             }
         }

@@ -60,61 +60,60 @@ fun BookOnMyScreen(
                     }
                 }
             }
-            if (uiState.errorMessage == null) {
-                item {
-                    BookOnMyProfileHeader(
-                        userNameText = uiState.userNameText,
-                        studentInfoText = uiState.studentInfoText,
-                        profileImageUrl = uiState.profileImageUrl,
-                        isProfileImageUploading = uiState.isProfileImageUploading,
-                        onProfileImageEditClick = {
-                            onEvent(BookOnMyScreenEvent.ProfileImageEditClicked)
-                        },
-                    )
-                }
+            // 프로필 조회가 실패해도 프로필/통계/메뉴/로그아웃 등 이미 만들어둔 UI는 기본 형식으로 항상 노출한다.
+            item {
+                BookOnMyProfileHeader(
+                    userNameText = uiState.userNameText,
+                    studentInfoText = uiState.studentInfoText,
+                    profileImageUrl = uiState.profileImageUrl,
+                    isProfileImageUploading = uiState.isProfileImageUploading,
+                    onProfileImageEditClick = {
+                        onEvent(BookOnMyScreenEvent.ProfileImageEditClicked)
+                    },
+                )
+            }
 
-                uiState.profileImageErrorMessage?.let { message ->
-                    item {
-                        Text(
-                            text = message.resolve(),
-                            color = MaterialTheme.colorScheme.error,
-                        )
-                    }
-                }
-                item { BookOnStatSummaryCard(items = uiState.stats) }
+            uiState.profileImageErrorMessage?.let { message ->
                 item {
-                    if (uiState.marathon.linked) {
-                        BookOnMyMarathonCard(uiState = uiState.marathon)
-                    } else {
-                        BookOnMyUnlinkedMarathonCard(
-                            uiState = uiState.marathon,
-                            onLinkRequest = {
-                                onEvent(BookOnMyScreenEvent.ReadingMarathonLinkRequested)
-                            },
-                        )
-                    }
+                    Text(
+                        text = message.resolve(),
+                        color = MaterialTheme.colorScheme.error,
+                    )
                 }
-                item {
-                    Column {
-                        uiState.menus.forEachIndexed { index, menu ->
-                            BookOnMenuRow(
-                                title = menu.title,
-                                onClick = {
-                                    onEvent(BookOnMyScreenEvent.MenuClicked(index))
-                                },
-                                destructive = menu.destructive,
-                                showDivider = menu.showDivider,
-                            )
-                        }
-                    }
-                }
-                item {
-                    BookOnLogoutButton(
-                        onLogoutRequest = {
-                            onEvent(BookOnMyScreenEvent.LogoutClicked)
+            }
+            item { BookOnStatSummaryCard(items = uiState.stats) }
+            item {
+                if (uiState.marathon.linked) {
+                    BookOnMyMarathonCard(uiState = uiState.marathon)
+                } else {
+                    BookOnMyUnlinkedMarathonCard(
+                        uiState = uiState.marathon,
+                        onLinkRequest = {
+                            onEvent(BookOnMyScreenEvent.ReadingMarathonLinkRequested)
                         },
                     )
                 }
+            }
+            item {
+                Column {
+                    uiState.menus.forEachIndexed { index, menu ->
+                        BookOnMenuRow(
+                            title = menu.title,
+                            onClick = {
+                                onEvent(BookOnMyScreenEvent.MenuClicked(index))
+                            },
+                            destructive = menu.destructive,
+                            showDivider = menu.showDivider,
+                        )
+                    }
+                }
+            }
+            item {
+                BookOnLogoutButton(
+                    onLogoutRequest = {
+                        onEvent(BookOnMyScreenEvent.LogoutClicked)
+                    },
+                )
             }
         }
     }
