@@ -67,11 +67,24 @@ private val DarkColorScheme = darkColorScheme(
     onErrorContainer = DarkError,
 )
 
+/** 앱 최상위에서 선택할 수 있는 테마 모드다. */
+enum class BookOnThemeMode {
+    SYSTEM,
+    LIGHT,
+    DARK,
+}
+
+/** 기본적으로 라이트 팔레트를 사용하고, 호출자가 요청한 경우에만 시스템 또는 다크 모드를 적용한다. */
 @Composable
 fun BookOnTheme(
-    darkTheme: Boolean = isSystemInDarkTheme(),
+    themeMode: BookOnThemeMode = BookOnThemeMode.LIGHT,
     content: @Composable () -> Unit,
 ) {
+    val darkTheme = when (themeMode) {
+        BookOnThemeMode.SYSTEM -> isSystemInDarkTheme()
+        BookOnThemeMode.LIGHT -> false
+        BookOnThemeMode.DARK -> true
+    }
     val colorScheme = if (darkTheme) {
         DarkColorScheme
     } else {
