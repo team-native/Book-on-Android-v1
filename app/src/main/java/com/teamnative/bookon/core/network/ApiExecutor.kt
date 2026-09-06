@@ -50,6 +50,40 @@ class ApiExecutor @Inject constructor(
         NetworkResult.Failure(NetworkError.Network(exception))
     }
 
+    /** ApiEnvelope를 사용하지 않는 헬스 체크 같은 원시 JSON 응답을 공통 결과로 변환한다. */
+    suspend fun <T> executeRaw(
+        request: suspend () -> Response<T>,
+    ): NetworkResult<T> = try {
+        val response = request()
+        val responseBody = response.body()
+        when {
+            response.isSuccessful && responseBody != null -> NetworkResult.Success(responseBody)
+            response.isSuccessful -> NetworkResult.Failure(
+                NetworkError.EmptyBody("서버 응답 본문이 비어 있습니다."),
+            )
+            else -> {
+                val errorEnvelope = response.errorBody()?.string()?.let { rawResponse ->
+                    runCatching {
+                        json.decodeFromString<ApiEnvelope<JsonElement>>(rawResponse)
+                    }.getOrNull()
+                }
+                NetworkResult.Failure(
+                    NetworkError.Http(
+                        statusCode = response.code(),
+                        errorCode = errorEnvelope?.errorCode,
+                        message = errorEnvelope?.message ?: response.message(),
+                    ),
+                )
+            }
+        }
+    } catch (exception: CancellationException) {
+        throw exception
+    } catch (exception: SerializationException) {
+        NetworkResult.Failure(NetworkError.Serialization(exception))
+    } catch (exception: IOException) {
+        NetworkResult.Failure(NetworkError.Network(exception))
+    }
+
     /** 성공 응답의 data가 null인 명령형 API를 Unit 결과로 정규화한다. */
     suspend fun executeUnit(
         request: suspend () -> Response<ApiEnvelope<EmptyResponseDto>>,

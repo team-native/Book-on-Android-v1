@@ -13,5 +13,5 @@ class HealthRemoteDataSourceImpl @Inject constructor(
     private val executor: ApiExecutor,
 ) : HealthRemoteDataSource {
     /** 서버 상태 확인 API를 공통 네트워크 결과로 감싼다. */
-    override suspend fun health() = executor.execute { api.health() }
+    override suspend fun health() = executor.executeRaw { api.health() }
 }
