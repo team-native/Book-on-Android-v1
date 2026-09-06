@@ -4,7 +4,7 @@ import com.teamnative.bookon.core.ui.model.BookOnMenuRowUiModel
 import com.teamnative.bookon.core.ui.model.BookOnStatItemUiModel
 import com.teamnative.bookon.feature.my.presentation.model.BookOnMyMarathonUiModel
 
-fun defaultMyUiState() = BookOnMyScreenUiState(
+internal fun sampleMyUiState() = BookOnMyScreenUiState(
     userNameText = "홍길동 님",
     studentInfoText = "10기 · 소프트웨어 개발과",
     stats = listOf(
@@ -28,17 +28,4 @@ fun defaultMyUiState() = BookOnMyScreenUiState(
         BookOnMenuRowUiModel("알림 설정"),
         BookOnMenuRowUiModel("이용 안내"),
     ),
-)
-
-/**
- * 서버 응답 전 로딩 UI와, 최초 조회 실패 시 함께 사용할 기본 화면 구조다.
- * 로딩 중에는 Route가 isInitialLoading을 보고 로딩 화면을 먼저 보여주므로 노출되지 않고,
- * 최초 조회가 실패했을 때만 이 placeholder 값이 실제로 화면에 남는다.
- */
-fun initialMyUiState() = defaultMyUiState().copy(
-    userNameText = "",
-    studentInfoText = "",
-    stats = emptyList(),
-    isReadingMarathonLinked = false,
-    isInitialLoading = true,
 )

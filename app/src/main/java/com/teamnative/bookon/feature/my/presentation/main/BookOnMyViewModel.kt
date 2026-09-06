@@ -13,6 +13,7 @@ import com.teamnative.bookon.core.network.NetworkError
 import com.teamnative.bookon.core.ui.model.BookOnUiMessage
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -26,31 +27,49 @@ class BookOnMyViewModel @Inject constructor(
     private val uploadProfileImageUseCase: UploadProfileImageUseCase,
 ) : ViewModel() {
     private val mutableUiState = MutableStateFlow(
-        initialMyUiState().copy(isInitialLoading = true),
+        initialMyUiState(),
     )
     val uiState: StateFlow<BookOnMyScreenUiState> = mutableUiState.asStateFlow()
-    init { refresh(); refreshRead365Link() }
-    /** 마이페이지 진입 시 사용자·대출 요약과 알림 설정을 서버에서 조회한다. */
-    fun refresh() = viewModelScope.launch {
-        mutableUiState.value = mutableUiState.value.copy(errorMessage = null)
-        when (val result = getMyProfile()) {
-            is NetworkResult.Success -> mutableUiState.value = mutableUiState.value.copy(
-                userNameText = "${result.data.name} 님",
-                studentInfoText = result.data.department,
-                profileImageUrl = result.data.profileImageUrl,
-                stats = listOf(
-                    BookOnStatItemUiModel("대출 중", "${result.data.currentLoanCount}권"),
-                    BookOnStatItemUiModel("반납 임박", "${result.data.overdueCount}권"),
-                    BookOnStatItemUiModel("누적 대출", "${result.data.totalLoanCount}권"),
-                ),
-                notificationSettings = result.data.notificationSettings,
-                profileImageErrorMessage = null,
-                isInitialLoading = false,
-            )
-            is NetworkResult.Failure -> mutableUiState.value = mutableUiState.value.copy(
-                isInitialLoading = false,
-                errorMessage = result.error.toUiMessage(),
-            )
+    private var profileRefreshJob: Job? = null
+    private var read365RefreshJob: Job? = null
+
+    init {
+        refresh()
+    }
+
+    /** 마이페이지 진입과 재시도에서 프로필과 Read365 연동 상태를 함께 다시 조회한다. */
+    fun refresh() {
+        refreshProfile()
+        refreshRead365Link()
+    }
+
+    /** 사용자·대출 요약과 알림 설정을 조회하며 진행 중인 중복 요청은 만들지 않는다. */
+    private fun refreshProfile() {
+        if (profileRefreshJob?.isActive == true) {
+            return
+        }
+
+        profileRefreshJob = viewModelScope.launch {
+            mutableUiState.value = mutableUiState.value.copy(errorMessage = null)
+            when (val result = getMyProfile()) {
+                is NetworkResult.Success -> mutableUiState.value = mutableUiState.value.copy(
+                    userNameText = result.data.name,
+                    studentInfoText = result.data.department,
+                    profileImageUrl = result.data.profileImageUrl,
+                    stats = listOf(
+                        BookOnStatItemUiModel("대출 중", "${result.data.currentLoanCount}권"),
+                        BookOnStatItemUiModel("반납 임박", "${result.data.overdueCount}권"),
+                        BookOnStatItemUiModel("누적 대출", "${result.data.totalLoanCount}권"),
+                    ),
+                    notificationSettings = result.data.notificationSettings,
+                    profileImageErrorMessage = null,
+                    isInitialLoading = false,
+                )
+                is NetworkResult.Failure -> mutableUiState.value = mutableUiState.value.copy(
+                    isInitialLoading = false,
+                    errorMessage = result.error.toUiMessage(),
+                )
+            }
         }
     }
 
@@ -97,12 +116,24 @@ class BookOnMyViewModel @Inject constructor(
     }
 
     /** read365 세션 없음(4014)은 앱 로그아웃이 아닌 연동 필요 상태로 표시한다. */
-    private fun refreshRead365Link() = viewModelScope.launch {
-        when (val result = getRead365MyInfo()) {
-            is NetworkResult.Success -> mutableUiState.value = mutableUiState.value.copy(isReadingMarathonLinked = true)
-            is NetworkResult.Failure -> {
-                val isLinkRequired = (result.error as? com.teamnative.bookon.core.network.NetworkError.Http)?.errorCode == 4014
-                if (isLinkRequired) mutableUiState.value = mutableUiState.value.copy(isReadingMarathonLinked = false)
+    private fun refreshRead365Link() {
+        if (read365RefreshJob?.isActive == true) {
+            return
+        }
+
+        read365RefreshJob = viewModelScope.launch {
+            when (val result = getRead365MyInfo()) {
+                is NetworkResult.Success -> mutableUiState.value = mutableUiState.value.copy(
+                    isReadingMarathonLinked = true,
+                )
+                is NetworkResult.Failure -> {
+                    val isLinkRequired = (result.error as? NetworkError.Http)?.errorCode == 4014
+                    if (isLinkRequired) {
+                        mutableUiState.value = mutableUiState.value.copy(
+                            isReadingMarathonLinked = false,
+                        )
+                    }
+                }
             }
         }
     }

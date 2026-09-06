@@ -25,3 +25,21 @@ data class BookOnMyScreenUiState(
     val errorMessage: BookOnUiMessage? = null,
     val profileImageErrorMessage: BookOnUiMessage? = null,
 )
+
+/** 서버 응답 전에는 Preview 샘플을 포함하지 않는 빈 화면 상태를 만든다. */
+fun initialMyUiState() = BookOnMyScreenUiState(
+    userNameText = "",
+    studentInfoText = "",
+    stats = emptyList(),
+    marathon = BookOnMyMarathonUiModel(
+        title = "",
+        statusText = "",
+        progressText = "",
+        remainingText = "",
+        percentText = "",
+        linked = false,
+        progress = 0f,
+    ),
+    menus = emptyList(),
+    isInitialLoading = true,
+)
