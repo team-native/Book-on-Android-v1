@@ -18,6 +18,7 @@ data class BookOnMyScreenUiState(
     val notificationSettings: NotificationSettings = NotificationSettings(
         dueDateReminder = false,
         newBookReminder = false,
+        noticeReminder = false,
     ),
     val isReadingMarathonLinked: Boolean = false,
     val isProfileImageUploading: Boolean = false,

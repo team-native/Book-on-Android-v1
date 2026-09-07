@@ -163,9 +163,10 @@ fun BookOnMyRoute(
                         LoanHistoryMenuIndex -> onLoanHistoryClick()
                         FavoriteMenuIndex -> onFavoriteClick()
                         NotificationSettingsMenuIndex -> {
+                            // 바텀시트 행 순서(반납 알림, 도서부 공지 알림)와 동일한 순서로 맞춘다.
                             notificationSelections = listOf(
                                 uiState.notificationSettings.dueDateReminder,
-                                uiState.notificationSettings.newBookReminder,
+                                uiState.notificationSettings.noticeReminder,
                             )
                             isNotificationSettingsVisible = true
                         }
@@ -211,7 +212,9 @@ fun BookOnMyRoute(
                 onCompleteClick = {
                     viewModel.updateNotifications(
                         dueDateReminder = notificationSelections.getOrElse(0) { false },
-                        newBookReminder = notificationSelections.getOrElse(1) { false },
+                        // 신간 도서 알림은 이 바텀시트에 별도 토글이 없어 서버에서 마지막으로 받은 값을 그대로 유지한다.
+                        newBookReminder = uiState.notificationSettings.newBookReminder,
+                        noticeReminder = notificationSelections.getOrElse(1) { false },
                     )
                     isNotificationSettingsVisible = false
                 },

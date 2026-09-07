@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 interface MyRemoteDataSource {
     suspend fun me(): NetworkResult<MyPageDto>
-    suspend fun updateNotificationSettings(dueDateReminder: Boolean, newBookReminder: Boolean): NetworkResult<NotificationSettingsDto>
+    suspend fun updateNotificationSettings(dueDateReminder: Boolean, newBookReminder: Boolean, noticeReminder: Boolean): NetworkResult<NotificationSettingsDto>
     suspend fun updateProfile(request: UpdateMyProfileRequestDto): NetworkResult<UpdateMyProfileResponseDto>
     suspend fun requestAccountDeletion(reason: String?): NetworkResult<AccountDeletionResponseDto>
     suspend fun uploadProfileImage(contentType: String, imageBytes: ByteArray): NetworkResult<ProfileImageDto>
@@ -19,7 +19,7 @@ interface MyRemoteDataSource {
 }
 class MyRemoteDataSourceImpl @Inject constructor(private val api: MyApiService, private val executor: ApiExecutor) : MyRemoteDataSource {
     override suspend fun me() = executor.execute { api.me() }
-    override suspend fun updateNotificationSettings(dueDateReminder: Boolean, newBookReminder: Boolean) = executor.execute { api.updateNotificationSettings(NotificationSettingsRequestDto(dueDateReminder, newBookReminder)) }
+    override suspend fun updateNotificationSettings(dueDateReminder: Boolean, newBookReminder: Boolean, noticeReminder: Boolean) = executor.execute { api.updateNotificationSettings(NotificationSettingsRequestDto(dueDateReminder, newBookReminder, noticeReminder)) }
     override suspend fun updateProfile(request: UpdateMyProfileRequestDto) = executor.execute { api.updateProfile(request) }
     override suspend fun requestAccountDeletion(reason: String?) = executor.execute { api.requestAccountDeletion(AccountDeletionRequestDto(reason)) }
     override suspend fun uploadProfileImage(contentType: String, imageBytes: ByteArray) = executor.execute {

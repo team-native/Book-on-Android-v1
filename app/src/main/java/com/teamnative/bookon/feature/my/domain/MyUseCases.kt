@@ -14,7 +14,8 @@ class UpdateNotificationSettingsUseCase @Inject constructor(
     suspend operator fun invoke(
         dueDateReminder: Boolean,
         newBookReminder: Boolean,
-    ) = repository.updateNotificationSettings(dueDateReminder, newBookReminder)
+        noticeReminder: Boolean,
+    ) = repository.updateNotificationSettings(dueDateReminder, newBookReminder, noticeReminder)
 }
 
 class UpdateMyProfileUseCase @Inject constructor(
