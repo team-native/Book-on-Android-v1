@@ -18,6 +18,7 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 import com.teamnative.bookon.navigation.BookOnNavHost
+import com.teamnative.bookon.navigation.BookOnPendingDeepLink
 
 /**
  * 앱의 최상위 Compose 진입점이다.
@@ -28,17 +29,19 @@ import com.teamnative.bookon.navigation.BookOnNavHost
  * clear+push하는 방식으로 처리하므로, 세션 상태가 바뀔 때마다 이 함수에서 NavHost를 다시 만들 필요가 없다.
  */
 @Composable
-fun BookOnApp() {
+internal fun BookOnApp(pendingDeepLink: BookOnPendingDeepLink? = null) {
     val sessionViewModel: BookOnSessionViewModel = hiltViewModel()
     val sessionUiState by sessionViewModel.uiState.collectAsStateWithLifecycle()
     when (sessionUiState) {
         BookOnSessionUiState.Checking -> BookOnLoadingScreen()
         BookOnSessionUiState.Authenticated -> BookOnNavHost(
             isInitiallyAuthenticated = true,
+            pendingDeepLink = pendingDeepLink,
             onLogout = sessionViewModel::logout,
         )
         BookOnSessionUiState.Unauthenticated -> BookOnNavHost(
             isInitiallyAuthenticated = false,
+            pendingDeepLink = pendingDeepLink,
             onLogout = sessionViewModel::logout,
         )
         BookOnSessionUiState.RetryableError -> BookOnSessionRetryScreen(

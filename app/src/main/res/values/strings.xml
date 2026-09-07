@@ -229,6 +229,8 @@
     <string name="loan_status_notification_description">대출 승인과 반납 처리 상태를 알려드려요</string>
     <string name="notification_toggle_enabled">알림 켜짐</string>
     <string name="notification_toggle_disabled">알림 꺼짐</string>
+    <string name="notification_channel_general_name">일반 알림</string>
+    <string name="notification_channel_general_description">반납 알림과 도서부 공지 등 북온의 주요 알림을 받습니다</string>
     <string name="d_day_minus">D - %1$d</string>
     <string name="book_return_date">%1$s · 반납 %2$s</string>
     <string name="past_loan">지난 대출</string>

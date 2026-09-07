@@ -19,6 +19,7 @@ import com.teamnative.bookon.feature.marathon.data.MarathonApiService
 import com.teamnative.bookon.feature.ranking.data.RankingApiService
 import com.teamnative.bookon.feature.community.data.CommunityAuthenticatedApiService
 import com.teamnative.bookon.feature.community.data.CommunityPublicApiService
+import com.teamnative.bookon.feature.fcm.data.FcmApiService
 import com.teamnative.bookon.feature.notification.data.NotificationApiService
 import com.teamnative.bookon.feature.oauth.data.OAuthAuthenticatedApiService
 import com.teamnative.bookon.feature.oauth.data.OAuthPublicApiService
@@ -165,6 +166,8 @@ object NetworkModule {
     fun provideOAuthPublicApiService(@Named(PublicRetrofit) retrofit: Retrofit): OAuthPublicApiService = retrofit.create(OAuthPublicApiService::class.java)
     @Provides @Singleton
     fun provideNotificationApiService(retrofit: Retrofit): NotificationApiService = retrofit.create(NotificationApiService::class.java)
+    @Provides @Singleton
+    fun provideFcmApiService(retrofit: Retrofit): FcmApiService = retrofit.create(FcmApiService::class.java)
     @Provides @Singleton
     fun provideCommunityAuthenticatedApiService(retrofit: Retrofit): CommunityAuthenticatedApiService = retrofit.create(CommunityAuthenticatedApiService::class.java)
     @Provides @Singleton

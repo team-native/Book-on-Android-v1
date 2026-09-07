@@ -5,6 +5,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -82,11 +83,12 @@ private fun rememberFlowViewModelStoreOwner(): ViewModelStoreOwner {
  * 세션 상태가 바뀔 때마다 NavHost 전체를 다시 만들지 않는다.
  */
 @Composable
-fun BookOnNavHost(isInitiallyAuthenticated: Boolean, onLogout: () -> Unit) {
+internal fun BookOnNavHost(isInitiallyAuthenticated: Boolean, pendingDeepLink: BookOnPendingDeepLink?, onLogout: () -> Unit) {
     var isAuthenticated by rememberSaveable { mutableStateOf(isInitiallyAuthenticated) }
 
     if (isAuthenticated) {
         BookOnMainNavDisplay(
+            pendingDeepLink = pendingDeepLink,
             onLogout = {
                 onLogout()
                 isAuthenticated = false
@@ -226,12 +228,21 @@ private fun BookOnAuthNavDisplay(onAuthenticated: () -> Unit) {
  * 하단 탭(Home/Ranking/Library/My)마다 독립된 back stack을 유지하는 멀티 백스택 구조이다.
  */
 @Composable
-private fun BookOnMainNavDisplay(onLogout: () -> Unit) {
+private fun BookOnMainNavDisplay(pendingDeepLink: BookOnPendingDeepLink?, onLogout: () -> Unit) {
     val navigationState = rememberBookOnMainNavigationState(
         startRoute = BookOnDestination.Home,
         topLevelRoutes = mainDestinations,
     )
     val navigator = remember(navigationState) { BookOnMainNavigator(navigationState) }
+
+    // 알림 탭 등으로 전달된 초기 목적지를 한 번만 push한다. token이 바뀔 때만(=새 알림 탭) 재실행된다.
+    // LoanHistory는 My 탭 소속 화면이므로, push 전에 반드시 My 탭으로 전환해 뒤로가기 흐름을 자연스럽게 유지한다.
+    LaunchedEffect(pendingDeepLink) {
+        pendingDeepLink?.let {
+            navigator.navigateToTab(BookOnDestination.My)
+            navigator.push(it.destination)
+        }
+    }
 
     // 비밀번호 재설정(이메일 → 인증코드 → 새 비밀번호) 3개 화면이 공유하는 ViewModel이다.
     // 인증 전 흐름과는 별개의 인스턴스이며, 메인 플로우가 사라지면(로그아웃) clear한다.

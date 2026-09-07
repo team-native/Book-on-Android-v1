@@ -1,10 +1,13 @@
 package com.teamnative.bookon.feature.my.presentation.main
 
+import android.Manifest
 import android.app.AlertDialog
 import android.content.ContentResolver
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.ImageDecoder
 import android.net.Uri
+import android.os.Build
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.PickVisualMediaRequest
 import androidx.activity.result.contract.ActivityResultContracts
@@ -27,6 +30,7 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.content.ContextCompat
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 import com.teamnative.bookon.core.ui.model.BookOnMenuRowUiModel
@@ -92,6 +96,12 @@ fun BookOnMyRoute(
                 }
             }
         }
+    }
+
+    val notificationPermissionLauncher = rememberLauncherForActivityResult(
+        contract = ActivityResultContracts.RequestPermission(),
+    ) {
+        // 결과와 무관하게 별도 UI 상태를 추적하지 않는다. 거부 시 로컬 알림이 표시되지 않을 뿐이다.
     }
 
     val marathonUiState = if (uiState.isReadingMarathonLinked) {
@@ -206,6 +216,13 @@ fun BookOnMyRoute(
                 onCheckedChange = { index, checked ->
                     notificationSelections = notificationSelections.mapIndexed { selectionIndex, selected ->
                         if (selectionIndex == index) checked else selected
+                    }
+                    val isNotificationPermissionMissing = ContextCompat.checkSelfPermission(
+                        applicationContext,
+                        Manifest.permission.POST_NOTIFICATIONS,
+                    ) != PackageManager.PERMISSION_GRANTED
+                    if (checked && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU && isNotificationPermissionMissing) {
+                        notificationPermissionLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
                     }
                 },
                 onCompleteClick = {
