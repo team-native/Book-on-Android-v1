@@ -23,8 +23,10 @@ data class BookOnMyScreenUiState(
     val isReadingMarathonLinked: Boolean = false,
     val isProfileImageUploading: Boolean = false,
     val isInitialLoading: Boolean = false,
+    val isAccountDeletionInProgress: Boolean = false,
     val errorMessage: BookOnUiMessage? = null,
     val profileImageErrorMessage: BookOnUiMessage? = null,
+    val accountDeletionErrorMessage: BookOnUiMessage? = null,
 )
 
 /** 서버 응답 전에는 Preview 샘플을 포함하지 않는 빈 화면 상태를 만든다. */

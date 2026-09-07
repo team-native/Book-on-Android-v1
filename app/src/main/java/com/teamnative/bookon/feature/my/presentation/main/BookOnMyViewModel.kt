@@ -6,8 +6,10 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.core.ui.model.BookOnStatItemUiModel
 import com.teamnative.bookon.feature.my.domain.GetMyProfileUseCase
+import com.teamnative.bookon.feature.my.domain.RequestAccountDeletionUseCase
 import com.teamnative.bookon.feature.my.domain.UploadProfileImageUseCase
 import com.teamnative.bookon.feature.my.domain.UpdateNotificationSettingsUseCase
+import com.teamnative.bookon.feature.fcm.domain.ClearFcmTokenOnLogoutUseCase
 import com.teamnative.bookon.feature.marathon.domain.GetRead365MyInfoUseCase
 import com.teamnative.bookon.core.network.NetworkError
 import com.teamnative.bookon.core.ui.model.BookOnUiMessage
@@ -25,6 +27,8 @@ class BookOnMyViewModel @Inject constructor(
     private val updateNotificationSettings: UpdateNotificationSettingsUseCase,
     private val getRead365MyInfo: GetRead365MyInfoUseCase,
     private val uploadProfileImageUseCase: UploadProfileImageUseCase,
+    private val requestAccountDeletionUseCase: RequestAccountDeletionUseCase,
+    private val clearFcmTokenOnLogoutUseCase: ClearFcmTokenOnLogoutUseCase,
 ) : ViewModel() {
     private val mutableUiState = MutableStateFlow(
         initialMyUiState(),
@@ -111,6 +115,34 @@ class BookOnMyViewModel @Inject constructor(
             }
             is NetworkResult.Failure -> mutableUiState.value = mutableUiState.value.copy(
                 errorMessage = result.error.toUiMessage(),
+            )
+        }
+    }
+
+    /**
+     * 회원 탈퇴를 서버에 요청하고, 접수에 성공하면 이 기기의 FCM 토큰을 해제한 뒤 onSuccess로 세션 종료를 위임한다.
+     * onSuccess는 호출부(향후 UI)가 BookOnSessionViewModel.logout()과 동일한 세션 종료 콜백을 넘겨야 한다.
+     * 서버 delete-request 엔드포인트가 아직 없어(백엔드 미구현) 현재는 항상 실패로 응답한다.
+     */
+    fun requestAccountDeletion(reason: String? = null, onSuccess: () -> Unit) = viewModelScope.launch {
+        if (mutableUiState.value.isAccountDeletionInProgress) {
+            return@launch
+        }
+
+        mutableUiState.value = mutableUiState.value.copy(
+            isAccountDeletionInProgress = true,
+            accountDeletionErrorMessage = null,
+        )
+
+        when (val result = requestAccountDeletionUseCase(reason)) {
+            is NetworkResult.Success -> {
+                clearFcmTokenOnLogoutUseCase()
+                mutableUiState.value = mutableUiState.value.copy(isAccountDeletionInProgress = false)
+                onSuccess()
+            }
+            is NetworkResult.Failure -> mutableUiState.value = mutableUiState.value.copy(
+                isAccountDeletionInProgress = false,
+                accountDeletionErrorMessage = result.error.toUiMessage(),
             )
         }
     }

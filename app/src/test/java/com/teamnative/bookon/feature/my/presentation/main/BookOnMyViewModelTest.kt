@@ -3,6 +3,12 @@ package com.teamnative.bookon.feature.my.presentation.main
 import com.teamnative.bookon.core.network.NetworkError
 import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.core.ui.model.BookOnUiMessage
+import com.teamnative.bookon.feature.fcm.domain.ClearFcmTokenOnLogoutUseCase
+import com.teamnative.bookon.feature.fcm.domain.FcmRepository
+import com.teamnative.bookon.feature.fcm.domain.FcmTokenRegistration
+import com.teamnative.bookon.feature.fcm.domain.FcmTokenUnregistration
+import com.teamnative.bookon.feature.fcm.domain.UnregisterFcmTokenUseCase
+import com.teamnative.bookon.core.notification.FcmTokenProvider
 import com.teamnative.bookon.feature.marathon.domain.GetRead365MyInfoUseCase
 import com.teamnative.bookon.feature.marathon.domain.MarathonRepository
 import com.teamnative.bookon.feature.marathon.domain.Read365MyInfo
@@ -16,6 +22,7 @@ import com.teamnative.bookon.feature.my.domain.MyRepository
 import com.teamnative.bookon.feature.my.domain.MyUser
 import com.teamnative.bookon.feature.my.domain.NotificationSettings
 import com.teamnative.bookon.feature.my.domain.ProfileImage
+import com.teamnative.bookon.feature.my.domain.RequestAccountDeletionUseCase
 import com.teamnative.bookon.feature.my.domain.UpdateNotificationSettingsUseCase
 import com.teamnative.bookon.feature.my.domain.UploadProfileImageUseCase
 import java.util.concurrent.atomic.AtomicInteger
@@ -143,16 +150,102 @@ class BookOnMyViewModelTest {
         assertTrue(viewModel.uiState.value.profileImageErrorMessage is BookOnUiMessage.Resource)
     }
 
+    @Test
+    fun `회원 탈퇴 요청 성공 시 FCM 토큰을 해제하고 onSuccess를 호출한다`() = runTest {
+        val fcmRepository = RecordingFcmRepository()
+        val onSuccessCallCount = AtomicInteger(0)
+        val viewModel = createViewModel(
+            repository = MyRepositoryFake(
+                requestAccountDeletionResult = NetworkResult.Success(
+                    AccountDeletion(requestId = 1L, status = "PENDING", requestedAt = "2026-09-07T00:00:00Z"),
+                ),
+            ),
+            fcmRepository = fcmRepository,
+        )
+
+        advanceUntilIdle()
+        viewModel.requestAccountDeletion(reason = "테스트 사유") { onSuccessCallCount.incrementAndGet() }
+        advanceUntilIdle()
+
+        assertTrue(fcmRepository.unregisterInvoked)
+        assertEquals(1, onSuccessCallCount.get())
+        assertFalse(viewModel.uiState.value.isAccountDeletionInProgress)
+    }
+
+    @Test
+    fun `회원 탈퇴 요청 실패 시 오류 상태를 표시하고 onSuccess를 호출하지 않는다`() = runTest {
+        val onSuccessCallCount = AtomicInteger(0)
+        val viewModel = createViewModel(
+            repository = MyRepositoryFake(
+                requestAccountDeletionResult = NetworkResult.Failure(
+                    NetworkError.Http(404, 4040, "요청하신 API를 찾을 수 없습니다."),
+                ),
+            ),
+        )
+
+        advanceUntilIdle()
+        viewModel.requestAccountDeletion { onSuccessCallCount.incrementAndGet() }
+        advanceUntilIdle()
+
+        assertEquals(0, onSuccessCallCount.get())
+        assertFalse(viewModel.uiState.value.isAccountDeletionInProgress)
+        assertTrue(viewModel.uiState.value.accountDeletionErrorMessage is BookOnUiMessage.Dynamic)
+    }
+
+    @Test
+    fun `회원 탈퇴 요청 실패 시 FCM 토큰을 해제하지 않는다`() = runTest {
+        val fcmRepository = RecordingFcmRepository()
+        val viewModel = createViewModel(
+            repository = MyRepositoryFake(
+                requestAccountDeletionResult = NetworkResult.Failure(
+                    NetworkError.Network(IllegalStateException("network")),
+                ),
+            ),
+            fcmRepository = fcmRepository,
+        )
+
+        advanceUntilIdle()
+        viewModel.requestAccountDeletion { }
+        advanceUntilIdle()
+
+        assertFalse(fcmRepository.unregisterInvoked)
+    }
+
     private fun createViewModel(
         repository: MyRepositoryFake,
         marathonRepository: MarathonRepository = MarathonRepositoryFake(),
+        fcmRepository: FcmRepository = RecordingFcmRepository(),
+        fcmTokenProvider: FcmTokenProvider = FakeFcmTokenProvider(),
     ): BookOnMyViewModel {
         return BookOnMyViewModel(
             getMyProfile = GetMyProfileUseCase(repository),
             updateNotificationSettings = UpdateNotificationSettingsUseCase(repository),
             getRead365MyInfo = GetRead365MyInfoUseCase(marathonRepository),
             uploadProfileImageUseCase = UploadProfileImageUseCase(repository),
+            requestAccountDeletionUseCase = RequestAccountDeletionUseCase(repository),
+            clearFcmTokenOnLogoutUseCase = ClearFcmTokenOnLogoutUseCase(
+                fcmTokenProvider,
+                UnregisterFcmTokenUseCase(fcmRepository),
+            ),
         )
+    }
+}
+
+private class FakeFcmTokenProvider(private val token: String? = "fake-fcm-token") : FcmTokenProvider {
+    override suspend fun currentToken(): String? = token
+}
+
+private class RecordingFcmRepository : FcmRepository {
+    var unregisterInvoked = false
+        private set
+
+    override suspend fun registerToken(token: String, platform: String): NetworkResult<FcmTokenRegistration> {
+        error("not used")
+    }
+
+    override suspend fun unregisterToken(token: String): NetworkResult<FcmTokenUnregistration> {
+        unregisterInvoked = true
+        return NetworkResult.Success(FcmTokenUnregistration(unregistered = true))
     }
 }
 
@@ -188,6 +281,9 @@ private class MyRepositoryFake(
     ),
     private val onUploadProfileImage: (String, ByteArray) -> Unit = { _, _ -> },
     private val onProfile: () -> Unit = {},
+    private val requestAccountDeletionResult: NetworkResult<AccountDeletion> = NetworkResult.Success(
+        AccountDeletion(requestId = 1L, status = "PENDING", requestedAt = "2026-09-07T00:00:00Z"),
+    ),
 ) : MyRepository {
     override suspend fun profile(): NetworkResult<MyProfile> {
         onProfile()
@@ -213,7 +309,7 @@ private class MyRepositoryFake(
     }
 
     override suspend fun requestAccountDeletion(reason: String?): NetworkResult<AccountDeletion> {
-        error("not used")
+        return requestAccountDeletionResult
     }
 
     override suspend fun uploadProfileImage(
