@@ -166,6 +166,7 @@ private fun profile() = MyProfile(
     notificationSettings = NotificationSettings(
         dueDateReminder = false,
         newBookReminder = false,
+        noticeReminder = false,
     ),
 )
 
@@ -196,8 +197,9 @@ private class MyRepositoryFake(
     override suspend fun updateNotificationSettings(
         dueDateReminder: Boolean,
         newBookReminder: Boolean,
+        noticeReminder: Boolean,
     ): NetworkResult<NotificationSettings> {
-        return NetworkResult.Success(NotificationSettings(dueDateReminder, newBookReminder))
+        return NetworkResult.Success(NotificationSettings(dueDateReminder, newBookReminder, noticeReminder))
     }
 
     override suspend fun updateProfile(

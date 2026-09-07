@@ -26,10 +26,11 @@ class MyRepositoryImpl @Inject constructor(private val remote: MyRemoteDataSourc
             notificationSettings = NotificationSettings(
                 dueDateReminder = myPage.notificationSettings.dueDateReminder,
                 newBookReminder = myPage.notificationSettings.newBookReminder,
+                noticeReminder = myPage.notificationSettings.noticeReminder,
             ),
         )
     }
-    override suspend fun updateNotificationSettings(dueDateReminder: Boolean, newBookReminder: Boolean): NetworkResult<NotificationSettings> = remote.updateNotificationSettings(dueDateReminder, newBookReminder).map { NotificationSettings(it.dueDateReminder, it.newBookReminder) }
+    override suspend fun updateNotificationSettings(dueDateReminder: Boolean, newBookReminder: Boolean, noticeReminder: Boolean): NetworkResult<NotificationSettings> = remote.updateNotificationSettings(dueDateReminder, newBookReminder, noticeReminder).map { NotificationSettings(it.dueDateReminder, it.newBookReminder, it.noticeReminder) }
     override suspend fun updateProfile(
         name: String?,
         department: String?,

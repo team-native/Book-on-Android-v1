@@ -4,7 +4,7 @@ import com.teamnative.bookon.core.network.NetworkResult
 
 interface MyRepository {
     suspend fun profile(): NetworkResult<MyProfile>
-    suspend fun updateNotificationSettings(dueDateReminder: Boolean, newBookReminder: Boolean): NetworkResult<NotificationSettings>
+    suspend fun updateNotificationSettings(dueDateReminder: Boolean, newBookReminder: Boolean, noticeReminder: Boolean): NetworkResult<NotificationSettings>
     suspend fun updateProfile(
         name: String?,
         department: String?,
@@ -41,7 +41,7 @@ data class MyUser(
 )
 data class AccountDeletion(val requestId: Long, val status: String, val requestedAt: String)
 data class ProfileImage(val profileImageUrl: String?)
-data class NotificationSettings(val dueDateReminder: Boolean, val newBookReminder: Boolean)
+data class NotificationSettings(val dueDateReminder: Boolean, val newBookReminder: Boolean, val noticeReminder: Boolean)
 data class MyLoan(
     val loanId: Long,
     val bookId: Long,

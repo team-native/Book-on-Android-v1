@@ -130,12 +130,14 @@ data class UserLoanDto(
 data class NotificationSettingsDto(
     @SerialName("dueDateReminder") val dueDateReminder: Boolean,
     @SerialName("newBookReminder") val newBookReminder: Boolean,
+    @SerialName("noticeReminder") val noticeReminder: Boolean,
 )
 
 @Serializable
 data class NotificationSettingsRequestDto(
     @SerialName("dueDateReminder") val dueDateReminder: Boolean,
     @SerialName("newBookReminder") val newBookReminder: Boolean,
+    @SerialName("noticeReminder") val noticeReminder: Boolean,
 )
 
 @Serializable

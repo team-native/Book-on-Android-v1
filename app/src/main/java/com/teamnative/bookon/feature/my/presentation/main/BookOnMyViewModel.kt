@@ -104,8 +104,8 @@ class BookOnMyViewModel @Inject constructor(
     }
 
     /** 알림 설정 완료 시 서버 값을 갱신하고 성공하면 마이페이지 정보를 다시 불러온다. */
-    fun updateNotifications(dueDateReminder: Boolean, newBookReminder: Boolean) = viewModelScope.launch {
-        when (val result = updateNotificationSettings(dueDateReminder, newBookReminder)) {
+    fun updateNotifications(dueDateReminder: Boolean, newBookReminder: Boolean, noticeReminder: Boolean) = viewModelScope.launch {
+        when (val result = updateNotificationSettings(dueDateReminder, newBookReminder, noticeReminder)) {
             is NetworkResult.Success -> {
                 mutableUiState.value = mutableUiState.value.copy(notificationSettings = result.data)
             }
