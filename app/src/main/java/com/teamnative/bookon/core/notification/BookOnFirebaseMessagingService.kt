@@ -31,7 +31,7 @@ class BookOnFirebaseMessagingService : FirebaseMessagingService() {
         notificationDisplayer.show(
             title = title,
             body = body,
-            deepLink = remoteMessage.data[DeepLinkKey],
+            notificationType = remoteMessage.data[TypeKey],
             notificationId = (remoteMessage.messageId ?: title).hashCode(),
         )
     }
@@ -39,6 +39,6 @@ class BookOnFirebaseMessagingService : FirebaseMessagingService() {
     private companion object {
         const val TitleKey = "title"
         const val BodyKey = "body"
-        const val DeepLinkKey = "deepLink"
+        const val TypeKey = "type"
     }
 }

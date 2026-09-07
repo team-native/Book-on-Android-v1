@@ -22,7 +22,7 @@ class BookOnNotificationDisplayer @Inject constructor(
     fun show(
         title: String,
         body: String,
-        deepLink: String?,
+        notificationType: String?,
         notificationId: Int,
     ) {
         val hasPermission = ActivityCompat.checkSelfPermission(
@@ -35,9 +35,12 @@ class BookOnNotificationDisplayer @Inject constructor(
 
         val intent = Intent(context, MainActivity::class.java).apply {
             action = Intent.ACTION_VIEW
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP
-            if (deepLink != null) {
-                putExtra(DeepLinkExtraKey, deepLink)
+            // SINGLE_TOP + CLEAR_TOP이어야 MainActivity가 이미 떠 있을 때 재생성 없이 onNewIntent로 전달된다.
+            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
+            if (notificationType != null) {
+                // 백그라운드/종료 상태에서 시스템이 알림을 직접 표시할 때도 FCM data의 "type" 키가
+                // 그대로 인텐트 extra에 실리므로, 여기서도 동일한 키 이름을 사용해 두 경로를 통일한다.
+                putExtra(NotificationTypeExtraKey, notificationType)
             }
         }
         val pendingIntent = PendingIntent.getActivity(
@@ -58,6 +61,6 @@ class BookOnNotificationDisplayer @Inject constructor(
     }
 
     companion object {
-        const val DeepLinkExtraKey = "fcm_deep_link"
+        const val NotificationTypeExtraKey = "type"
     }
 }
