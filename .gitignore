@@ -14,3 +14,4 @@
 .cxx
 local.properties
 /.claude/skills
+/app/google-services.json

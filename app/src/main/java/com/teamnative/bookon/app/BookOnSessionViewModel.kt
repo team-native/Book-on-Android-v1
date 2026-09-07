@@ -6,6 +6,8 @@ import com.teamnative.bookon.core.network.auth.TokenRefreshService
 import com.teamnative.bookon.core.network.auth.TokenRefreshResult
 import com.teamnative.bookon.core.network.auth.TokenSessionManager
 import com.teamnative.bookon.feature.auth.domain.LogoutUseCase
+import com.teamnative.bookon.feature.fcm.domain.ClearFcmTokenOnLogoutUseCase
+import com.teamnative.bookon.feature.fcm.domain.SyncFcmTokenOnAuthenticationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -27,6 +29,8 @@ class BookOnSessionViewModel @Inject constructor(
     private val tokenSessionManager: TokenSessionManager,
     private val tokenRefreshService: TokenRefreshService,
     private val logoutUseCase: LogoutUseCase,
+    private val syncFcmTokenOnAuthenticationUseCase: SyncFcmTokenOnAuthenticationUseCase,
+    private val clearFcmTokenOnLogoutUseCase: ClearFcmTokenOnLogoutUseCase,
 ) : ViewModel() {
     private val mutableUiState = MutableStateFlow<BookOnSessionUiState>(BookOnSessionUiState.Checking)
     val uiState: StateFlow<BookOnSessionUiState> = mutableUiState.asStateFlow()
@@ -53,6 +57,9 @@ class BookOnSessionViewModel @Inject constructor(
                 }
             }
             mutableUiState.value = nextState
+            if (nextState == BookOnSessionUiState.Authenticated) {
+                syncFcmTokenOnAuthenticationUseCase()
+            }
         }
     }
 
@@ -75,6 +82,7 @@ class BookOnSessionViewModel @Inject constructor(
     fun logout() {
         viewModelScope.launch {
             val refreshToken = tokenSessionManager.refreshToken()
+            clearFcmTokenOnLogoutUseCase()
             tokenSessionManager.clear()
             mutableUiState.value = BookOnSessionUiState.Unauthenticated
             if (refreshToken != null) logoutUseCase(refreshToken)

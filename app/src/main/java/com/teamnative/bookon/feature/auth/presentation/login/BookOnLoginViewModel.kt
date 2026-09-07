@@ -8,6 +8,7 @@ import com.teamnative.bookon.core.network.auth.TokenSessionManager
 import com.teamnative.bookon.core.ui.model.BookOnPasswordFieldUiModel
 import com.teamnative.bookon.core.ui.model.BookOnTextFieldUiModel
 import com.teamnative.bookon.feature.auth.domain.LoginUseCase
+import com.teamnative.bookon.feature.fcm.domain.SyncFcmTokenOnAuthenticationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -19,6 +20,7 @@ import kotlinx.coroutines.launch
 class BookOnLoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val tokenSessionManager: TokenSessionManager,
+    private val syncFcmTokenOnAuthenticationUseCase: SyncFcmTokenOnAuthenticationUseCase,
 ) : ViewModel() {
     private val mutableUiState = MutableStateFlow(
         BookOnLoginUiState(
@@ -74,6 +76,7 @@ class BookOnLoginViewModel @Inject constructor(
                 )
                 mutableUiState.value = mutableUiState.value.copy(isSubmitting = false)
                 onSuccess()
+                syncFcmTokenOnAuthenticationUseCase()
             }
             is NetworkResult.Failure -> {
                 val currentState = mutableUiState.value
