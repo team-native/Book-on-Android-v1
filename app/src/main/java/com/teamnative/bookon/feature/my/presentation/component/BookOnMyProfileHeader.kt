@@ -10,7 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Icon
+import androidx.compose.foundation.Image
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -22,11 +22,12 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.semantics.contentDescription
+import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import coil.compose.AsyncImage
 import com.teamnative.bookon.R
-import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppElevation
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
@@ -88,6 +89,7 @@ private fun ProfileImageWithEditButton(
     onEditClick: () -> Unit,
 ) {
     val placeholderPainter = painterResource(R.drawable.main_profile)
+    val editContentDescription = stringResource(R.string.profile_image_edit_description)
 
     Box(modifier = Modifier.size(AppIconSize.Avatar)) {
         AsyncImage(
@@ -102,33 +104,29 @@ private fun ProfileImageWithEditButton(
                 .clip(CircleShape),
         )
 
-        // 48dp 클릭 영역 안의 우측 하단에 작은 배지를 배치해 접근성과 시각 위치를 함께 유지한다.
-        Box(
+        // 보이는 배지에 클릭 동작을 직접 연결하고, 최소 터치 영역 확장은 Compose 접근성 기본 동작에 맡긴다.
+        Surface(
             modifier = Modifier
                 .align(Alignment.BottomEnd)
-                .size(AppComponentSize.MinTouchTarget)
+                .size(AppIconSize.ProfileEditBadge)
                 .clickable(
                     enabled = !isUploading,
                     role = Role.Button,
                     onClick = onEditClick,
-                ),
+                )
+                .semantics {
+                    contentDescription = editContentDescription
+                },
+            shape = CircleShape,
+            color = MaterialTheme.colorScheme.surface,
+            shadowElevation = AppElevation.Button,
         ) {
-            Surface(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .size(AppIconSize.ProfileEditBadge),
-                shape = CircleShape,
-                color = MaterialTheme.colorScheme.surface,
-                shadowElevation = AppElevation.Button,
-            ) {
-                Box(contentAlignment = Alignment.Center) {
-                    Icon(
-                        painter = painterResource(R.drawable.ic_edit_profile),
-                        contentDescription = stringResource(R.string.profile_image_edit_description),
-                        tint = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.size(AppIconSize.Small),
-                    )
-                }
+            Box(contentAlignment = Alignment.Center) {
+                Image(
+                    painter = painterResource(R.drawable.my_page_change_profile),
+                    contentDescription = null,
+                    modifier = Modifier.size(AppIconSize.Small),
+                )
             }
         }
     }
