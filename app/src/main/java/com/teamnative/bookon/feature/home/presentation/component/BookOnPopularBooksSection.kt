@@ -1,11 +1,13 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.semantics.Role
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.feature.home.presentation.model.BookOnPopularBookRowUiModel
 
@@ -17,6 +19,7 @@ import com.teamnative.bookon.feature.home.presentation.model.BookOnPopularBookRo
 fun BookOnPopularBooksSection(
     title: String,
     books: List<BookOnPopularBookRowUiModel>,
+    onBookClick: (Long) -> Unit,
     modifier: Modifier = Modifier,
     actionText: String? = null,
     onActionClick: (() -> Unit)? = null,
@@ -30,9 +33,22 @@ fun BookOnPopularBooksSection(
             actionText = actionText,
             onActionClick = onActionClick,
         )
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Item)) {
-            items(books) { book ->
-                BookOnPopularBookRow(uiState = book)
+        LazyRow(
+            horizontalArrangement = Arrangement.spacedBy(AppSpacing.Item),
+        ) {
+            items(
+                items = books,
+                key = { book -> book.id },
+            ) { book ->
+                BookOnPopularBookRow(
+                    uiState = book,
+                    modifier = Modifier.clickable(
+                        role = Role.Button,
+                        onClick = {
+                            onBookClick(book.id)
+                        },
+                    ),
+                )
             }
         }
     }

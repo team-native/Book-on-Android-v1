@@ -131,8 +131,11 @@ fun BookOnPopularBookRow(
 private fun BookOnPopularBookRowPreview() {
     BookOnTheme {
         BookOnPopularBookRow(
-            title = "소년이 온다",
-            metaText = "한강 · 재고 3권",
+            uiState = BookOnPopularBookRowUiModel(
+                id = 1L,
+                title = "소년이 온다",
+                metaText = "한강 · 재고 3권",
+            ),
             modifier = Modifier.padding(AppSpacing.ScreenHorizontal),
         )
     }

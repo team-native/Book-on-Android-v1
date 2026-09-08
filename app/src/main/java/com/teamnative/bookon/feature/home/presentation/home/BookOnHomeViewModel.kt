@@ -7,7 +7,7 @@ import com.teamnative.bookon.core.ui.model.BookOnBookCardUiModel
 import com.teamnative.bookon.feature.book.domain.BookSort
 import com.teamnative.bookon.feature.book.domain.GetBooksUseCase
 import com.teamnative.bookon.feature.book.domain.GetNewBooksUseCase
-import com.teamnative.bookon.feature.home.domain.GetHomeUseCase
+import com.teamnative.bookon.feature.book.domain.GetTodayRecommendationsUseCase
 import com.teamnative.bookon.feature.home.domain.GetNoticesUseCase
 import com.teamnative.bookon.feature.home.presentation.model.BookOnHomeNoticeUiModel
 import com.teamnative.bookon.feature.home.presentation.model.BookOnPopularBookRowUiModel
@@ -20,13 +20,13 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-private const val HomeLimit = 5
-private const val FirstPage = 1
+private const val HOME_LIMIT = 5
+private const val FIRST_PAGE = 1
 
 /** 홈의 공개 데이터와 도서 목록을 병렬 조회해 표시 모델로 변환한다. */
 @HiltViewModel
 class BookOnHomeViewModel @Inject constructor(
-    private val getHome: GetHomeUseCase,
+    private val getTodayRecommendations: GetTodayRecommendationsUseCase,
     private val getNotices: GetNoticesUseCase,
     private val getBooks: GetBooksUseCase,
     private val getNewBooks: GetNewBooksUseCase,
@@ -41,47 +41,96 @@ class BookOnHomeViewModel @Inject constructor(
         load()
     }
 
-    /** 화면 최초 진입 시 홈 추천·공지·인기·신간을 함께 조회한다. */
     /** 홈 재시도와 최초 진입 시 공개 섹션을 함께 새로 고친다. */
     fun load() = viewModelScope.launch {
         mutableUiState.value = mutableUiState.value.copy(errorMessage = null)
-        val homeResult = async { getHome(HomeLimit) }
-        val noticesResult = async { getNotices(FirstPage, HomeLimit) }
-        val popularResult = async { getBooks(FirstPage, HomeLimit, BookSort.POPULAR, null) }
-        val newBooksResult = async { getNewBooks(FirstPage, HomeLimit) }
-        val profileResult = async { getMyProfile() }
+
+        val recommendationsDeferred = async {
+            getTodayRecommendations()
+        }
+        val noticesDeferred = async {
+            getNotices(FIRST_PAGE, HOME_LIMIT)
+        }
+        val popularBooksDeferred = async {
+            getBooks(
+                FIRST_PAGE,
+                HOME_LIMIT,
+                BookSort.POPULAR,
+                null,
+            )
+        }
+        val newBooksDeferred = async {
+            getNewBooks(FIRST_PAGE, HOME_LIMIT)
+        }
+        val profileDeferred = async {
+            getMyProfile()
+        }
+
+        val recommendationsResult = recommendationsDeferred.await()
+        val noticesResult = noticesDeferred.await()
+        val popularBooksResult = popularBooksDeferred.await()
+        val newBooksResult = newBooksDeferred.await()
+        val profileResult = profileDeferred.await()
         val results = listOf(
-            homeResult.await(),
-            noticesResult.await(),
-            popularResult.await(),
-            newBooksResult.await(),
-            profileResult.await(),
+            recommendationsResult,
+            noticesResult,
+            popularBooksResult,
+            newBooksResult,
+            profileResult,
         )
-        val errorMessage = results.filterIsInstance<NetworkResult.Failure>().firstOrNull()?.error?.toUserMessage()
-        val home = homeResult.await() as? NetworkResult.Success
-        val notices = noticesResult.await() as? NetworkResult.Success
-        val popular = popularResult.await() as? NetworkResult.Success
-        val newBooks = newBooksResult.await() as? NetworkResult.Success
-        val profile = profileResult.await() as? NetworkResult.Success
+        val errorMessage = results
+            .filterIsInstance<NetworkResult.Failure>()
+            .firstOrNull()
+            ?.error
+            ?.toUserMessage()
+        val recommendations = recommendationsResult as? NetworkResult.Success
+        val notices = noticesResult as? NetworkResult.Success
+        val popularBooks = popularBooksResult as? NetworkResult.Success
+        val newBooks = newBooksResult as? NetworkResult.Success
+        val profile = profileResult as? NetworkResult.Success
+        val recommendedBooks = recommendations?.data.orEmpty()
+
         mutableUiState.value = emptyHomeUiState().copy(
             greeting = "",
             userName = profile?.data?.name.orEmpty(),
             notice = notices?.data?.firstOrNull()?.let { notice ->
-                BookOnHomeNoticeUiModel("공지", notice.createdAt, notice.title, notice.summary)
+                BookOnHomeNoticeUiModel(
+                    category = "공지",
+                    dateText = notice.createdAt,
+                    title = notice.title,
+                    description = notice.summary,
+                )
             },
-            aiRecommendationDescription = home?.data?.todayRecommendation?.reason.orEmpty(),
-            aiRecommendedBooks = home?.data?.todayRecommendation?.let { recommendation ->
-                listOf(BookOnBookCardUiModel(recommendation.title, recommendation.author, recommendation.coverImageUrl, recommendation.bookId))
-            }.orEmpty(),
-            popularBooks = popular?.data?.items.orEmpty().map { book ->
+            aiRecommendationDescription = recommendedBooks
+                .firstNotNullOfOrNull { recommendation ->
+                    recommendation.reason?.takeIf { reason ->
+                        reason.isNotBlank()
+                    }
+                }
+                .orEmpty(),
+            aiRecommendedBooks = recommendedBooks.map { recommendation ->
+                BookOnBookCardUiModel(
+                    title = recommendation.title,
+                    author = recommendation.author,
+                    coverImageUrl = recommendation.coverImageUrl,
+                    id = recommendation.bookId,
+                )
+            },
+            popularBooks = popularBooks?.data?.items.orEmpty().map { book ->
                 BookOnPopularBookRowUiModel(
+                    id = book.id,
                     title = book.title,
                     metaText = "${book.author} · ${book.status}",
                     coverImageUrl = book.coverImageUrl,
                 )
             },
             newBooks = newBooks?.data?.items.orEmpty().map { book ->
-                BookOnBookCardUiModel(book.title, book.author, book.coverImageUrl, book.id)
+                BookOnBookCardUiModel(
+                    title = book.title,
+                    author = book.author,
+                    coverImageUrl = book.coverImageUrl,
+                    id = book.id,
+                )
             },
             errorMessage = errorMessage,
         )
