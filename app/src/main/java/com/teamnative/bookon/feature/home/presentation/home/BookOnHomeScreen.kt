@@ -26,10 +26,7 @@ import com.teamnative.bookon.feature.home.presentation.component.BookOnPopularBo
 fun BookOnHomeScreen(
     uiState: BookOnHomeScreenUiState,
     bottomBar: @Composable () -> Unit,
-    onSearchClick: () -> Unit,
-    onShowMoreClick: () -> Unit,
-    onNotificationClick: () -> Unit,
-    onRetryClick: () -> Unit,
+    onEvent: (BookOnHomeScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     val userName = uiState.userName.takeIf { name -> name.isNotBlank() }?.let { name ->
@@ -54,7 +51,13 @@ fun BookOnHomeScreen(
             uiState.errorMessage?.let { errorMessage ->
                 item {
                     Text(text = errorMessage, color = MaterialTheme.colorScheme.onSurfaceVariant)
-                    Button(onClick = onRetryClick) { Text(text = stringResource(R.string.action_retry)) }
+                    Button(
+                        onClick = {
+                            onEvent(BookOnHomeScreenEvent.RetryClicked)
+                        },
+                    ) {
+                        Text(text = stringResource(R.string.action_retry))
+                    }
                 }
             }
             // 공지 카드는 데이터가 없어도 기본 형식으로 항상 노출되므로, 별도의 "표시할 홈 정보가 없어요" 전체 빈 상태는 더 이상 필요하지 않다.
@@ -67,14 +70,18 @@ fun BookOnHomeScreen(
                     userName = userName,
                     notificationContentDescription = stringResource(R.string.home_notification_description),
                     profileContentDescription = stringResource(R.string.home_profile_description),
-                    onNotificationClick = onNotificationClick,
+                    onNotificationClick = {
+                        onEvent(BookOnHomeScreenEvent.NotificationClicked)
+                    },
                 )
             }
             item {
                 BookOnHomeSearchBar(
                     placeholder = stringResource(R.string.home_search_placeholder),
                     searchContentDescription = stringResource(R.string.home_search_description),
-                    onClick = onSearchClick,
+                    onClick = {
+                        onEvent(BookOnHomeScreenEvent.SearchClicked)
+                    },
                 )
             }
             item {
@@ -100,8 +107,9 @@ fun BookOnHomeScreen(
                     description = uiState.aiRecommendationDescription,
                     badgeText = stringResource(R.string.ai_recommendation_badge),
                     books = uiState.aiRecommendedBooks,
-                    actionText = stringResource(R.string.action_show_more),
-                    onActionClick = onShowMoreClick,
+                    onBookClick = { bookId ->
+                        onEvent(BookOnHomeScreenEvent.BookClicked(bookId))
+                    },
                 )
             }
             item {
@@ -109,7 +117,12 @@ fun BookOnHomeScreen(
                     title = stringResource(R.string.popular_books_school),
                     books = uiState.popularBooks,
                     actionText = stringResource(R.string.action_show_more),
-                    onActionClick = onShowMoreClick,
+                    onActionClick = {
+                        onEvent(BookOnHomeScreenEvent.PopularBooksMoreClicked)
+                    },
+                    onBookClick = { bookId ->
+                        onEvent(BookOnHomeScreenEvent.BookClicked(bookId))
+                    },
                 )
             }
         }
@@ -123,10 +136,7 @@ private fun BookOnHomeScreenPreview() {
         BookOnHomeScreen(
             uiState = sampleHomeUiState(),
             bottomBar = {},
-            onSearchClick = {},
-            onShowMoreClick = {},
-            onNotificationClick = {},
-            onRetryClick = {},
+            onEvent = {},
         )
     }
 }

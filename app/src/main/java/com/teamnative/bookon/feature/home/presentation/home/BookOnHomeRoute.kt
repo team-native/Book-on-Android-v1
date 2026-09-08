@@ -13,6 +13,7 @@ fun BookOnHomeRoute(
     onSearchClick: () -> Unit,
     onNewBooksClick: () -> Unit,
     onNotificationClick: () -> Unit,
+    onBookClick: (Long) -> Unit,
     viewModel: BookOnHomeViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -22,10 +23,15 @@ fun BookOnHomeRoute(
         BookOnHomeScreen(
             uiState = uiState,
             bottomBar = bottomBar,
-            onSearchClick = onSearchClick,
-            onShowMoreClick = onNewBooksClick,
-            onNotificationClick = onNotificationClick,
-            onRetryClick = viewModel::load,
+            onEvent = { event ->
+                when (event) {
+                    BookOnHomeScreenEvent.SearchClicked -> onSearchClick()
+                    BookOnHomeScreenEvent.NotificationClicked -> onNotificationClick()
+                    BookOnHomeScreenEvent.PopularBooksMoreClicked -> onNewBooksClick()
+                    BookOnHomeScreenEvent.RetryClicked -> viewModel.load()
+                    is BookOnHomeScreenEvent.BookClicked -> onBookClick(event.bookId)
+                }
+            },
         )
     }
 }

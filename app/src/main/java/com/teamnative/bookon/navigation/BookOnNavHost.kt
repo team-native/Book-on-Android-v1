@@ -264,6 +264,9 @@ private fun BookOnMainNavDisplay(pendingDeepLink: BookOnPendingDeepLink?, onLogo
                         bottomBar = bottomBar,
                         onSearchClick = { navigator.push(BookOnDestination.Search) },
                         onNewBooksClick = { navigator.push(BookOnDestination.NewBooks) },
+                        onBookClick = { bookId ->
+                            navigator.push(BookOnDestination.BookDetail(bookId))
+                        },
                         onNotificationClick = {
                             // TODO: 서버 알림 API 또는 알림 화면이 준비되면 이 이벤트에 연결한다.
                         },
