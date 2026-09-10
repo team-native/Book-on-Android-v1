@@ -17,6 +17,7 @@ data class BookOnHomeNoticeUiModel(
 
 @Immutable
 data class BookOnPopularBookRowUiModel(
+    val id: Long,
     val title: String,
     val metaText: String,
     val statusText: String? = null,

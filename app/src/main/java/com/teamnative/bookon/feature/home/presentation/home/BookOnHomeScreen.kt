@@ -28,6 +28,7 @@ fun BookOnHomeScreen(
     bottomBar: @Composable () -> Unit,
     onSearchClick: () -> Unit,
     onShowMoreClick: () -> Unit,
+    onBookClick: (Long) -> Unit,
     onNotificationClick: () -> Unit,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -102,6 +103,7 @@ fun BookOnHomeScreen(
                     books = uiState.aiRecommendedBooks,
                     actionText = stringResource(R.string.action_show_more),
                     onActionClick = onShowMoreClick,
+                    onBookClick = onBookClick,
                 )
             }
             item {
@@ -110,6 +112,7 @@ fun BookOnHomeScreen(
                     books = uiState.popularBooks,
                     actionText = stringResource(R.string.action_show_more),
                     onActionClick = onShowMoreClick,
+                    onBookClick = onBookClick,
                 )
             }
         }
@@ -125,6 +128,7 @@ private fun BookOnHomeScreenPreview() {
             bottomBar = {},
             onSearchClick = {},
             onShowMoreClick = {},
+            onBookClick = {},
             onNotificationClick = {},
             onRetryClick = {},
         )

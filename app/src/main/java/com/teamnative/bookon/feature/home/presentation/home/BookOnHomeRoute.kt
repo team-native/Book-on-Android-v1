@@ -12,6 +12,7 @@ fun BookOnHomeRoute(
     bottomBar: @Composable () -> Unit,
     onSearchClick: () -> Unit,
     onNewBooksClick: () -> Unit,
+    onBookClick: (Long) -> Unit,
     onNotificationClick: () -> Unit,
     viewModel: BookOnHomeViewModel = hiltViewModel(),
 ) {
@@ -24,6 +25,7 @@ fun BookOnHomeRoute(
             bottomBar = bottomBar,
             onSearchClick = onSearchClick,
             onShowMoreClick = onNewBooksClick,
+            onBookClick = onBookClick,
             onNotificationClick = onNotificationClick,
             onRetryClick = viewModel::load,
         )

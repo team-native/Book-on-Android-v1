@@ -75,6 +75,7 @@ class BookOnHomeViewModel @Inject constructor(
             }.orEmpty(),
             popularBooks = popular?.data?.items.orEmpty().map { book ->
                 BookOnPopularBookRowUiModel(
+                    id = book.id,
                     title = book.title,
                     metaText = "${book.author} · ${book.status}",
                     coverImageUrl = book.coverImageUrl,

@@ -16,13 +16,33 @@ internal fun sampleHomeUiState() = BookOnHomeScreenUiState(
     ),
     aiRecommendationDescription = "홍길동님의 대출 이력을 분석해 골랐어요",
     aiRecommendedBooks = listOf(
-        BookOnBookCardUiModel("나미야 잡화점의 기적", "히가시노 게이고"),
-        BookOnBookCardUiModel("아몬드", "손원평"),
-        BookOnBookCardUiModel("오늘 밤, 세계에서 이 사랑이 사라진다 해도", "이치조 미사키"),
+        BookOnBookCardUiModel(
+            title = "나미야 잡화점의 기적",
+            author = "히가시노 게이고",
+            id = 1L,
+        ),
+        BookOnBookCardUiModel(
+            title = "아몬드",
+            author = "손원평",
+            id = 2L,
+        ),
+        BookOnBookCardUiModel(
+            title = "오늘 밤, 세계에서 이 사랑이 사라진다 해도",
+            author = "이치조 미사키",
+            id = 3L,
+        ),
     ),
     popularBooks = listOf(
-        BookOnPopularBookRowUiModel("소년이 온다", "한강 · 재고 3권"),
-        BookOnPopularBookRowUiModel("데미안", "헤르만 헤세 · 재고 1권"),
+        BookOnPopularBookRowUiModel(
+            id = 4L,
+            title = "소년이 온다",
+            metaText = "한강 · 재고 3권",
+        ),
+        BookOnPopularBookRowUiModel(
+            id = 5L,
+            title = "데미안",
+            metaText = "헤르만 헤세 · 재고 1권",
+        ),
     ),
     newBooks = listOf(
         BookOnBookCardUiModel("자몽 살구 클럽", "한로로"),
