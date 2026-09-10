@@ -133,6 +133,7 @@
     <string name="skip_reading_marathon_prefix">나중에 할게요 · </string>
     <string name="skip_reading_marathon_action">건너뛰기</string>
     <string name="complete_signup_with_link">연동하고 가입완료</string>
+    <string name="open_read365_website">Read365 웹사이트 열기</string>
 
     <!-- Home -->
     <string name="home_greeting_evening">좋은 저녁이에요</string>

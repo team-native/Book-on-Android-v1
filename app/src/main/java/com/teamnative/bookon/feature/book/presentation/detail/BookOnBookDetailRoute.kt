@@ -65,6 +65,7 @@ private fun BookOnBookDetailStatusScreen(
     Scaffold(
         topBar = {
             BookOnTopBar(
+                modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
                 title = "",
                 onBackClick = onBackClick,
             )
