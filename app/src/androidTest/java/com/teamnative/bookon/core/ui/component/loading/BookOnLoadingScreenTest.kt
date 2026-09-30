@@ -1,6 +1,7 @@
 package com.teamnative.bookon.core.ui.component.loading
 
 import androidx.activity.ComponentActivity
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.semantics.SemanticsProperties
 import androidx.compose.ui.test.SemanticsMatcher
 import androidx.compose.ui.test.assertIsDisplayed
@@ -33,6 +34,9 @@ class BookOnLoadingScreenTest {
                 SemanticsMatcher.expectValue(
                     SemanticsProperties.StateDescription,
                     loadingDescription,
+                ) and SemanticsMatcher.expectValue(
+                    SemanticsProperties.ProgressBarRangeInfo,
+                    ProgressBarRangeInfo.Indeterminate,
                 ),
             )
             .assertIsDisplayed()

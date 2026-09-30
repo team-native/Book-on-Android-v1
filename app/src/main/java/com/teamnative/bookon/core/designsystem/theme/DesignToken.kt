@@ -43,7 +43,6 @@ object AppElevation {
 object AppAnimationDuration {
     const val Medium = 400
     const val Navigation = 500
-    const val LoadingRotation = 2_500
 }
 
 object AppIconSize {
@@ -52,7 +51,6 @@ object AppIconSize {
     val Medium = 30.dp
     val Large = 32.dp
     val XLarge = 36.dp
-    val Loading = 64.dp
     val Avatar = 64.dp
     val ProfileEditBadge = 24.dp
     val PodiumSecondaryAvatar = 52.dp
