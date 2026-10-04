@@ -16,6 +16,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.DisposableEffect
+import com.teamnative.bookon.core.ui.model.resolve
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -25,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalContext
@@ -66,6 +68,10 @@ fun BookOnMyRoute(
     onLogoutRequest: () -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+    LifecycleResumeEffect(viewModel) {
+        viewModel.onResumed()
+        onPauseOrDispose { }
+    }
     var isLogoutDialogVisible by rememberSaveable { mutableStateOf(false) }
     var isNotificationSettingsVisible by rememberSaveable { mutableStateOf(false) }
     var notificationSelections by rememberSaveable { mutableStateOf(InitialNotificationSelections) }
@@ -133,6 +139,7 @@ fun BookOnMyRoute(
         BookOnMenuRowUiModel(stringResource(R.string.usage_guide)),
     )
     val screenUiState = uiState.copy(
+        errorMessage = uiState.errorMessage ?: uiState.read365ErrorMessage,
         userNameText = if (uiState.userNameText.isBlank()) {
             stringResource(R.string.my_profile_unavailable)
         } else {
@@ -207,13 +214,19 @@ fun BookOnMyRoute(
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
         ModalBottomSheet(
-            onDismissRequest = { isNotificationSettingsVisible = false },
+            onDismissRequest = {
+                if (!uiState.isNotificationSaving) {
+                    isNotificationSettingsVisible = false
+                }
+            },
             sheetState = sheetState,
             containerColor = MaterialTheme.colorScheme.surface,
             dragHandle = null,
         ) {
             BookOnNotificationSettingsBottomSheetContent(
                 notificationSelections = notificationSelections,
+                isSaving = uiState.isNotificationSaving,
+                errorText = uiState.notificationSaveError?.resolve(),
                 onCheckedChange = { index, checked ->
                     notificationSelections = notificationSelections.mapIndexed { selectionIndex, selected ->
                         if (selectionIndex == index) checked else selected
@@ -232,8 +245,8 @@ fun BookOnMyRoute(
                         // 신간 도서 알림은 이 바텀시트에 별도 토글이 없어 서버에서 마지막으로 받은 값을 그대로 유지한다.
                         newBookReminder = uiState.notificationSettings.newBookReminder,
                         noticeReminder = notificationSelections.getOrElse(1) { false },
+                        onSuccess = { isNotificationSettingsVisible = false },
                     )
-                    isNotificationSettingsVisible = false
                 },
             )
         }
