@@ -1,5 +1,6 @@
 package com.teamnative.bookon.feature.home.presentation.newbooks
 
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.foundation.layout.Arrangement
@@ -30,6 +31,7 @@ import com.teamnative.bookon.core.ui.model.resolve
 fun BookOnNewBooksScreen(
     uiState: BookOnNewBooksScreenUiState,
     onBackClick: () -> Unit,
+    onBookClick: (Long) -> Unit,
     onRetryClick: () -> Unit,
     onLoadMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
@@ -76,7 +78,10 @@ fun BookOnNewBooksScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     rowBooks.forEach { book ->
-                        BookOnBookCard(uiState = book)
+                        BookOnBookCard(
+                            uiState = book,
+                            modifier = Modifier.clickable { onBookClick(book.id) },
+                        )
                     }
 
                     if (rowBooks.size == 1) {
@@ -110,6 +115,7 @@ private fun BookOnNewBooksScreenPreview() {
         BookOnNewBooksScreen(
             uiState = sampleNewBooksUiState(),
             onBackClick = {},
+            onBookClick = {},
             onRetryClick = {},
             onLoadMoreClick = {},
         )

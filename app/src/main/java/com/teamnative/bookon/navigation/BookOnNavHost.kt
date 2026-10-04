@@ -304,7 +304,12 @@ private fun BookOnMainNavDisplay(pendingDeepLink: BookOnPendingDeepLink?, onLogo
                     )
                 }
                 entry<BookOnDestination.NewBooks> {
-                    BookOnNewBooksRoute(onBackClick = navigator::goBack)
+                    BookOnNewBooksRoute(
+                    onBackClick = navigator::goBack,
+                    onBookClick = { bookId ->
+                        navigator.push(BookOnDestination.BookDetail(bookId))
+                    },
+                )
                 }
                 entry<BookOnDestination.LoanHistory> {
                     BookOnLoanHistoryRoute(

@@ -10,6 +10,7 @@ import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 @Composable
 fun BookOnNewBooksRoute(
     onBackClick: () -> Unit,
+    onBookClick: (Long) -> Unit,
     viewModel: BookOnNewBooksViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -19,6 +20,7 @@ fun BookOnNewBooksRoute(
         BookOnNewBooksScreen(
             uiState = uiState,
             onBackClick = onBackClick,
+            onBookClick = onBookClick,
             onRetryClick = viewModel::retry,
             onLoadMoreClick = viewModel::loadNextPage,
         )
