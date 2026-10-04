@@ -64,7 +64,15 @@ private fun UserDto.toDomain() = MyUser(
     studentNo = studentNo,
     profileImageUrl = profileImageUrl,
 )
-private fun LoanHistoryDto.toDomain() = MyLoan(loanId, bookId, title, dueDate, dDay, status)
+private fun LoanHistoryDto.toDomain() = MyLoan(
+    loanId = loanId,
+    bookId = bookId,
+    title = title,
+    dueDate = dueDate,
+    dDay = dDay,
+    status = status,
+    extensionAvailable = extensionAvailable,
+)
 private fun <T, R> NetworkResult<T>.map(transform: (T) -> R): NetworkResult<R> = when (this) {
     is NetworkResult.Success -> NetworkResult.Success(transform(data))
     is NetworkResult.Failure -> this
