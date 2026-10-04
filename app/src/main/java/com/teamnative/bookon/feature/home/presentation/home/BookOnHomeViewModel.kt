@@ -6,7 +6,6 @@ import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.core.ui.model.BookOnBookCardUiModel
 import com.teamnative.bookon.feature.book.domain.BookSort
 import com.teamnative.bookon.feature.book.domain.GetBooksUseCase
-import com.teamnative.bookon.feature.book.domain.GetNewBooksUseCase
 import com.teamnative.bookon.feature.book.domain.GetTodayRecommendationsUseCase
 import com.teamnative.bookon.feature.home.domain.GetNoticesUseCase
 import com.teamnative.bookon.feature.home.presentation.model.BookOnHomeNoticeUiModel
@@ -14,14 +13,16 @@ import com.teamnative.bookon.feature.home.presentation.model.BookOnPopularBookRo
 import com.teamnative.bookon.feature.my.domain.GetMyProfileUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
-import kotlinx.coroutines.async
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 
-private const val HOME_LIMIT = 5
-private const val FIRST_PAGE = 1
+private const val HomeLimit = 5
+private const val FirstPage = 1
 
 /** 홈의 공개 데이터와 도서 목록을 병렬 조회해 표시 모델로 변환한다. */
 @HiltViewModel
@@ -29,112 +30,103 @@ class BookOnHomeViewModel @Inject constructor(
     private val getTodayRecommendations: GetTodayRecommendationsUseCase,
     private val getNotices: GetNoticesUseCase,
     private val getBooks: GetBooksUseCase,
-    private val getNewBooks: GetNewBooksUseCase,
     private val getMyProfile: GetMyProfileUseCase,
 ) : ViewModel() {
     private val mutableUiState = MutableStateFlow(
-        emptyHomeUiState().copy(isInitialLoading = true),
+        emptyHomeUiState(),
     )
     val uiState: StateFlow<BookOnHomeScreenUiState> = mutableUiState.asStateFlow()
+
+    private var loadJob: Job? = null
+    private var generation = 0L
 
     init {
         load()
     }
 
-    /** 홈 재시도와 최초 진입 시 공개 섹션을 함께 새로 고친다. */
-    fun load() = viewModelScope.launch {
-        mutableUiState.value = mutableUiState.value.copy(errorMessage = null)
-
-        val recommendationsDeferred = async {
-            getTodayRecommendations()
-        }
-        val noticesDeferred = async {
-            getNotices(FIRST_PAGE, HOME_LIMIT)
-        }
-        val popularBooksDeferred = async {
-            getBooks(
-                FIRST_PAGE,
-                HOME_LIMIT,
-                BookSort.POPULAR,
-                null,
+    /** 느린 섹션을 기다리지 않고 완료된 서버 응답부터 반영한다. */
+    fun load() {
+        loadJob?.cancel()
+        val requestGeneration = ++generation
+        mutableUiState.update {
+            it.copy(
+                isInitialLoading = false,
+                loadingSections = HomeSection.entries.toSet(),
+                sectionErrors = emptyMap(),
+                errorMessage = null,
             )
         }
-        val newBooksDeferred = async {
-            getNewBooks(FIRST_PAGE, HOME_LIMIT)
-        }
-        val profileDeferred = async {
-            getMyProfile()
-        }
-
-        val recommendationsResult = recommendationsDeferred.await()
-        val noticesResult = noticesDeferred.await()
-        val popularBooksResult = popularBooksDeferred.await()
-        val newBooksResult = newBooksDeferred.await()
-        val profileResult = profileDeferred.await()
-        val results = listOf(
-            recommendationsResult,
-            noticesResult,
-            popularBooksResult,
-            newBooksResult,
-            profileResult,
-        )
-        val errorMessage = results
-            .filterIsInstance<NetworkResult.Failure>()
-            .firstOrNull()
-            ?.error
-            ?.toUserMessage()
-        val recommendations = recommendationsResult as? NetworkResult.Success
-        val notices = noticesResult as? NetworkResult.Success
-        val popularBooks = popularBooksResult as? NetworkResult.Success
-        val newBooks = newBooksResult as? NetworkResult.Success
-        val profile = profileResult as? NetworkResult.Success
-        val recommendedBooks = recommendations?.data.orEmpty()
-
-        mutableUiState.value = emptyHomeUiState().copy(
-            greeting = "",
-            userName = profile?.data?.name.orEmpty(),
-            notice = notices?.data?.firstOrNull()?.let { notice ->
-                BookOnHomeNoticeUiModel(
-                    category = "공지",
-                    dateText = notice.createdAt,
-                    title = notice.title,
-                    description = notice.summary,
-                )
-            },
-            aiRecommendationDescription = recommendedBooks
-                .firstNotNullOfOrNull { recommendation ->
-                    recommendation.reason?.takeIf { reason ->
-                        reason.isNotBlank()
+        loadJob = viewModelScope.launch {
+            coroutineScope {
+                launch {
+                    applyResponse(HomeSection.Recommendation, requestGeneration, getTodayRecommendations()) { current, home ->
+                        current.copy(
+                            aiRecommendationDescription = home.firstNotNullOfOrNull { recommendation ->
+                                recommendation.reason?.takeIf { it.isNotBlank() }
+                            }.orEmpty(),
+                            aiRecommendedBooks = home.map { recommendation ->
+                                BookOnBookCardUiModel(
+                                    recommendation.title, recommendation.author,
+                                    recommendation.coverImageUrl, recommendation.bookId,
+                                )
+                            },
+                        )
                     }
                 }
-                .orEmpty(),
-            aiRecommendedBooks = recommendedBooks.map { recommendation ->
-                BookOnBookCardUiModel(
-                    title = recommendation.title,
-                    author = recommendation.author,
-                    coverImageUrl = recommendation.coverImageUrl,
-                    id = recommendation.bookId,
-                )
-            },
-            popularBooks = popularBooks?.data?.items.orEmpty().map { book ->
-                BookOnPopularBookRowUiModel(
-                    id = book.id,
-                    title = book.title,
-                    metaText = "${book.author} · ${book.status}",
-                    coverImageUrl = book.coverImageUrl,
-                )
-            },
-            newBooks = newBooks?.data?.items.orEmpty().map { book ->
-                BookOnBookCardUiModel(
-                    title = book.title,
-                    author = book.author,
-                    coverImageUrl = book.coverImageUrl,
-                    id = book.id,
-                )
-            },
-            errorMessage = errorMessage,
-        )
+                launch {
+                    applyResponse(HomeSection.Notice, requestGeneration, getNotices(FirstPage, HomeLimit)) { current, notices ->
+                        current.copy(notice = notices.firstOrNull()?.let { notice ->
+                            BookOnHomeNoticeUiModel("공지", notice.createdAt, notice.title, notice.summary)
+                        })
+                    }
+                }
+                launch {
+                    applyResponse(HomeSection.Popular, requestGeneration, getBooks(FirstPage, HomeLimit, BookSort.POPULAR, null)) { current, books ->
+                        current.copy(popularBooks = books.items.map { book ->
+                            BookOnPopularBookRowUiModel(
+                                id = book.id,
+                                title = book.title,
+                                metaText = "${book.author} · ${book.status}",
+                                coverImageUrl = book.coverImageUrl,
+                            )
+                        })
+                    }
+                }
+                launch {
+                    applyResponse(HomeSection.Profile, requestGeneration, getMyProfile()) { current, profile ->
+                        current.copy(userName = profile.name)
+                    }
+                }
+            }
+        }
     }
+
+    private fun <T> applyResponse(
+        section: HomeSection,
+        requestGeneration: Long,
+        response: NetworkResult<T>,
+        updateContent: (BookOnHomeScreenUiState, T) -> BookOnHomeScreenUiState,
+    ) {
+        if (requestGeneration != generation) {
+            return
+        }
+        mutableUiState.update { previous ->
+            val errors = when (response) {
+                is NetworkResult.Success -> previous.sectionErrors - section
+                is NetworkResult.Failure -> previous.sectionErrors + (section to response.error.toUserMessage())
+            }
+            val content = when (response) {
+                is NetworkResult.Success -> updateContent(previous, response.data)
+                is NetworkResult.Failure -> previous
+            }
+            content.copy(
+                loadingSections = previous.loadingSections - section,
+                sectionErrors = errors,
+                errorMessage = errors.values.firstOrNull(),
+            )
+        }
+    }
+
 }
 
 private fun emptyHomeUiState() = BookOnHomeScreenUiState(

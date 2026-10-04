@@ -16,4 +16,8 @@ data class BookOnHomeScreenUiState(
     val newBooks: List<BookOnBookCardUiModel>,
     val isInitialLoading: Boolean = false,
     val errorMessage: String? = null,
+    val loadingSections: Set<HomeSection> = emptySet(),
+    val sectionErrors: Map<HomeSection, String> = emptyMap(),
 )
+
+enum class HomeSection { Recommendation, Notice, Popular, Profile }

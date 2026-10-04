@@ -86,7 +86,9 @@ fun BookOnHomeScreen(
             }
             item {
                 val notice = uiState.notice
-                if (notice != null) {
+                if (notice == null && HomeSection.Notice in uiState.loadingSections) {
+                    com.teamnative.bookon.core.ui.component.loading.BookOnInlineLoadingIndicator()
+                } else if (notice != null) {
                     BookOnHomeNoticeCard(
                         uiState = notice,
                         actionText = stringResource(R.string.action_view_detail),
@@ -102,6 +104,9 @@ fun BookOnHomeScreen(
                 }
             }
             item {
+                if (HomeSection.Recommendation in uiState.loadingSections) {
+                    com.teamnative.bookon.core.ui.component.loading.BookOnInlineLoadingIndicator()
+                }
                 BookOnBookSection(
                     title = stringResource(R.string.ai_recommendation),
                     description = uiState.aiRecommendationDescription,
@@ -113,6 +118,9 @@ fun BookOnHomeScreen(
                 )
             }
             item {
+                if (HomeSection.Popular in uiState.loadingSections) {
+                    com.teamnative.bookon.core.ui.component.loading.BookOnInlineLoadingIndicator()
+                }
                 BookOnPopularBooksSection(
                     title = stringResource(R.string.popular_books_school),
                     books = uiState.popularBooks,

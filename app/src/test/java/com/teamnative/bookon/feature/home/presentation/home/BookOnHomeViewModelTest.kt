@@ -107,7 +107,6 @@ class BookOnHomeViewModelTest {
             getTodayRecommendations = GetTodayRecommendationsUseCase(bookRepository),
             getNotices = GetNoticesUseCase(HomeNoticeRepository()),
             getBooks = GetBooksUseCase(bookRepository),
-            getNewBooks = GetNewBooksUseCase(bookRepository),
             getMyProfile = GetMyProfileUseCase(HomeProfileRepository()),
         )
     }
