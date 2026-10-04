@@ -53,6 +53,94 @@ class BookOnRankingViewModelTest {
     }
 
     @Test
+    fun olderRankingResponseDoesNotOverwriteRetry() = runTest {
+        val stale = kotlinx.coroutines.CompletableDeferred<NetworkResult<ReaderRanking>>()
+        var requests = 0
+        val repository = object : RankingRepository {
+            override suspend fun readers(year: Int, limit: Int): NetworkResult<ReaderRanking> {
+                requests++
+                if (requests == 1) {
+                    return kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) { stale.await() }
+                }
+                return NetworkResult.Success(ReaderRanking(year, "annual", listOf(Reader(1, "Latest", "AI", 3))))
+            }
+        }
+        val viewModel = BookOnRankingViewModel(GetReaderRankingUseCase(repository))
+        runCurrent()
+        viewModel.retry()
+        runCurrent()
+        stale.complete(NetworkResult.Failure(NetworkError.Network(java.io.IOException("late offline"))))
+        runCurrent()
+        assertEquals("Latest", viewModel.uiState.value.podium.first.name)
+        assertNull(viewModel.uiState.value.errorMessage)
+    }
+
+    @Test
+    fun retryFailureKeepsPreviouslyLoadedReaders() = runTest {
+        var requests = 0
+        val repository = object : RankingRepository {
+            override suspend fun readers(year: Int, limit: Int): NetworkResult<ReaderRanking> {
+                requests++
+                if (requests == 1) {
+                    return NetworkResult.Success(ReaderRanking(year, "annual", listOf(Reader(1, "Reader", "AI", 3))))
+                }
+                return NetworkResult.Failure(NetworkError.Network(java.io.IOException("offline")))
+            }
+        }
+        val viewModel = BookOnRankingViewModel(GetReaderRankingUseCase(repository))
+        runCurrent()
+        viewModel.retry()
+        runCurrent()
+        assertEquals("Reader", viewModel.uiState.value.podium.first.name)
+        assertNotNull(viewModel.uiState.value.errorMessage)
+        assertFalse(viewModel.uiState.value.isEmpty)
+    }
+
+    @Test
+    fun firstFailureCanRetryToSuccessfulEmptyRanking() = runTest {
+        var requests = 0
+        val repository = object : RankingRepository {
+            override suspend fun readers(year: Int, limit: Int): NetworkResult<ReaderRanking> {
+                requests++
+                return if (requests == 1) {
+                    NetworkResult.Failure(NetworkError.Network(java.io.IOException("offline")))
+                } else {
+                    NetworkResult.Success(ReaderRanking(year, "annual", emptyList()))
+                }
+            }
+        }
+        val viewModel = BookOnRankingViewModel(GetReaderRankingUseCase(repository))
+        runCurrent()
+        assertNotNull(viewModel.uiState.value.errorMessage)
+        viewModel.retry()
+        runCurrent()
+        assertTrue(viewModel.uiState.value.isEmpty)
+        assertNull(viewModel.uiState.value.errorMessage)
+    }
+
+    @Test
+    fun oldSuccessCannotReplaceNewerSuccess() = runTest {
+        val stale = kotlinx.coroutines.CompletableDeferred<NetworkResult<ReaderRanking>>()
+        var requests = 0
+        val repository = object : RankingRepository {
+            override suspend fun readers(year: Int, limit: Int): NetworkResult<ReaderRanking> {
+                requests++
+                if (requests == 1) {
+                    return kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) { stale.await() }
+                }
+                return NetworkResult.Success(ReaderRanking(year, "annual", listOf(Reader(1, "Latest", "AI", 3))))
+            }
+        }
+        val viewModel = BookOnRankingViewModel(GetReaderRankingUseCase(repository))
+        runCurrent()
+        viewModel.retry()
+        runCurrent()
+        stale.complete(NetworkResult.Success(ReaderRanking(2025, "old", listOf(Reader(1, "Old", "AI", 9)))))
+        runCurrent()
+        assertEquals("Latest", viewModel.uiState.value.podium.first.name)
+    }
+
+    @Test
     fun failureDoesNotClaimThatRankingIsEmpty() = runTest {
         val repository = object : RankingRepository {
             override suspend fun readers(year: Int, limit: Int): NetworkResult<ReaderRanking> {
