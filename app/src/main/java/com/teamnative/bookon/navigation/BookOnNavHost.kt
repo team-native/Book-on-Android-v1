@@ -82,13 +82,20 @@ private fun rememberFlowViewModelStoreOwner(): ViewModelStoreOwner {
  * 세션 상태가 바뀌면 인증/메인 Navigation 경계를 다시 만든다.
  */
 @Composable
-internal fun BookOnNavHost(isInitiallyAuthenticated: Boolean, pendingDeepLink: BookOnPendingDeepLink?, onLogout: () -> Unit, sessionEpoch: Long = 0L) {
+internal fun BookOnNavHost(
+    isInitiallyAuthenticated: Boolean,
+    pendingDeepLink: BookOnPendingDeepLink?,
+    onLogout: () -> Unit,
+    sessionEpoch: Long = 0L,
+    onPendingDeepLinkConsumed: (Long) -> Unit = {},
+) {
     // SessionViewModel이 토큰 만료를 감지해 인증 상태를 바꾸면 기존 메인 back stack이 남지 않도록
     // 인증 상태를 Composition key로 사용해 인증/메인 플로우와 그 하위 ViewModel을 함께 교체한다.
     key(isInitiallyAuthenticated, sessionEpoch) {
         if (isInitiallyAuthenticated) {
             BookOnMainNavDisplay(
                 pendingDeepLink = pendingDeepLink,
+                onPendingDeepLinkConsumed = onPendingDeepLinkConsumed,
                 onLogout = onLogout,
             )
         } else {
@@ -222,7 +229,11 @@ private fun BookOnAuthNavDisplay(onAuthenticated: () -> Unit) {
  * 하단 탭(Home/Ranking/Library/My)마다 독립된 back stack을 유지하는 멀티 백스택 구조이다.
  */
 @Composable
-private fun BookOnMainNavDisplay(pendingDeepLink: BookOnPendingDeepLink?, onLogout: () -> Unit) {
+private fun BookOnMainNavDisplay(
+    pendingDeepLink: BookOnPendingDeepLink?,
+    onLogout: () -> Unit,
+    onPendingDeepLinkConsumed: (Long) -> Unit,
+) {
     val navigationState = rememberBookOnMainNavigationState(
         startRoute = BookOnDestination.Home,
         topLevelRoutes = mainDestinations,
@@ -235,6 +246,7 @@ private fun BookOnMainNavDisplay(pendingDeepLink: BookOnPendingDeepLink?, onLogo
         pendingDeepLink?.let {
             navigator.navigateToTab(BookOnDestination.My)
             navigator.push(it.destination)
+            onPendingDeepLinkConsumed(it.token)
         }
     }
 

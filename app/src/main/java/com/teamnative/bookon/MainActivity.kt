@@ -34,7 +34,10 @@ class MainActivity : ComponentActivity() {
         }
         setContent {
             BookOnTheme {
-                BookOnApp(pendingDeepLink = pendingDeepLinkState.value)
+                BookOnApp(
+                    pendingDeepLink = pendingDeepLinkState.value,
+                    onPendingDeepLinkConsumed = ::consumePendingDeepLink,
+                )
             }
         }
     }
@@ -44,6 +47,15 @@ class MainActivity : ComponentActivity() {
         super.onNewIntent(intent)
         setIntent(intent)
         pendingDeepLinkState.value = intent.toPendingDeepLink()
+    }
+
+    /** 처리한 알림만 비우며 새로 도착한 이벤트는 유지한다. */
+    private fun consumePendingDeepLink(token: Long) {
+        if (pendingDeepLinkState.value?.token != token) {
+            return
+        }
+        pendingDeepLinkState.value = null
+        intent.removeExtra(BookOnNotificationDisplayer.NotificationTypeExtraKey)
     }
 
     /**

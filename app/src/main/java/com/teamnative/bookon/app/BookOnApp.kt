@@ -28,7 +28,10 @@ import com.teamnative.bookon.navigation.BookOnPendingDeepLink
  * 이후 토큰 만료·로그아웃으로 세션 상태가 바뀌면 인증/메인 Navigation 경계를 다시 만든다.
  */
 @Composable
-internal fun BookOnApp(pendingDeepLink: BookOnPendingDeepLink? = null) {
+internal fun BookOnApp(
+    pendingDeepLink: BookOnPendingDeepLink? = null,
+    onPendingDeepLinkConsumed: (Long) -> Unit = {},
+) {
     val sessionViewModel: BookOnSessionViewModel = hiltViewModel()
     val sessionUiState by sessionViewModel.uiState.collectAsStateWithLifecycle()
     when (sessionUiState) {
@@ -37,11 +40,13 @@ internal fun BookOnApp(pendingDeepLink: BookOnPendingDeepLink? = null) {
             isInitiallyAuthenticated = true,
             sessionEpoch = (sessionUiState as BookOnSessionUiState.Authenticated).epoch,
             pendingDeepLink = pendingDeepLink,
+            onPendingDeepLinkConsumed = onPendingDeepLinkConsumed,
             onLogout = sessionViewModel::logout,
         )
         BookOnSessionUiState.Unauthenticated -> BookOnNavHost(
             isInitiallyAuthenticated = false,
             pendingDeepLink = pendingDeepLink,
+            onPendingDeepLinkConsumed = onPendingDeepLinkConsumed,
             onLogout = sessionViewModel::logout,
         )
         is BookOnSessionUiState.StorageError -> BookOnSessionRetryScreen(
