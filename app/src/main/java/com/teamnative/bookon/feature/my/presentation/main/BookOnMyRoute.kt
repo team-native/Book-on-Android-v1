@@ -26,6 +26,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
 import androidx.compose.ui.platform.LocalContext
@@ -67,6 +68,10 @@ fun BookOnMyRoute(
     onLogoutRequest: () -> Unit,
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
+    LifecycleResumeEffect(viewModel) {
+        viewModel.onResumed()
+        onPauseOrDispose { }
+    }
     var isLogoutDialogVisible by rememberSaveable { mutableStateOf(false) }
     var isNotificationSettingsVisible by rememberSaveable { mutableStateOf(false) }
     var notificationSelections by rememberSaveable { mutableStateOf(InitialNotificationSelections) }
@@ -134,6 +139,7 @@ fun BookOnMyRoute(
         BookOnMenuRowUiModel(stringResource(R.string.usage_guide)),
     )
     val screenUiState = uiState.copy(
+        errorMessage = uiState.errorMessage ?: uiState.read365ErrorMessage,
         userNameText = if (uiState.userNameText.isBlank()) {
             stringResource(R.string.my_profile_unavailable)
         } else {

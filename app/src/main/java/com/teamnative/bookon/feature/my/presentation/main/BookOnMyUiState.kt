@@ -27,6 +27,7 @@ data class BookOnMyScreenUiState(
     val isInitialLoading: Boolean = false,
     val isAccountDeletionInProgress: Boolean = false,
     val errorMessage: BookOnUiMessage? = null,
+    val read365ErrorMessage: BookOnUiMessage? = null,
     val profileImageErrorMessage: BookOnUiMessage? = null,
     val accountDeletionErrorMessage: BookOnUiMessage? = null,
 )

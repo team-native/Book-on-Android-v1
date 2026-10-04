@@ -37,15 +37,28 @@ class BookOnMyViewModel @Inject constructor(
     private var profileRefreshJob: Job? = null
     private var read365RefreshJob: Job? = null
     private var notificationRevision = 0L
+    private var read365Generation = 0L
+    private var hasResumed = false
+    private var profileImageRevision = 0L
 
     init {
-        refresh()
+        refreshProfile()
+        refreshRead365Link()
     }
 
     /** 마이페이지 진입과 재시도에서 프로필과 Read365 연동 상태를 함께 다시 조회한다. */
     fun refresh() {
         refreshProfile()
-        refreshRead365Link()
+        refreshRead365Link(force = true)
+    }
+
+    /** 최초 구성을 제외한 화면 복귀에서는 외부에서 바뀔 수 있는 연동 상태를 재조회한다. */
+    fun onResumed() {
+        if (!hasResumed) {
+            hasResumed = true
+            return
+        }
+        refreshRead365Link(force = true)
     }
 
     /** 사용자·대출 요약과 알림 설정을 조회하며 진행 중인 중복 요청은 만들지 않는다. */
@@ -55,24 +68,39 @@ class BookOnMyViewModel @Inject constructor(
         }
 
         val capturedNotificationRevision = notificationRevision
+        val capturedProfileImageRevision = profileImageRevision
         profileRefreshJob = viewModelScope.launch {
             mutableUiState.value = mutableUiState.value.copy(errorMessage = null)
             when (val result = getMyProfile()) {
                 is NetworkResult.Success -> mutableUiState.value = mutableUiState.value.copy(
                     userNameText = result.data.name,
                     studentInfoText = result.data.department,
-                    profileImageUrl = result.data.profileImageUrl,
+                    profileImageUrl = if (capturedProfileImageRevision == profileImageRevision &&
+                        !mutableUiState.value.isProfileImageUploading
+                    ) {
+                        result.data.profileImageUrl
+                    } else {
+                        mutableUiState.value.profileImageUrl
+                    },
                     stats = listOf(
                         BookOnStatItemUiModel("대출 중", "${result.data.currentLoanCount}권"),
                         BookOnStatItemUiModel("반납 임박", "${result.data.overdueCount}권"),
                         BookOnStatItemUiModel("누적 대출", "${result.data.totalLoanCount}권"),
                     ),
-                    notificationSettings = if (capturedNotificationRevision == notificationRevision) {
+                    notificationSettings = if (capturedNotificationRevision == notificationRevision &&
+                        !mutableUiState.value.isNotificationSaving
+                    ) {
                         result.data.notificationSettings
                     } else {
                         mutableUiState.value.notificationSettings
                     },
-                    profileImageErrorMessage = null,
+                    profileImageErrorMessage = if (capturedProfileImageRevision == profileImageRevision &&
+                        !mutableUiState.value.isProfileImageUploading
+                    ) {
+                        null
+                    } else {
+                        mutableUiState.value.profileImageErrorMessage
+                    },
                     isInitialLoading = false,
                 )
                 is NetworkResult.Failure -> mutableUiState.value = mutableUiState.value.copy(
@@ -89,12 +117,15 @@ class BookOnMyViewModel @Inject constructor(
             return@launch
         }
 
+        profileImageRevision += 1L
         mutableUiState.value = mutableUiState.value.copy(
             isProfileImageUploading = true,
             profileImageErrorMessage = null,
         )
 
-        when (val result = uploadProfileImageUseCase(contentType, imageBytes)) {
+        val result = uploadProfileImageUseCase(contentType, imageBytes)
+        profileImageRevision += 1L
+        when (result) {
             is NetworkResult.Success -> mutableUiState.value = mutableUiState.value.copy(
                 profileImageUrl = result.data.profileImageUrl,
                 isProfileImageUploading = false,
@@ -129,7 +160,9 @@ class BookOnMyViewModel @Inject constructor(
             notificationSaveError = null,
         )
         viewModelScope.launch {
-            when (val notificationResult = updateNotificationSettings(dueDateReminder, newBookReminder, noticeReminder)) {
+            val notificationResult = updateNotificationSettings(dueDateReminder, newBookReminder, noticeReminder)
+            notificationRevision += 1L
+            when (notificationResult) {
                 is NetworkResult.Success -> {
                     mutableUiState.value = mutableUiState.value.copy(
                         notificationSettings = notificationResult.data,
@@ -179,13 +212,21 @@ class BookOnMyViewModel @Inject constructor(
     }
 
     /** read365 세션 없음(4014)은 앱 로그아웃이 아닌 연동 필요 상태로 표시한다. */
-    private fun refreshRead365Link() {
-        if (read365RefreshJob?.isActive == true) {
+    private fun refreshRead365Link(force: Boolean = false) {
+        if (!force && read365RefreshJob?.isActive == true) {
             return
         }
 
+        read365RefreshJob?.cancel()
+        read365Generation += 1L
+        val capturedGeneration = read365Generation
         read365RefreshJob = viewModelScope.launch {
-            when (val result = getRead365MyInfo()) {
+            mutableUiState.value = mutableUiState.value.copy(read365ErrorMessage = null)
+            val result = getRead365MyInfo()
+            if (capturedGeneration != read365Generation) {
+                return@launch
+            }
+            when (result) {
                 is NetworkResult.Success -> mutableUiState.value = mutableUiState.value.copy(
                     isReadingMarathonLinked = true,
                 )
@@ -194,6 +235,10 @@ class BookOnMyViewModel @Inject constructor(
                     if (isLinkRequired) {
                         mutableUiState.value = mutableUiState.value.copy(
                             isReadingMarathonLinked = false,
+                        )
+                    } else {
+                        mutableUiState.value = mutableUiState.value.copy(
+                            read365ErrorMessage = BookOnUiMessage.Resource(R.string.error_load_read365),
                         )
                     }
                 }
