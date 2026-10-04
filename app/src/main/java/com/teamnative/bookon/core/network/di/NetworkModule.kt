@@ -62,7 +62,7 @@ object NetworkModule {
     @Singleton
     fun provideLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
         level = if (BuildConfig.ENABLE_NETWORK_LOG) {
-            HttpLoggingInterceptor.Level.BODY
+            HttpLoggingInterceptor.Level.BASIC
         } else {
             HttpLoggingInterceptor.Level.NONE
         }
@@ -177,4 +177,5 @@ object NetworkModule {
     private const val RefreshRetrofit = "refresh_retrofit"
     private const val PublicRetrofit = "public_retrofit"
     private val JsonContentType = "application/json".toMediaType()
+
 }

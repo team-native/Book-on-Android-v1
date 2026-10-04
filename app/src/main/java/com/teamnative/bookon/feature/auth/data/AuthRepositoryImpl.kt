@@ -3,6 +3,7 @@ package com.teamnative.bookon.feature.auth.data
 import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.feature.auth.domain.AuthRepository
 import com.teamnative.bookon.feature.auth.domain.LoginSession
+import com.teamnative.bookon.feature.auth.domain.PasswordResetEmailSession
 import com.teamnative.bookon.feature.auth.domain.RegistrationDraft
 import com.teamnative.bookon.feature.auth.domain.RegistrationSession
 import com.teamnative.bookon.feature.auth.domain.RegisteredUser
@@ -33,8 +34,19 @@ class AuthRepositoryImpl @Inject constructor(private val remote: AuthRemoteDataS
         )
         is NetworkResult.Failure -> result
     }
+    override suspend fun logout(cleanup: com.teamnative.bookon.feature.auth.domain.SessionCleanupHandle): NetworkResult<Unit> = remote.logout(cleanup)
     override suspend fun logout(refreshToken: String): NetworkResult<Unit> = remote.logout(refreshToken)
-    override suspend fun sendPasswordResetEmail(email: String): NetworkResult<Unit> = remote.sendReset(email).toUnit()
+    override suspend fun sendPasswordResetEmail(email: String): NetworkResult<PasswordResetEmailSession> =
+        when (val result = remote.sendReset(email)) {
+            is NetworkResult.Success -> NetworkResult.Success(
+                PasswordResetEmailSession(
+                    email = result.data.email,
+                    expiresInSeconds = result.data.expiresIn,
+                ),
+            )
+
+            is NetworkResult.Failure -> result
+        }
     override suspend fun resetPassword(email: String, code: String, password: String, passwordConfirm: String): NetworkResult<Unit> = remote.reset(email, code, password, passwordConfirm).toUnit()
     override suspend fun linkRead365(id: String, password: String): NetworkResult<Unit> = remote.linkRead365(id, password).toUnit()
     private fun <T> NetworkResult<T>.toUnit(): NetworkResult<Unit> = when (this) {

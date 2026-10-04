@@ -1,28 +1,31 @@
 package com.teamnative.bookon.core.network.auth
 
+import java.io.IOException
 import javax.inject.Inject
 import javax.inject.Singleton
 import okhttp3.Interceptor
 import okhttp3.Response
 
-/** 저장된 access token이 있을 때만 각 요청에 Authorization 헤더를 추가한다. */
 @Singleton
 class AuthorizationInterceptor @Inject constructor(
     private val tokenSessionManager: TokenSessionManager,
 ) : Interceptor {
     override fun intercept(chain: Interceptor.Chain): Response {
-        val accessToken = tokenSessionManager.accessToken()
-        val request = if (accessToken == null) {
-            chain.request()
+        val original = chain.request()
+        val cleanup = original.tag(SessionCleanupAuthorization::class.java)
+        val snapshot = original.tag(SessionSnapshot::class.java) ?: tokenSessionManager.snapshot.value
+        val accessToken = if (cleanup != null) {
+            cleanup.accessToken() ?: throw IOException("Session cleanup credentials expired")
         } else {
-            chain.request().newBuilder()
-                .header(AuthorizationHeader, "Bearer $accessToken")
-                .build()
+            if (snapshot.epoch != tokenSessionManager.snapshot.value.epoch) {
+                throw IOException("Request session was replaced")
+            }
+            snapshot.tokens?.accessToken
         }
-        return chain.proceed(request)
-    }
-
-    private companion object {
-        const val AuthorizationHeader = "Authorization"
+        val builder = original.newBuilder().tag(SessionSnapshot::class.java, snapshot)
+        if (accessToken != null) {
+            builder.header("Authorization", "Bearer $accessToken")
+        }
+        return chain.proceed(builder.build())
     }
 }

@@ -61,7 +61,14 @@ fun BookOnPasswordResetVerificationScreen(
             isError = uiState.errorText != null,
         )
         BookOnVerificationStatus(
-            expireText = stringResource(R.string.password_reset_verification_expire),
+            expireText = if (uiState.verificationRemainingSeconds > 0) {
+                stringResource(
+                    R.string.password_reset_verification_expire,
+                    formatPasswordResetRemainingTime(uiState.verificationRemainingSeconds),
+                )
+            } else {
+                stringResource(R.string.password_reset_verification_expired)
+            },
             resendText = stringResource(R.string.verification_code_resend),
             onResendClick = { onEvent(BookOnPasswordResetScreenEvent.ResendClicked) },
             errorText = uiState.errorText,

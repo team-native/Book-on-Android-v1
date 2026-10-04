@@ -17,8 +17,10 @@ fun BookOnLoginRoute(
 ) {
     val viewModel: BookOnLoginViewModel = hiltViewModel()
     val state = viewModel.uiState.collectAsStateWithLifecycle().value
-    val hasLoginError = state.hasMissingCredentials || state.password.errorText != null
-    val passwordErrorText = if (state.hasMissingCredentials) {
+    val hasLoginError = state.hasStorageError || state.hasMissingCredentials || state.password.errorText != null
+    val passwordErrorText = if (state.hasStorageError) {
+        stringResource(R.string.session_storage_failed)
+    } else if (state.hasMissingCredentials) {
         stringResource(R.string.error_login_credentials_required)
     } else {
         state.password.errorText
