@@ -112,6 +112,7 @@ class BookOnPasswordResetViewModelTest {
 
         viewModel.updateEmail("s26031")
         viewModel.updateVerificationCode("123456")
+        viewModel.sendVerificationCode {}
         viewModel.updatePassword("Password1!")
         viewModel.updatePasswordConfirm("Password1!")
         viewModel.resetPassword { completed = true }
@@ -123,15 +124,60 @@ class BookOnPasswordResetViewModelTest {
         assertFalse(viewModel.state.value.isLoading)
     }
 
+    @Test
+    fun `expired verification never submits reset`() = runTest {
+        val repository = PasswordResetRepository()
+        repository.sendEmailResult = NetworkResult.Success(PasswordResetEmailSession("student@gsm.hs.kr", 1))
+        val viewModel = createViewModel(repository)
+        viewModel.updateEmail("student")
+        viewModel.sendVerificationCode {}
+        viewModel.updateVerificationCode("123456")
+        viewModel.updatePassword("Password1!")
+        viewModel.updatePasswordConfirm("Password1!")
+        advanceTimeBy(2_000)
+        runCurrent()
+        var completed = false
+        viewModel.resetPassword { completed = true }
+        assertEquals(PasswordResetError.Expired, viewModel.state.value.error)
+        assertEquals("", repository.resetEmail)
+        assertFalse(completed)
+    }
+
+    @Test
+    fun `duplicate send and cancelled late success never navigate`() = runTest {
+        val repository = PasswordResetRepository()
+        val pending = kotlinx.coroutines.CompletableDeferred<NetworkResult<PasswordResetEmailSession>>()
+        repository.sendGate = pending
+        val viewModel = createViewModel(repository)
+        viewModel.updateEmail("student")
+        var navigated = false
+        viewModel.sendVerificationCode { navigated = true }
+        viewModel.sendVerificationCode { navigated = true }
+        assertEquals(1, repository.sendEmailRequestCount)
+        viewModel.cancelPendingRequest()
+        pending.complete(NetworkResult.Success(PasswordResetEmailSession("student@gsm.hs.kr", 300)))
+        runCurrent()
+        assertFalse(navigated)
+        assertFalse(viewModel.state.value.isLoading)
+        assertFalse(viewModel.hasVerificationSession)
+    }
+
     private fun createViewModel(repository: PasswordResetRepository): BookOnPasswordResetViewModel {
         return BookOnPasswordResetViewModel(
             sendEmail = SendPasswordResetEmailUseCase(repository),
             resetPassword = ResetPasswordUseCase(repository),
+            clock = object : java.time.Clock() {
+                override fun getZone() = java.time.ZoneOffset.UTC
+                override fun withZone(zone: java.time.ZoneId) = this
+                override fun instant() = java.time.Instant.ofEpochMilli(millis())
+                override fun millis() = dispatcher.scheduler.currentTime
+            },
         )
     }
 }
 
 private class PasswordResetRepository : AuthRepository {
+    var sendGate: kotlinx.coroutines.CompletableDeferred<NetworkResult<PasswordResetEmailSession>>? = null
     var sendEmailRequestCount = 0
     var sendEmailResult: NetworkResult<PasswordResetEmailSession> = NetworkResult.Success(
         PasswordResetEmailSession(
@@ -147,7 +193,10 @@ private class PasswordResetRepository : AuthRepository {
     override suspend fun sendPasswordResetEmail(email: String): NetworkResult<PasswordResetEmailSession> {
         sendEmailRequestCount += 1
         lastEmail = email
-        return when (val result = sendEmailResult) {
+        val response = sendGate?.let { gate ->
+            kotlinx.coroutines.withContext(kotlinx.coroutines.NonCancellable) { gate.await() }
+        } ?: sendEmailResult
+        return when (val result = response) {
             is NetworkResult.Success -> result.copy(
                 data = result.data.copy(email = email),
             )

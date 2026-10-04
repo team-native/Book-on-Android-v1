@@ -14,9 +14,7 @@ fun BookOnVerificationCodeRoute(
     onConfirmClick: () -> Unit,
     viewModel: BookOnRegistrationViewModel = hiltViewModel(),
 ) {
-    androidx.compose.runtime.DisposableEffect(viewModel) {
-        onDispose { viewModel.cancelPendingRequest() }
-    }
+
     val registrationState by viewModel.state.collectAsStateWithLifecycle()
     androidx.lifecycle.compose.LifecycleResumeEffect(viewModel) {
         viewModel.updateRemainingTime()
@@ -52,7 +50,7 @@ fun BookOnVerificationCodeRoute(
         // 서버 인증 전에도 사용자가 입력한 숫자를 화면 상태에 반영한다.
         onCodeChange = viewModel::updateCode,
         onResendClick = viewModel::resendVerification,
-        onConfirmClick = { viewModel.verify(code, onConfirmClick) },
+        onConfirmClick = { viewModel.verify(code) },
         initialProgressStep = initialProgressStep,
     )
 }

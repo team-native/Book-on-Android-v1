@@ -19,7 +19,7 @@ fun BookOnReadingMarathonSignupRoute(
         uiState = defaultReadingMarathonSignupUiState().copy(isLinked = isLinked),
         onBackClick = onBackClick,
         onLinkChange = { isLinked = it },
-        onContinueClick = onUseClick,
+        onContinueClick = { if (isLinked) onUseClick() else onSkipClick() },
         onSkipClick = onSkipClick,
     )
 }

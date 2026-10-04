@@ -21,9 +21,7 @@ fun BookOnPasswordSetupRoute(
     onEmailAlreadyUsed: () -> Unit,
     viewModel: com.teamnative.bookon.feature.auth.presentation.signup.BookOnRegistrationViewModel = hiltViewModel(),
 ) {
-    androidx.compose.runtime.DisposableEffect(viewModel) {
-        onDispose { viewModel.cancelPendingRequest() }
-    }
+
     val registrationState by viewModel.state.collectAsStateWithLifecycle()
     var privacyPolicyExpanded by rememberSaveable { mutableStateOf(false) }
     val uiState = defaultPasswordSetupUiState().copy(
@@ -66,10 +64,7 @@ fun BookOnPasswordSetupRoute(
         onPrivacyCheckedChange = { accepted -> viewModel.update { it.copy(privacyAccepted = accepted) } },
         onPrivacyPolicyExpandedChange = { privacyPolicyExpanded = it },
         onNextClick = {
-            viewModel.requestVerification(
-                onSuccess = onNextClick,
-                onEmailAlreadyUsed = onEmailAlreadyUsed,
-            )
+            viewModel.requestVerification()
         },
         initialProgressStep = initialProgressStep,
     )

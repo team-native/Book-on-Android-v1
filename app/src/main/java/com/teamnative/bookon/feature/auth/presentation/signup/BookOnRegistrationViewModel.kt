@@ -10,6 +10,7 @@ import com.teamnative.bookon.feature.auth.domain.VerifyRegistrationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
@@ -51,6 +52,23 @@ class BookOnRegistrationViewModel @Inject constructor(
     private val verifyRegistrationUseCase: VerifyRegistrationUseCase,
     private val clock: Clock = Clock.systemUTC(),
 ) : ViewModel() {
+    private val navigationChannel = kotlinx.coroutines.channels.Channel<RegistrationNavigation>(kotlinx.coroutines.channels.Channel.BUFFERED)
+    val navigationEvents = navigationChannel.receiveAsFlow()
+    var hasStartedFlow = false
+        private set
+    fun startFlow() {
+        clearForm()
+        hasStartedFlow = true
+    }
+
+    fun clearForm() {
+        cancelPendingRequest()
+        countdownJob?.cancel()
+        hasStartedFlow = false
+        mutableState.value = BookOnRegistrationState()
+        while (navigationChannel.tryReceive().isSuccess) { }
+    }
+
     private val mutableState = MutableStateFlow(BookOnRegistrationState())
     val state: StateFlow<BookOnRegistrationState> = mutableState.asStateFlow()
     private var countdownJob: Job? = null
@@ -71,8 +89,8 @@ class BookOnRegistrationViewModel @Inject constructor(
 
     // 최종 가입 요청에서 입력 누락과 중복 제출을 검사한다.
     fun requestVerification(
-        onSuccess: () -> Unit,
-        onEmailAlreadyUsed: () -> Unit
+        onSuccess: () -> Unit = { navigationChannel.trySend(RegistrationNavigation.Verification) },
+        onEmailAlreadyUsed: () -> Unit = { navigationChannel.trySend(RegistrationNavigation.EmailAlreadyUsed) }
     ) {
         requestSession(
             onSuccess,
@@ -173,7 +191,7 @@ class BookOnRegistrationViewModel @Inject constructor(
     // 인증과 재전송을 직렬화해 이번 세션의 코드만 검증한다.
     fun verify(
         passcode: String,
-        onSuccess: () -> Unit
+        onSuccess: () -> Unit = { navigationChannel.trySend(RegistrationNavigation.Completed) }
     ) {
         updateRemainingTime()
         val current = mutableState.value
@@ -264,3 +282,5 @@ private fun com.teamnative.bookon.core.network.NetworkError.message(): String = 
     is NetworkError.Http -> message
     else -> "네트워크 연결을 확인한 뒤 다시 시도해 주세요."
 }
+
+enum class RegistrationNavigation { Verification, EmailAlreadyUsed, Completed }

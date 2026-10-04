@@ -27,10 +27,14 @@ class MainActivity : ComponentActivity() {
             statusBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
             navigationBarStyle = SystemBarStyle.light(Color.TRANSPARENT, Color.TRANSPARENT),
         )
-        // savedInstanceState가 있으면(화면 회전, 프로세스 복원 등) 같은 인텐트를 다시 해석하지 않는다.
-        // 그렇지 않으면 재구성마다 같은 알림 딥링크가 화면 back stack에 중복으로 쌓인다.
-        if (savedInstanceState == null) {
-            pendingDeepLinkState.value = intent.toPendingDeepLink()
+        pendingDeepLinkState.value = if (savedInstanceState == null) {
+            intent.toPendingDeepLink()
+        } else {
+            val kind = savedInstanceState.getString(PENDING_KIND)
+            val bookId = savedInstanceState.getLong(PENDING_BOOK_ID).takeIf { it > 0 }
+            kind.toPendingDeepLinkDestination(bookId)?.let {
+                BookOnPendingDeepLink(it, savedInstanceState.getLong(PENDING_EVENT_ID))
+            }
         }
         setContent {
             BookOnTheme {
@@ -40,6 +44,22 @@ class MainActivity : ComponentActivity() {
                 )
             }
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        pendingDeepLinkState.value?.let { pending ->
+            val kind = when (pending.destination) {
+                com.teamnative.bookon.navigation.BookOnDestination.LoanHistory -> "loan_due"
+                is com.teamnative.bookon.navigation.BookOnDestination.BookDetail -> "new_book"
+                else -> null
+            }
+            outState.putString(PENDING_KIND, kind)
+            outState.putLong(PENDING_EVENT_ID, pending.token)
+            (pending.destination as? com.teamnative.bookon.navigation.BookOnDestination.BookDetail)?.let {
+                outState.putLong(PENDING_BOOK_ID, it.bookId)
+            }
+        }
+        super.onSaveInstanceState(outState)
     }
 
     /** 앱이 이미 실행 중일 때(FLAG_ACTIVITY_SINGLE_TOP 또는 singleTop launchMode) 새 알림 탭을 받아 대기 중인 딥링크를 갱신한다. */
@@ -56,6 +76,7 @@ class MainActivity : ComponentActivity() {
         }
         pendingDeepLinkState.value = null
         intent.removeExtra(BookOnNotificationDisplayer.NotificationTypeExtraKey)
+        intent.removeExtra("bookId")
     }
 
     /**
@@ -65,8 +86,16 @@ class MainActivity : ComponentActivity() {
      */
     private fun Intent.toPendingDeepLink(): BookOnPendingDeepLink? {
         val destination = getStringExtra(BookOnNotificationDisplayer.NotificationTypeExtraKey)
-            .toPendingDeepLinkDestination()
+            .toPendingDeepLinkDestination(
+                intent.extras?.get("bookId")?.toString()?.toLongOrNull(),
+            )
             ?: return null
         return BookOnPendingDeepLink(destination, token = System.nanoTime())
+    }
+
+    private companion object {
+        const val PENDING_KIND = "pending_notification_kind"
+        const val PENDING_EVENT_ID = "pending_notification_event"
+        const val PENDING_BOOK_ID = "pending_notification_book"
     }
 }

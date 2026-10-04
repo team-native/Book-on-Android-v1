@@ -252,4 +252,8 @@
     <string name="error_registration_fields">이메일, 이름, 성별, 학과를 모두 입력해 주세요.</string>
     <string name="error_verification_deadline">인증 만료 정보를 확인하지 못했습니다. 다시 요청해 주세요.</string>
     <string name="session_storage_failed">로그인 정보를 안전하게 저장하거나 삭제하지 못했습니다. 다시 시도해 주세요.</string>
+    <string name="oauth_preparing">소셜 연동은 준비 중입니다. 아이디와 비밀번호로 연동해 주세요.</string>
+    <string name="oauth_preparing_description">%1$s · 준비 중</string>
+    <string name="password_reset_expired">인증번호가 만료됐어요. 다시 발송해 주세요.</string>
+    <string name="signup_complete_generic_message">가입이 완료됐어요. 로그인하고 Book-on을 시작해 보세요.</string>
 </resources>

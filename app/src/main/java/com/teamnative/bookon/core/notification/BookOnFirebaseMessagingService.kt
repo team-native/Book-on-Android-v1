@@ -34,6 +34,7 @@ class BookOnFirebaseMessagingService : FirebaseMessagingService() {
             body = body,
             notificationType = remoteMessage.data[TypeKey],
             notificationId = (remoteMessage.messageId ?: title).hashCode(),
+            bookId = remoteMessage.data["bookId"]?.toLongOrNull()?.takeIf { it > 0 },
         )
     }
 

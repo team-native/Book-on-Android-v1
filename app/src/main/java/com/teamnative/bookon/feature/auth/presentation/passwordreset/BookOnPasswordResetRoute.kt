@@ -16,6 +16,10 @@ fun BookOnPasswordResetEmailRoute(
     onNavigateToVerification: () -> Unit,
     viewModel: BookOnPasswordResetViewModel,
 ) {
+    androidx.lifecycle.compose.LifecycleResumeEffect(viewModel) {
+        viewModel.updateRemainingTime()
+        onPauseOrDispose { }
+    }
     val form by viewModel.state.collectAsStateWithLifecycle()
     val uiState = defaultPasswordResetUiState().copy(
         title = stringResource(R.string.password_reset_email_title),
@@ -34,11 +38,14 @@ fun BookOnPasswordResetEmailRoute(
         uiState = uiState,
         onEvent = { event ->
             when (event) {
-                BookOnPasswordResetScreenEvent.BackClicked -> onNavigateBack()
+                BookOnPasswordResetScreenEvent.BackClicked -> {
+                    viewModel.cancelPendingRequest()
+                    onNavigateBack()
+                }
                 is BookOnPasswordResetScreenEvent.EmailChanged -> viewModel.updateEmail(event.email)
                 BookOnPasswordResetScreenEvent.ContinueClicked -> {
                     if (uiState.nextEnabled && !uiState.isLoading) {
-                        viewModel.sendVerificationCode(onNavigateToVerification)
+                        viewModel.sendVerificationCode()
                     }
                 }
 
@@ -58,6 +65,10 @@ fun BookOnPasswordResetVerificationRoute(
     onNavigateToNewPassword: () -> Unit,
     viewModel: BookOnPasswordResetViewModel,
 ) {
+    androidx.lifecycle.compose.LifecycleResumeEffect(viewModel) {
+        viewModel.updateRemainingTime()
+        onPauseOrDispose { }
+    }
     val form by viewModel.state.collectAsStateWithLifecycle()
     val uiState = defaultPasswordResetUiState().copy(
         title = stringResource(R.string.password_reset_verification_title),
@@ -77,7 +88,10 @@ fun BookOnPasswordResetVerificationRoute(
         uiState = uiState,
         onEvent = { event ->
             when (event) {
-                BookOnPasswordResetScreenEvent.BackClicked -> onNavigateBack()
+                BookOnPasswordResetScreenEvent.BackClicked -> {
+                    viewModel.cancelPendingRequest()
+                    onNavigateBack()
+                }
                 is BookOnPasswordResetScreenEvent.VerificationCodeChanged -> {
                     viewModel.updateVerificationCode(event.code)
                 }
@@ -106,6 +120,10 @@ fun BookOnPasswordResetNewPasswordRoute(
     onResetCompleted: () -> Unit,
     viewModel: BookOnPasswordResetViewModel,
 ) {
+    androidx.lifecycle.compose.LifecycleResumeEffect(viewModel) {
+        viewModel.updateRemainingTime()
+        onPauseOrDispose { }
+    }
     val form by viewModel.state.collectAsStateWithLifecycle()
     val passwordError = form.password
         .takeIf { password ->
@@ -136,7 +154,8 @@ fun BookOnPasswordResetNewPasswordRoute(
             placeholder = stringResource(R.string.password_confirm),
             errorText = passwordConfirmError,
         ),
-        nextEnabled = BookOnPasswordPolicy.isValid(form.password) && form.password == form.confirm,
+        nextEnabled = BookOnPasswordPolicy.isValid(form.password) && form.password == form.confirm &&
+            form.verificationRemainingSeconds > 0,
         errorText = form.error?.asText(),
         isLoading = form.isLoading,
     )
@@ -145,7 +164,10 @@ fun BookOnPasswordResetNewPasswordRoute(
         uiState = uiState,
         onEvent = { event ->
             when (event) {
-                BookOnPasswordResetScreenEvent.BackClicked -> onNavigateBack()
+                BookOnPasswordResetScreenEvent.BackClicked -> {
+                    viewModel.cancelPendingRequest()
+                    onNavigateBack()
+                }
                 is BookOnPasswordResetScreenEvent.PasswordChanged -> viewModel.updatePassword(event.password)
                 is BookOnPasswordResetScreenEvent.PasswordConfirmChanged -> {
                     viewModel.updatePasswordConfirm(event.passwordConfirm)
@@ -153,7 +175,7 @@ fun BookOnPasswordResetNewPasswordRoute(
 
                 BookOnPasswordResetScreenEvent.ContinueClicked -> {
                     if (uiState.nextEnabled && !uiState.isLoading) {
-                        viewModel.resetPassword(onResetCompleted)
+                        viewModel.resetPassword()
                     }
                 }
 
@@ -168,5 +190,6 @@ fun BookOnPasswordResetNewPasswordRoute(
 /** ViewModel의 재설정 오류를 화면에 표시할 리소스 문자열로 변환한다. */
 @Composable
 private fun PasswordResetError.asText(): String = when (this) {
+    PasswordResetError.Expired -> stringResource(R.string.password_reset_expired)
     PasswordResetError.RequestFailed -> stringResource(R.string.error_password_reset_request_failed)
 }
