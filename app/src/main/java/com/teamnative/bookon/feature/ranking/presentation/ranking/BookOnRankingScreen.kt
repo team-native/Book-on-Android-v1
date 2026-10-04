@@ -75,7 +75,7 @@ fun BookOnRankingScreen(
             item {
                 BookOnRankingListCard(uiState = uiState.list)
             }
-            if (uiState.list.members.isEmpty()) {
+            if (uiState.isEmpty && !uiState.isInitialLoading && uiState.errorMessage == null) {
                 item {
                     Text(
                         text = stringResource(R.string.empty_ranking),
