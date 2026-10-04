@@ -46,6 +46,7 @@ class BookOnRankingViewModel @Inject constructor(
                     description = "${result.data.year}년 · ${result.data.resetPolicy}",
                     podium = BookOnRankingPodiumUiModel(podiumMembers[0], podiumMembers[1], podiumMembers[2]),
                     list = BookOnRankingListUiModel(members.drop(PodiumSize)),
+                    isEmpty = members.isEmpty(),
                 )
             }
 
