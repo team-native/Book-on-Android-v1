@@ -156,6 +156,7 @@ data class LoanHistoryDto(
     @SerialName("returnedAt") val returnedAt: String? = null,
     @SerialName("dDay") val dDay: Int? = null,
     @SerialName("status") val status: String,
+    @SerialName("extensionAvailable") val extensionAvailable: Boolean = false,
 )
 
 @Serializable

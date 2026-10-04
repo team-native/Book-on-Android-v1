@@ -49,6 +49,7 @@ data class MyLoan(
     val dueDate: String?,
     val dDay: Int?,
     val status: String,
+    val extensionAvailable: Boolean = false,
 )
 data class MyLoanPage(val items: List<MyLoan>, val page: Int, val hasNext: Boolean)
 data class FavoriteBook(val bookId: Long, val title: String, val author: String, val libraryNumber: String, val loanAvailable: Boolean)
