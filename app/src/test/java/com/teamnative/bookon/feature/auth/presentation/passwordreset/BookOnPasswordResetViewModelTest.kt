@@ -4,6 +4,7 @@ import com.teamnative.bookon.core.network.NetworkError
 import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.feature.auth.domain.AuthRepository
 import com.teamnative.bookon.feature.auth.domain.LoginSession
+import com.teamnative.bookon.feature.auth.domain.PasswordResetEmailSession
 import com.teamnative.bookon.feature.auth.domain.RegistrationDraft
 import com.teamnative.bookon.feature.auth.domain.RegistrationSession
 import com.teamnative.bookon.feature.auth.domain.RegisteredUser
@@ -12,7 +13,9 @@ import com.teamnative.bookon.feature.auth.domain.SendPasswordResetEmailUseCase
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
+import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.resetMain
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.test.runTest
 import kotlinx.coroutines.test.setMain
 import org.junit.After
@@ -47,9 +50,25 @@ class BookOnPasswordResetViewModelTest {
 
         assertEquals("s26031@gsm.hs.kr", repository.lastEmail)
         assertEquals("s26031@gsm.hs.kr", viewModel.state.value.email)
+        assertEquals(300, viewModel.state.value.verificationRemainingSeconds)
         assertTrue(navigated)
         assertFalse(viewModel.state.value.isLoading)
         assertEquals(null, viewModel.state.value.error)
+    }
+
+    @Test
+    fun `서버가 반환한 만료 시간을 기준으로 인증번호 남은 시간이 1초씩 감소한다`() = runTest {
+        val repository = PasswordResetRepository()
+        val viewModel = createViewModel(repository)
+
+        viewModel.updateEmail("s26031")
+        viewModel.sendVerificationCode {}
+
+        advanceTimeBy(2_000)
+        runCurrent()
+
+        assertEquals(298, viewModel.state.value.verificationRemainingSeconds)
+        assertEquals("04:58", formatPasswordResetRemainingTime(viewModel.state.value.verificationRemainingSeconds))
     }
 
     @Test
@@ -114,16 +133,27 @@ class BookOnPasswordResetViewModelTest {
 
 private class PasswordResetRepository : AuthRepository {
     var sendEmailRequestCount = 0
-    var sendEmailResult: NetworkResult<Unit> = NetworkResult.Success(Unit)
+    var sendEmailResult: NetworkResult<PasswordResetEmailSession> = NetworkResult.Success(
+        PasswordResetEmailSession(
+            email = "s26031@gsm.hs.kr",
+            expiresInSeconds = 300,
+        ),
+    )
     var lastEmail = ""
     var resetEmail = ""
     var resetCode = ""
     var resetPassword = ""
 
-    override suspend fun sendPasswordResetEmail(email: String): NetworkResult<Unit> {
+    override suspend fun sendPasswordResetEmail(email: String): NetworkResult<PasswordResetEmailSession> {
         sendEmailRequestCount += 1
         lastEmail = email
-        return sendEmailResult
+        return when (val result = sendEmailResult) {
+            is NetworkResult.Success -> result.copy(
+                data = result.data.copy(email = email),
+            )
+
+            is NetworkResult.Failure -> result
+        }
     }
 
     override suspend fun resetPassword(

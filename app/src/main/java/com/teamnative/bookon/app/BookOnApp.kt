@@ -24,9 +24,8 @@ import com.teamnative.bookon.navigation.BookOnPendingDeepLink
  * 앱의 최상위 Compose 진입점이다.
  * 화면 전환 정의는 navigation 패키지의 BookOnNavHost가 담당한다.
  *
- * BookOnNavHost는 세션 상태가 처음 확정될 때(Checking → Authenticated/Unauthenticated) 딱 한 번만
- * 구성(compose)된다. 이후 로그인/로그아웃 전환은 BookOnNavHost 내부에서 back stack을 직접
- * clear+push하는 방식으로 처리하므로, 세션 상태가 바뀔 때마다 이 함수에서 NavHost를 다시 만들 필요가 없다.
+ * BookOnNavHost는 세션 상태가 처음 확정될 때(Checking → Authenticated/Unauthenticated) 구성되며,
+ * 이후 토큰 만료·로그아웃으로 세션 상태가 바뀌면 인증/메인 Navigation 경계를 다시 만든다.
  */
 @Composable
 internal fun BookOnApp(pendingDeepLink: BookOnPendingDeepLink? = null) {
@@ -34,8 +33,9 @@ internal fun BookOnApp(pendingDeepLink: BookOnPendingDeepLink? = null) {
     val sessionUiState by sessionViewModel.uiState.collectAsStateWithLifecycle()
     when (sessionUiState) {
         BookOnSessionUiState.Checking -> BookOnLoadingScreen()
-        BookOnSessionUiState.Authenticated -> BookOnNavHost(
+        is BookOnSessionUiState.Authenticated -> BookOnNavHost(
             isInitiallyAuthenticated = true,
+            sessionEpoch = (sessionUiState as BookOnSessionUiState.Authenticated).epoch,
             pendingDeepLink = pendingDeepLink,
             onLogout = sessionViewModel::logout,
         )
@@ -43,6 +43,15 @@ internal fun BookOnApp(pendingDeepLink: BookOnPendingDeepLink? = null) {
             isInitiallyAuthenticated = false,
             pendingDeepLink = pendingDeepLink,
             onLogout = sessionViewModel::logout,
+        )
+        is BookOnSessionUiState.StorageError -> BookOnSessionRetryScreen(
+            onRetryClick = if ((sessionUiState as BookOnSessionUiState.StorageError).isLogout) {
+                sessionViewModel::logout
+            } else {
+                sessionViewModel::retryAutoLogin
+            },
+            onLoginClick = sessionViewModel::logout,
+            errorResId = R.string.session_storage_failed,
         )
         BookOnSessionUiState.RetryableError -> BookOnSessionRetryScreen(
             onRetryClick = sessionViewModel::retryAutoLogin,
@@ -56,6 +65,7 @@ internal fun BookOnApp(pendingDeepLink: BookOnPendingDeepLink? = null) {
 private fun BookOnSessionRetryScreen(
     onRetryClick: () -> Unit,
     onLoginClick: () -> Unit,
+    errorResId: Int = R.string.session_restore_failed,
 ) {
     Scaffold { innerPadding ->
         Column(
@@ -66,7 +76,7 @@ private fun BookOnSessionRetryScreen(
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {
-            Text(text = stringResource(R.string.session_restore_failed))
+            Text(text = stringResource(errorResId))
             Button(
                 modifier = Modifier.padding(top = AppSpacing.Content),
                 onClick = onRetryClick,

@@ -21,6 +21,9 @@ fun BookOnPasswordSetupRoute(
     onEmailAlreadyUsed: () -> Unit,
     viewModel: com.teamnative.bookon.feature.auth.presentation.signup.BookOnRegistrationViewModel = hiltViewModel(),
 ) {
+    androidx.compose.runtime.DisposableEffect(viewModel) {
+        onDispose { viewModel.cancelPendingRequest() }
+    }
     val registrationState by viewModel.state.collectAsStateWithLifecycle()
     var privacyPolicyExpanded by rememberSaveable { mutableStateOf(false) }
     val uiState = defaultPasswordSetupUiState().copy(
@@ -38,6 +41,11 @@ fun BookOnPasswordSetupRoute(
             errorText = registrationState.passwordConfirm.takeIf { it.isNotEmpty() && it != registrationState.password }
                 ?.let { stringResource(R.string.error_check_password_again) },
         ),
+        errorText = when {
+            registrationState.hasMissingRegistrationFields -> stringResource(R.string.error_registration_fields)
+            registrationState.hasInvalidDeadline -> stringResource(R.string.error_verification_deadline)
+            else -> registrationState.errorMessage
+        },
         privacyChecked = registrationState.privacyAccepted,
         privacyPolicyExpanded = privacyPolicyExpanded,
         isVerificationRequestInProgress = registrationState.isLoading,
@@ -49,7 +57,10 @@ fun BookOnPasswordSetupRoute(
 
     BookOnPasswordSetupScreen(
         uiState = uiState,
-        onBackClick = onBackClick,
+        onBackClick = {
+            viewModel.cancelPendingRequest()
+            onBackClick()
+        },
         onPasswordChange = { password -> viewModel.update { it.copy(password = password) } },
         onPasswordConfirmChange = { password -> viewModel.update { it.copy(passwordConfirm = password) } },
         onPrivacyCheckedChange = { accepted -> viewModel.update { it.copy(privacyAccepted = accepted) } },

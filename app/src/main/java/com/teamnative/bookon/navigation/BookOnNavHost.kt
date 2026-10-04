@@ -7,7 +7,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -19,6 +19,8 @@ import androidx.lifecycle.ViewModelStore
 import androidx.lifecycle.ViewModelStoreOwner
 import androidx.lifecycle.viewmodel.CreationExtras
 import androidx.lifecycle.viewmodel.compose.LocalViewModelStoreOwner
+import androidx.navigation3.runtime.NavBackStack
+import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.entryProvider
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.ui.NavDisplay
@@ -30,7 +32,6 @@ import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPassw
 import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetVerificationRoute
 import com.teamnative.bookon.feature.auth.presentation.passwordreset.BookOnPasswordResetViewModel
 import com.teamnative.bookon.feature.auth.presentation.readingmarathonlink.BookOnReadingMarathonLinkRoute
-import com.teamnative.bookon.feature.auth.presentation.readingmarathonsignup.BookOnReadingMarathonSignupRoute
 import com.teamnative.bookon.feature.auth.presentation.signupcomplete.BookOnSignupCompleteRoute
 import com.teamnative.bookon.feature.auth.presentation.signup.BookOnSignupRoute
 import com.teamnative.bookon.feature.auth.presentation.verificationcode.BookOnVerificationCodeRoute
@@ -43,8 +44,6 @@ import com.teamnative.bookon.feature.my.presentation.favorites.BookOnFavoriteBoo
 import com.teamnative.bookon.feature.my.presentation.loanhistory.BookOnLoanHistoryRoute
 import com.teamnative.bookon.feature.my.presentation.main.BookOnMyRoute
 import com.teamnative.bookon.feature.ranking.presentation.ranking.BookOnRankingRoute
-
-private const val PasswordSetupStep = 2
 
 /**
  * 여러 NavKey가 공유하는 Hilt ViewModel을 위한 [ViewModelStoreOwner]를 만든다.
@@ -80,22 +79,32 @@ private fun rememberFlowViewModelStoreOwner(): ViewModelStoreOwner {
  * 앱의 최상위 Navigation 3 진입점이다.
  * 인증 여부에 따라 인증 플로우([BookOnAuthNavDisplay])와 메인 탭 플로우([BookOnMainNavDisplay]) 중
  * 하나만 구성(compose)한다. 로그인/로그아웃은 [isAuthenticated]를 직접 갈아끼우는 방식으로 처리하며,
- * 세션 상태가 바뀔 때마다 NavHost 전체를 다시 만들지 않는다.
+ * 세션 상태가 바뀌면 인증/메인 Navigation 경계를 다시 만든다.
  */
 @Composable
-internal fun BookOnNavHost(isInitiallyAuthenticated: Boolean, pendingDeepLink: BookOnPendingDeepLink?, onLogout: () -> Unit) {
-    var isAuthenticated by rememberSaveable { mutableStateOf(isInitiallyAuthenticated) }
+internal fun BookOnNavHost(isInitiallyAuthenticated: Boolean, pendingDeepLink: BookOnPendingDeepLink?, onLogout: () -> Unit, sessionEpoch: Long = 0L) {
+    // SessionViewModel이 토큰 만료를 감지해 인증 상태를 바꾸면 기존 메인 back stack이 남지 않도록
+    // 인증 상태를 Composition key로 사용해 인증/메인 플로우와 그 하위 ViewModel을 함께 교체한다.
+    key(isInitiallyAuthenticated, sessionEpoch) {
+        if (isInitiallyAuthenticated) {
+            BookOnMainNavDisplay(
+                pendingDeepLink = pendingDeepLink,
+                onLogout = onLogout,
+            )
+        } else {
+            BookOnAuthNavDisplay(onAuthenticated = {})
+        }
+    }
+}
 
-    if (isAuthenticated) {
-        BookOnMainNavDisplay(
-            pendingDeepLink = pendingDeepLink,
-            onLogout = {
-                onLogout()
-                isAuthenticated = false
-            },
-        )
-    } else {
-        BookOnAuthNavDisplay(onAuthenticated = { isAuthenticated = true })
+/**
+ * back stack을 시작 화면 하나만 남을 때까지 pop한다.
+ * 다단계 플로우(비밀번호 재설정, 회원가입 등)가 완료된 뒤 첫 화면으로 복귀할 때 쓴다.
+ * 플로우 단계 수가 늘어나도 이 함수를 쓰는 호출부는 고칠 필요가 없다.
+ */
+private fun <T : NavKey> NavBackStack<T>.popToStart() {
+    while (size > 1) {
+        removeLastOrNull()
     }
 }
 
@@ -114,9 +123,6 @@ private fun BookOnAuthNavDisplay(onAuthenticated: () -> Unit) {
     // 이 흐름을 완전히 벗어나면(로그인 화면으로 복귀) clear한다.
     val passwordResetViewModel: BookOnPasswordResetViewModel =
         hiltViewModel(viewModelStoreOwner = rememberFlowViewModelStoreOwner())
-
-    // Navigation 2의 savedStateHandle 결과 전달을 대체하는 회원가입 플로우 전용 상태이다.
-    var progressStepOverride by remember { mutableIntStateOf(-1) }
 
     NavDisplay(
         backStack = backStack,
@@ -154,7 +160,7 @@ private fun BookOnAuthNavDisplay(onAuthenticated: () -> Unit) {
             entry<BookOnDestination.PasswordResetNewPassword> {
                 BookOnPasswordResetNewPasswordRoute(
                     onNavigateBack = { backStack.removeLastOrNull() },
-                    onResetCompleted = { repeat(3) { backStack.removeLastOrNull() } },
+                    onResetCompleted = { backStack.popToStart() },
                     viewModel = passwordResetViewModel,
                 )
             }
@@ -167,56 +173,44 @@ private fun BookOnAuthNavDisplay(onAuthenticated: () -> Unit) {
             }
             entry<BookOnDestination.PasswordSetup> {
                 BookOnPasswordSetupRoute(
-                    initialProgressStep = progressStepOverride.takeIf { it >= 0 },
+                    initialProgressStep = null,
                     onBackClick = { backStack.removeLastOrNull() },
-                    onNextClick = { backStack.add(BookOnDestination.VerificationCode) },
-                    onEmailAlreadyUsed = { backStack.removeLastOrNull() },
+                    onNextClick = {
+                        if (backStack.lastOrNull() == BookOnDestination.PasswordSetup) {
+                            backStack.add(BookOnDestination.VerificationCode)
+                        }
+                    },
+                    onEmailAlreadyUsed = {
+                        if (backStack.lastOrNull() == BookOnDestination.PasswordSetup) {
+                            backStack.removeLastOrNull()
+                        }
+                    },
                     viewModel = registrationViewModel,
                 )
             }
             entry<BookOnDestination.VerificationCode> {
                 BookOnVerificationCodeRoute(
-                    initialProgressStep = progressStepOverride.takeIf { it >= 0 },
+                    initialProgressStep = null,
                     onBackClick = { backStack.removeLastOrNull() },
-                    onConfirmClick = { backStack.add(BookOnDestination.ReadingMarathonSignup) },
+                    // Read365 연동은 로그인 후 My 화면에서만 제공하고, 회원가입은 즉시 완료한다.
+                    onConfirmClick = {
+                        if (backStack.lastOrNull() == BookOnDestination.VerificationCode) {
+                        backStack.add(
+                            BookOnDestination.SignupComplete(
+                                isReadingMarathonLinked = false,
+                            ),
+                        )
+                        }
+                    },
                     viewModel = registrationViewModel,
-                )
-            }
-            entry<BookOnDestination.ReadingMarathonSignup> {
-                BookOnReadingMarathonSignupRoute(
-                    onBackClick = {
-                        progressStepOverride = PasswordSetupStep
-                        backStack.removeLastOrNull()
-                    },
-                    onUseClick = { backStack.add(BookOnDestination.ReadingMarathonLink(openedFromMy = false)) },
-                    onSkipClick = {
-                        backStack.add(BookOnDestination.SignupComplete(isReadingMarathonLinked = false))
-                    },
-                )
-            }
-            entry<BookOnDestination.ReadingMarathonLink> { key ->
-                BookOnReadingMarathonLinkRoute(
-                    onBackClick = { backStack.removeLastOrNull() },
-                    onSkipClick = {
-                        if (key.openedFromMy) {
-                            backStack.removeLastOrNull()
-                        } else {
-                            backStack.add(BookOnDestination.SignupComplete(isReadingMarathonLinked = false))
-                        }
-                    },
-                    onCompleteClick = {
-                        if (key.openedFromMy) {
-                            backStack.removeLastOrNull()
-                        } else {
-                            backStack.add(BookOnDestination.SignupComplete(isReadingMarathonLinked = true))
-                        }
-                    },
                 )
             }
             entry<BookOnDestination.SignupComplete> { key ->
                 BookOnSignupCompleteRoute(
                     isReadingMarathonLinked = key.isReadingMarathonLinked,
-                    onStartClick = onAuthenticated,
+                    // 회원가입 인증 API는 사용자 생성만 완료하고 access/refresh token을 발급하지 않는다.
+                    // 토큰 없이 메인 화면으로 진입하면 인증 API가 401이 되므로 로그인 화면으로 돌아간다.
+                    onStartClick = { backStack.popToStart() },
                 )
             }
         },
@@ -335,7 +329,7 @@ private fun BookOnMainNavDisplay(pendingDeepLink: BookOnPendingDeepLink?, onLogo
                 entry<BookOnDestination.PasswordResetNewPassword> {
                     BookOnPasswordResetNewPasswordRoute(
                         onNavigateBack = navigator::goBack,
-                        onResetCompleted = { repeat(3) { navigator.goBack() } },
+                        onResetCompleted = navigator::popToTabRoot,
                         viewModel = passwordResetViewModel,
                     )
                 }

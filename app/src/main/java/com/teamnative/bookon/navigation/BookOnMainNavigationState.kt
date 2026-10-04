@@ -102,4 +102,16 @@ internal class BookOnMainNavigator(private val state: BookOnMainNavigationState)
             state.topLevelRoute = state.startRoute
         }
     }
+
+    /**
+     * 현재 탭의 back stack을 시작 화면 하나만 남을 때까지 pop한다.
+     * 비밀번호 재설정처럼 다단계 플로우가 완료된 뒤 탭 루트로 복귀할 때 쓴다.
+     * 플로우 단계 수가 늘어나도 이 함수를 쓰는 호출부는 고칠 필요가 없다.
+     */
+    fun popToTabRoot() {
+        val stack = state.currentBackStack
+        while (stack.size > 1) {
+            stack.removeLastOrNull()
+        }
+    }
 }

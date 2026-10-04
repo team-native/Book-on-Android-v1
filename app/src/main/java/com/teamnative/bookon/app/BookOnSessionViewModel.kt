@@ -5,25 +5,32 @@ import androidx.lifecycle.viewModelScope
 import com.teamnative.bookon.core.network.auth.TokenRefreshService
 import com.teamnative.bookon.core.network.auth.TokenRefreshResult
 import com.teamnative.bookon.core.network.auth.TokenSessionManager
+import com.teamnative.bookon.core.network.auth.SessionSnapshot
+import com.teamnative.bookon.core.network.auth.SessionStorageException
+import com.teamnative.bookon.core.notification.FcmTokenRegistrationWorker
 import com.teamnative.bookon.feature.auth.domain.LogoutUseCase
 import com.teamnative.bookon.feature.fcm.domain.ClearFcmTokenOnLogoutUseCase
 import com.teamnative.bookon.feature.fcm.domain.SyncFcmTokenOnAuthenticationUseCase
+import android.content.Context
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.withTimeoutOrNull
 
 sealed interface BookOnSessionUiState {
     data object Checking : BookOnSessionUiState
-    data object Authenticated : BookOnSessionUiState
+    data class Authenticated(val epoch: Long) : BookOnSessionUiState
     data object Unauthenticated : BookOnSessionUiState
+    data class StorageError(val isLogout: Boolean) : BookOnSessionUiState
     data object RetryableError : BookOnSessionUiState
 }
 
-/** 앱 시작 시 저장된 refresh token으로 세션을 검증해 첫 화면을 결정한다. */
 @HiltViewModel
 class BookOnSessionViewModel @Inject constructor(
     private val tokenSessionManager: TokenSessionManager,
@@ -31,61 +38,119 @@ class BookOnSessionViewModel @Inject constructor(
     private val logoutUseCase: LogoutUseCase,
     private val syncFcmTokenOnAuthenticationUseCase: SyncFcmTokenOnAuthenticationUseCase,
     private val clearFcmTokenOnLogoutUseCase: ClearFcmTokenOnLogoutUseCase,
+    @ApplicationContext private val applicationContext: Context,
 ) : ViewModel() {
     private val mutableUiState = MutableStateFlow<BookOnSessionUiState>(BookOnSessionUiState.Checking)
     val uiState: StateFlow<BookOnSessionUiState> = mutableUiState.asStateFlow()
-
     private var restored = false
+    private var validationJob: Job? = null
+    private var validatingEpoch: Long? = null
 
     init {
         observeSession()
-        restoreSession()
-    }
-
-    /** 앱 실행 직후 암호화 토큰을 복원하고 refresh 성공 여부를 화면 상태로 반영한다. */
-    private fun restoreSession() {
-        viewModelScope.launch {
-            val savedTokens = tokenSessionManager.restore()
-            restored = true
-            val nextState = if (savedTokens == null) {
-                BookOnSessionUiState.Unauthenticated
-            } else {
-                when (tokenRefreshService.refresh(savedTokens.refreshToken)) {
-                    is TokenRefreshResult.Success -> BookOnSessionUiState.Authenticated
-                    TokenRefreshResult.InvalidToken -> BookOnSessionUiState.Unauthenticated
-                    is TokenRefreshResult.RetryableFailure -> BookOnSessionUiState.RetryableError
-                }
-            }
-            mutableUiState.value = nextState
-            if (nextState == BookOnSessionUiState.Authenticated) {
-                syncFcmTokenOnAuthenticationUseCase()
+        validationJob = viewModelScope.launch {
+            try {
+                tokenSessionManager.restore()
+                restored = true
+                validate(tokenSessionManager.snapshot.value)
+            } catch (exception: SessionStorageException) {
+                mutableUiState.value = BookOnSessionUiState.StorageError(isLogout = false)
             }
         }
     }
 
-    /** 토큰 저장·삭제 후 앱 전체 인증 그래프를 즉시 전환한다. */
+    private suspend fun validate(expected: SessionSnapshot) {
+        if (expected.tokens == null) {
+            mutableUiState.value = BookOnSessionUiState.Unauthenticated
+            return
+        }
+        validatingEpoch = expected.epoch
+        mutableUiState.value = BookOnSessionUiState.Checking
+        val refreshResult = tokenRefreshService.refresh(expected)
+        validatingEpoch = null
+        val current = tokenSessionManager.snapshot.value
+        val isCurrentExpiration = refreshResult == TokenRefreshResult.InvalidToken &&
+        current.epoch == expected.epoch + 1L && current.tokens == null
+        if (current.epoch != expected.epoch && !isCurrentExpiration) {
+            return
+        }
+        mutableUiState.value = when (refreshResult) {
+            is TokenRefreshResult.Success -> BookOnSessionUiState.Authenticated(expected.epoch)
+            TokenRefreshResult.InvalidToken -> BookOnSessionUiState.Unauthenticated
+            is TokenRefreshResult.RetryableFailure -> BookOnSessionUiState.RetryableError
+            TokenRefreshResult.StorageFailure -> BookOnSessionUiState.StorageError(isLogout = false)
+            TokenRefreshResult.Superseded -> return
+        }
+        if (refreshResult is TokenRefreshResult.Success) {
+            syncFcmTokenOnAuthenticationUseCase()
+        }
+    }
+
     private fun observeSession() {
         viewModelScope.launch {
-            tokenSessionManager.tokens.collectLatest { tokens ->
-                if (restored && tokens != null) mutableUiState.value = BookOnSessionUiState.Authenticated
-                if (restored && tokens == null && mutableUiState.value != BookOnSessionUiState.RetryableError) {
+            tokenSessionManager.snapshot.collectLatest { snapshot ->
+
+                if (!restored || validatingEpoch == snapshot.epoch) {
+                    return@collectLatest
+                }
+                if (snapshot.tokens == null) {
+                    FcmTokenRegistrationWorker.cancel(applicationContext)
                     mutableUiState.value = BookOnSessionUiState.Unauthenticated
+                } else {
+                    mutableUiState.value = BookOnSessionUiState.Authenticated(snapshot.epoch)
+                    syncFcmTokenOnAuthenticationUseCase()
                 }
             }
         }
     }
 
-    /** 자동 로그인 확인 실패 화면에서 refresh 검증을 다시 요청한다. */
-    fun retryAutoLogin() = restoreSession()
+    fun retryAutoLogin() {
+        if (validationJob?.isActive == true) {
+            return
+        }
+        validationJob = viewModelScope.launch {
+            try {
+                if (!restored) {
+                    tokenSessionManager.restore()
+                    restored = true
+                }
+                validate(tokenSessionManager.snapshot.value)
+            } catch (exception: SessionStorageException) {
+                mutableUiState.value = BookOnSessionUiState.StorageError(isLogout = false)
+            }
+        }
+    }
 
-    /** 로그아웃 시 서버 세션 폐기를 요청한 뒤, 성공 여부와 관계없이 이 기기의 토큰을 제거한다. */
+    /** 로컬 세션을 즉시 종료하고 이전 세션의 서버 정리를 제한된 시간에 수행한다. */
     fun logout() {
+        validationJob?.cancel()
+        validatingEpoch = null
         viewModelScope.launch {
-            val refreshToken = tokenSessionManager.refreshToken()
-            clearFcmTokenOnLogoutUseCase()
-            tokenSessionManager.clear()
+            val cleanup = try {
+                tokenSessionManager.beginLogout()
+            } catch (exception: SessionStorageException) {
+                mutableUiState.value = BookOnSessionUiState.StorageError(isLogout = true)
+                return@launch
+            }
+            FcmTokenRegistrationWorker.cancel(applicationContext)
             mutableUiState.value = BookOnSessionUiState.Unauthenticated
-            if (refreshToken != null) logoutUseCase(refreshToken)
+            try {
+                withTimeoutOrNull(CleanupTotalTimeoutMillis) {
+                    cleanup.previousCleanup?.await()
+                    withTimeoutOrNull(CleanupRequestTimeoutMillis) {
+                        clearFcmTokenOnLogoutUseCase(cleanup)
+                    }
+                    withTimeoutOrNull(CleanupRequestTimeoutMillis) {
+                        logoutUseCase(cleanup)
+                    }
+                }
+            } finally {
+                cleanup.dispose()
+                tokenSessionManager.finishCleanup(cleanup)
+            }
         }
     }
 }
+
+private const val CleanupTotalTimeoutMillis = 10000L
+private const val CleanupRequestTimeoutMillis = 5000L

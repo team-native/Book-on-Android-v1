@@ -66,7 +66,9 @@ fun BookOnPasswordResetVerificationRoute(
             form.email,
         ),
         verificationCode = form.code,
-        nextEnabled = form.code.length == PasswordResetVerificationCodeLength,
+        verificationRemainingSeconds = form.verificationRemainingSeconds,
+        nextEnabled = form.code.length == PasswordResetVerificationCodeLength &&
+            form.verificationRemainingSeconds > 0,
         errorText = form.error?.asText(),
         isLoading = form.isLoading,
     )

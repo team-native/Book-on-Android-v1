@@ -8,13 +8,14 @@ import javax.inject.Inject
 @AndroidEntryPoint
 class BookOnFirebaseMessagingService : FirebaseMessagingService() {
 
+    @Inject lateinit var tokenSessionManager: com.teamnative.bookon.core.network.auth.TokenSessionManager
     @Inject lateinit var notificationChannelInstaller: BookOnNotificationChannelInstaller
     @Inject lateinit var notificationDisplayer: BookOnNotificationDisplayer
 
     /** Firebase가 새 등록 토큰을 발급·갱신할 때 호출되며, 서버 동기화를 WorkManager에 위임한다(네트워크 직접 호출 금지). */
     override fun onNewToken(token: String) {
         super.onNewToken(token)
-        FcmTokenRegistrationWorker.enqueue(applicationContext, token)
+        FcmTokenRegistrationWorker.enqueue(applicationContext, token, tokenSessionManager.snapshot.value.epoch)
     }
 
     /** 포그라운드 상태에서 도착한 메시지를 검증해 채널을 보장하고 로컬 알림으로 표시한다. */

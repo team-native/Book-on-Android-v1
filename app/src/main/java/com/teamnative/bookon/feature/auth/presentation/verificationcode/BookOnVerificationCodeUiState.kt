@@ -10,5 +10,6 @@ data class BookOnVerificationCodeUiState(
     val code: String,
     val expireText: String,
     val errorText: String? = null,
+    val resendEnabled: Boolean = true,
     val confirmEnabled: Boolean = true,
 )

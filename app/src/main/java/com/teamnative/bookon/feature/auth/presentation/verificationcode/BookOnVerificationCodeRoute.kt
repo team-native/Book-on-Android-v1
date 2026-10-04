@@ -2,9 +2,6 @@ package com.teamnative.bookon.feature.auth.presentation.verificationcode
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamnative.bookon.feature.auth.presentation.signup.BookOnRegistrationViewModel
@@ -17,15 +14,43 @@ fun BookOnVerificationCodeRoute(
     onConfirmClick: () -> Unit,
     viewModel: BookOnRegistrationViewModel = hiltViewModel(),
 ) {
+    androidx.compose.runtime.DisposableEffect(viewModel) {
+        onDispose { viewModel.cancelPendingRequest() }
+    }
     val registrationState by viewModel.state.collectAsStateWithLifecycle()
-    var code by remember { mutableStateOf("") }
-    val uiState = defaultVerificationCodeUiState().copy(code = code, errorText = registrationState.errorMessage)
+    androidx.lifecycle.compose.LifecycleResumeEffect(viewModel) {
+        viewModel.updateRemainingTime()
+        onPauseOrDispose { }
+    }
+    val code = registrationState.verificationCode
+    val remaining = registrationState.remainingSeconds
+    val uiState = defaultVerificationCodeUiState().copy(
+        code = code,
+        description = androidx.compose.ui.res.stringResource(
+            com.teamnative.bookon.R.string.verification_code_description,
+            registrationState.verificationEmail,
+        ),
+        expireText = androidx.compose.ui.res.stringResource(
+            com.teamnative.bookon.R.string.verification_code_expire,
+            "%02d:%02d".format(remaining / 60L, remaining % 60L),
+        ),
+        errorText = if (registrationState.hasInvalidDeadline) {
+            androidx.compose.ui.res.stringResource(com.teamnative.bookon.R.string.error_verification_deadline)
+        } else {
+            registrationState.errorMessage
+        },
+        resendEnabled = !registrationState.isLoading,
+        confirmEnabled = code.length == 6 && remaining > 0 && registrationState.sessionId != null && !registrationState.isLoading,
+    )
 
     BookOnVerificationCodeScreen(
         uiState = uiState,
-        onBackClick = onBackClick,
+        onBackClick = {
+            viewModel.cancelPendingRequest()
+            onBackClick()
+        },
         // 서버 인증 전에도 사용자가 입력한 숫자를 화면 상태에 반영한다.
-        onCodeChange = { code = it },
+        onCodeChange = viewModel::updateCode,
         onResendClick = viewModel::resendVerification,
         onConfirmClick = { viewModel.verify(code, onConfirmClick) },
         initialProgressStep = initialProgressStep,
