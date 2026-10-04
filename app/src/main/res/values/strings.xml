@@ -248,4 +248,6 @@
     <string name="error_load_my_page">내 서재 정보를 불러오지 못했습니다.</string>
     <string name="error_upload_profile_image">프로필 이미지를 변경하지 못했습니다. 다시 시도해 주세요.</string>
     <string name="error_load_ranking">랭킹을 불러오지 못했습니다.</string>
+    <string name="favorite_add_description">관심 도서로 추가</string>
+    <string name="favorite_remove_description">관심 도서에서 삭제</string>
 </resources>

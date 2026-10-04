@@ -40,8 +40,12 @@ fun BookOnBookDetailRoute(
         state.content?.let { content ->
             BookOnBookDetailScreen(
                 uiState = content,
+                errorMessage = state.errorMessage,
                 onBackClick = onBackClick,
                 onLoanClick = viewModel::loan,
+                onFavoriteClick = viewModel::toggleFavorite,
+                isLoanConfirmationRequired = state.isLoanConfirmationRequired,
+                onRetryClick = { viewModel.load(bookId, forceRefresh = true) },
             )
         } ?: run {
             BookOnBookDetailStatusScreen(

@@ -1,22 +1,33 @@
 package com.teamnative.bookon.feature.book.presentation.detail
 
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.semantics.Role
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
+import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
+import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
@@ -29,9 +40,13 @@ import com.teamnative.bookon.feature.book.presentation.component.BookOnBookDetai
 @Composable
 fun BookOnBookDetailScreen(
     uiState: BookOnBookDetailScreenUiState,
+    errorMessage: String?,
     onBackClick: () -> Unit,
     onLoanClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isLoanConfirmationRequired: Boolean = false,
+    onRetryClick: () -> Unit = {},
 ) {
     Scaffold(
         modifier = modifier,
@@ -41,6 +56,32 @@ fun BookOnBookDetailScreen(
                 title = "",
                 onBackClick = onBackClick,
                 modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
+                trailingContent = {
+                    Box(
+                        modifier = Modifier
+                            .size(AppComponentSize.TopBarAction)
+                            .clickable(
+                                enabled = !uiState.isFavoriteSubmitting && !uiState.isSubmitting,
+                                role = Role.Button,
+                                onClick = onFavoriteClick,
+                            ),
+                        contentAlignment = Alignment.Center,
+                    ) {
+                        Image(
+                            painter = painterResource(R.drawable.common_love),
+                            contentDescription = stringResource(
+                                if (uiState.isFavorite) {
+                                    R.string.favorite_remove_description
+                                } else {
+                                    R.string.favorite_add_description
+                                },
+                            ),
+                            modifier = Modifier
+                                .size(AppIconSize.Small)
+                                .alpha(if (uiState.isFavorite) 1f else 0.35f),
+                        )
+                    }
+                },
             )
         },
         bottomBar = {
@@ -49,7 +90,7 @@ fun BookOnBookDetailScreen(
                     if (uiState.loanAvailable) R.string.loan_request else R.string.loan_unavailable,
                 ),
                 onClick = onLoanClick,
-                enabled = uiState.loanAvailable && !uiState.isSubmitting,
+                enabled = uiState.loanAvailable && !uiState.isSubmitting && !uiState.isFavoriteSubmitting && !isLoanConfirmationRequired,
                 modifier = Modifier.padding(AppSpacing.ScreenHorizontal),
             )
         },
@@ -63,6 +104,22 @@ fun BookOnBookDetailScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Content),
         ) {
+            if (!errorMessage.isNullOrBlank()) {
+                item {
+                    Text(
+                        text = errorMessage,
+                        style = bookOnTypography.caption,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            }
+            if (!errorMessage.isNullOrBlank() || isLoanConfirmationRequired) {
+                item {
+                    Button(onClick = onRetryClick) {
+                        Text(text = stringResource(R.string.action_retry))
+                    }
+                }
+            }
             item {
                 BookOnBookDetailCover(
                     coverImageUrl = uiState.coverImageUrl,
@@ -112,8 +169,10 @@ private fun BookOnBookDetailScreenPreview() {
     BookOnTheme {
         BookOnBookDetailScreen(
             uiState = sampleBookDetailUiState(loanAvailable = true),
+            errorMessage = null,
             onBackClick = {},
             onLoanClick = {},
+            onFavoriteClick = {},
         )
     }
 }
