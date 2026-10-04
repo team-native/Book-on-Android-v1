@@ -32,6 +32,10 @@ fun BookOnHomeScreen(
     onNotificationClick: () -> Unit,
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
+    onPopularBooksClick: () -> Unit = onShowMoreClick,
+    onNoticesClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
+    unreadCount: Int? = null,
 ) {
     val userName = uiState.userName.takeIf { name -> name.isNotBlank() }?.let { name ->
         stringResource(R.string.user_name_suffix, name)
@@ -69,6 +73,8 @@ fun BookOnHomeScreen(
                     notificationContentDescription = stringResource(R.string.home_notification_description),
                     profileContentDescription = stringResource(R.string.home_profile_description),
                     onNotificationClick = onNotificationClick,
+                    onProfileClick = onProfileClick,
+                    unreadCount = unreadCount,
                 )
             }
             item {
@@ -80,10 +86,13 @@ fun BookOnHomeScreen(
             }
             item {
                 val notice = uiState.notice
-                if (notice != null) {
+                if (notice == null && HomeSection.Notice in uiState.loadingSections) {
+                    com.teamnative.bookon.core.ui.component.loading.BookOnInlineLoadingIndicator()
+                } else if (notice != null) {
                     BookOnHomeNoticeCard(
                         uiState = notice,
-                        actionText = stringResource(R.string.action_view_detail),
+                        actionText = stringResource(R.string.notices_summary),
+                        onClick = onNoticesClick,
                     )
                 } else {
                     // 공지 조회가 실패했거나 등록된 공지가 없어도 공지 카드의 기본 형식은 유지한다.
@@ -96,6 +105,9 @@ fun BookOnHomeScreen(
                 }
             }
             item {
+                if (HomeSection.Recommendation in uiState.loadingSections) {
+                    com.teamnative.bookon.core.ui.component.loading.BookOnInlineLoadingIndicator()
+                }
                 BookOnBookSection(
                     title = stringResource(R.string.ai_recommendation),
                     description = uiState.aiRecommendationDescription,
@@ -107,11 +119,14 @@ fun BookOnHomeScreen(
                 )
             }
             item {
+                if (HomeSection.Popular in uiState.loadingSections) {
+                    com.teamnative.bookon.core.ui.component.loading.BookOnInlineLoadingIndicator()
+                }
                 BookOnPopularBooksSection(
                     title = stringResource(R.string.popular_books_school),
                     books = uiState.popularBooks,
                     actionText = stringResource(R.string.action_show_more),
-                    onActionClick = onShowMoreClick,
+                    onActionClick = onPopularBooksClick,
                     onBookClick = onBookClick,
                 )
             }

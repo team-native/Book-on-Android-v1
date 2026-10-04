@@ -1,17 +1,18 @@
-package com.teamnative.bookon.feature.home.presentation.newbooks
+package com.teamnative.bookon.feature.home.presentation.popular
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
+import com.teamnative.bookon.feature.home.presentation.newbooks.BookOnNewBooksScreen
 
-/** 신간 목록 서버 상태와 뒤로가기 탐색을 연결한다. */
 @Composable
-fun BookOnNewBooksRoute(
+fun BookOnPopularBooksRoute(
     onBackClick: () -> Unit,
     onBookClick: (Long) -> Unit,
-    viewModel: BookOnNewBooksViewModel = hiltViewModel(),
+    viewModel: BookOnPopularBooksViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     if (uiState.isInitialLoading) {
@@ -23,6 +24,8 @@ fun BookOnNewBooksRoute(
             onBookClick = onBookClick,
             onRetryClick = viewModel::retry,
             onLoadMoreClick = viewModel::loadNextPage,
+            titleRes = R.string.popular_books_school,
+            emptyRes = R.string.empty_popular_books,
         )
     }
 }

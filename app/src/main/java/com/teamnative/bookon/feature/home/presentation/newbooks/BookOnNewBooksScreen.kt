@@ -1,5 +1,6 @@
 package com.teamnative.bookon.feature.home.presentation.newbooks
 
+import androidx.compose.foundation.clickable
 import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.foundation.layout.Arrangement
@@ -30,16 +31,19 @@ import com.teamnative.bookon.core.ui.model.resolve
 fun BookOnNewBooksScreen(
     uiState: BookOnNewBooksScreenUiState,
     onBackClick: () -> Unit,
+    onBookClick: (Long) -> Unit,
     onRetryClick: () -> Unit,
     onLoadMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
+    titleRes: Int = R.string.new_books_recent,
+    emptyRes: Int = R.string.empty_new_books,
 ) {
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BookOnTopBar(
-                title = stringResource(R.string.new_books_recent),
+                title = stringResource(titleRes),
                 onBackClick = onBackClick,
                 modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
             )
@@ -65,7 +69,7 @@ fun BookOnNewBooksScreen(
             if (uiState.errorMessage == null && uiState.books.isEmpty()) {
                 item {
                     Text(
-                        text = stringResource(R.string.empty_new_books),
+                        text = stringResource(emptyRes),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }
@@ -76,7 +80,10 @@ fun BookOnNewBooksScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     rowBooks.forEach { book ->
-                        BookOnBookCard(uiState = book)
+                        BookOnBookCard(
+                            uiState = book,
+                            modifier = Modifier.clickable { onBookClick(book.id) },
+                        )
                     }
 
                     if (rowBooks.size == 1) {
@@ -110,6 +117,7 @@ private fun BookOnNewBooksScreenPreview() {
         BookOnNewBooksScreen(
             uiState = sampleNewBooksUiState(),
             onBackClick = {},
+            onBookClick = {},
             onRetryClick = {},
             onLoadMoreClick = {},
         )
