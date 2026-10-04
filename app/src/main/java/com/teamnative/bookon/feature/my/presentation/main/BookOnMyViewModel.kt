@@ -36,6 +36,7 @@ class BookOnMyViewModel @Inject constructor(
     val uiState: StateFlow<BookOnMyScreenUiState> = mutableUiState.asStateFlow()
     private var profileRefreshJob: Job? = null
     private var read365RefreshJob: Job? = null
+    private var notificationRevision = 0L
 
     init {
         refresh()
@@ -53,6 +54,7 @@ class BookOnMyViewModel @Inject constructor(
             return
         }
 
+        val capturedNotificationRevision = notificationRevision
         profileRefreshJob = viewModelScope.launch {
             mutableUiState.value = mutableUiState.value.copy(errorMessage = null)
             when (val result = getMyProfile()) {
@@ -65,7 +67,11 @@ class BookOnMyViewModel @Inject constructor(
                         BookOnStatItemUiModel("반납 임박", "${result.data.overdueCount}권"),
                         BookOnStatItemUiModel("누적 대출", "${result.data.totalLoanCount}권"),
                     ),
-                    notificationSettings = result.data.notificationSettings,
+                    notificationSettings = if (capturedNotificationRevision == notificationRevision) {
+                        result.data.notificationSettings
+                    } else {
+                        mutableUiState.value.notificationSettings
+                    },
                     profileImageErrorMessage = null,
                     isInitialLoading = false,
                 )
@@ -108,14 +114,39 @@ class BookOnMyViewModel @Inject constructor(
     }
 
     /** 알림 설정 완료 시 서버 값을 갱신하고 성공하면 마이페이지 정보를 다시 불러온다. */
-    fun updateNotifications(dueDateReminder: Boolean, newBookReminder: Boolean, noticeReminder: Boolean) = viewModelScope.launch {
-        when (val result = updateNotificationSettings(dueDateReminder, newBookReminder, noticeReminder)) {
-            is NetworkResult.Success -> {
-                mutableUiState.value = mutableUiState.value.copy(notificationSettings = result.data)
+    fun updateNotifications(
+        dueDateReminder: Boolean,
+        newBookReminder: Boolean,
+        noticeReminder: Boolean,
+        onSuccess: () -> Unit = {},
+    ) {
+        if (mutableUiState.value.isNotificationSaving) {
+            return
+        }
+        notificationRevision += 1L
+        mutableUiState.value = mutableUiState.value.copy(
+            isNotificationSaving = true,
+            notificationSaveError = null,
+        )
+        viewModelScope.launch {
+            when (val notificationResult = updateNotificationSettings(dueDateReminder, newBookReminder, noticeReminder)) {
+                is NetworkResult.Success -> {
+                    mutableUiState.value = mutableUiState.value.copy(
+                        notificationSettings = notificationResult.data,
+                        isNotificationSaving = false,
+                    )
+                    onSuccess()
+                }
+                is NetworkResult.Failure -> {
+                    mutableUiState.value = mutableUiState.value.copy(
+                        isNotificationSaving = false,
+                        notificationSaveError = when (val error = notificationResult.error) {
+                            is NetworkError.Http -> BookOnUiMessage.Dynamic(error.message)
+                            else -> BookOnUiMessage.Resource(R.string.error_save_notifications)
+                        },
+                    )
+                }
             }
-            is NetworkResult.Failure -> mutableUiState.value = mutableUiState.value.copy(
-                errorMessage = result.error.toUiMessage(),
-            )
         }
     }
 

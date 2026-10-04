@@ -4,6 +4,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
 import androidx.compose.ui.test.assertHasNoClickAction
@@ -22,7 +23,7 @@ class BookOnNotificationSettingsBottomSheetContentTest {
     @Test
     fun notificationSwitches_updateTheirOwnSelection() {
         composeTestRule.setContent {
-            var selections by remember { mutableStateOf(listOf(true, true, false)) }
+            var selections by remember { mutableStateOf(listOf(true, true)) }
 
             BookOnTheme {
                 BookOnNotificationSettingsBottomSheetContent(
@@ -42,12 +43,27 @@ class BookOnNotificationSettingsBottomSheetContentTest {
         composeTestRule.onNodeWithTag("notification_switch_0").performClick()
         composeTestRule.onNodeWithTag("notification_switch_0").assertIsOff()
         composeTestRule.onNodeWithTag("notification_switch_1").assertIsOn()
-        composeTestRule.onNodeWithTag("notification_switch_2").assertIsOff()
         composeTestRule.onNodeWithTag("notification_switch_1").performClick()
         composeTestRule.onNodeWithTag("notification_switch_1").assertIsOff()
         composeTestRule.onNodeWithTag("notification_switch_0").assertIsOff()
-        composeTestRule.onNodeWithTag("notification_switch_2").performClick()
-        composeTestRule.onNodeWithTag("notification_switch_2").assertIsOn()
+        composeTestRule.onNodeWithTag("notification_switch_2").assertDoesNotExist()
+    }
+
+    @Test
+    fun saving_disablesControls() {
+        composeTestRule.setContent {
+            BookOnTheme {
+                BookOnNotificationSettingsBottomSheetContent(
+                    notificationSelections = listOf(true, true),
+                    onCheckedChange = { _, _ -> },
+                    onCompleteClick = {},
+                    isSaving = true,
+                )
+            }
+        }
+        composeTestRule.onNodeWithTag("notification_switch_0").assertIsNotEnabled()
+        composeTestRule.onNodeWithTag("notification_switch_1").assertIsNotEnabled()
+        composeTestRule.onNodeWithTag("notification_complete_button").assertIsNotEnabled()
     }
 
     @Test
@@ -57,7 +73,7 @@ class BookOnNotificationSettingsBottomSheetContentTest {
         composeTestRule.setContent {
             BookOnTheme {
                 BookOnNotificationSettingsBottomSheetContent(
-                    notificationSelections = listOf(true, true, false),
+                    notificationSelections = listOf(true, true),
                     onCheckedChange = { _, _ -> },
                     onCompleteClick = { completeClickCount++ },
                 )

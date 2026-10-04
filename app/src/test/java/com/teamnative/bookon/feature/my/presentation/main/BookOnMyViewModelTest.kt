@@ -27,7 +27,9 @@ import com.teamnative.bookon.feature.my.domain.UpdateNotificationSettingsUseCase
 import com.teamnative.bookon.feature.my.domain.UploadProfileImageUseCase
 import java.util.concurrent.atomic.AtomicInteger
 import java.util.concurrent.atomic.AtomicReference
+import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.test.runCurrent
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
 import kotlinx.coroutines.test.advanceUntilIdle
@@ -71,7 +73,10 @@ class BookOnMyViewModelTest {
             "https://example.com/profile.jpg",
             viewModel.uiState.value.profileImageUrl,
         )
-        assertEquals("홍길동", viewModel.uiState.value.userNameText)
+        assertEquals(
+            "홍길동",
+            viewModel.uiState.value.userNameText
+        )
     }
 
     @Test
@@ -84,8 +89,14 @@ class BookOnMyViewModelTest {
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.isReadingMarathonLinked)
-        assertEquals("", viewModel.uiState.value.marathon.progressText)
-        assertEquals(0f, viewModel.uiState.value.marathon.progress)
+        assertEquals(
+            "",
+            viewModel.uiState.value.marathon.progressText
+        )
+        assertEquals(
+            0f,
+            viewModel.uiState.value.marathon.progress
+        )
     }
 
     @Test
@@ -94,10 +105,14 @@ class BookOnMyViewModelTest {
         val read365CallCount = AtomicInteger(0)
         val viewModel = createViewModel(
             repository = MyRepositoryFake(
-                onProfile = { profileCallCount.incrementAndGet() },
+                onProfile = {
+                    profileCallCount.incrementAndGet()
+                },
             ),
             marathonRepository = MarathonRepositoryFake(
-                onRead365MyInfo = { read365CallCount.incrementAndGet() },
+                onRead365MyInfo = {
+                    read365CallCount.incrementAndGet()
+                },
             ),
         )
 
@@ -105,8 +120,14 @@ class BookOnMyViewModelTest {
         viewModel.refresh()
         advanceUntilIdle()
 
-        assertEquals(2, profileCallCount.get())
-        assertEquals(2, read365CallCount.get())
+        assertEquals(
+            2,
+            profileCallCount.get()
+        )
+        assertEquals(
+            2,
+            read365CallCount.get()
+        )
     }
 
     @Test
@@ -116,13 +137,22 @@ class BookOnMyViewModelTest {
             uploadProfileImageResult = NetworkResult.Success(
                 ProfileImage("https://example.com/new-profile.jpg"),
             ),
-            onUploadProfileImage = { _, imageBytes -> uploadedBytes.set(imageBytes) },
+            onUploadProfileImage = { _, imageBytes ->
+                uploadedBytes.set(imageBytes)
+            },
         )
         val viewModel = createViewModel(repository)
-        val imageBytes = byteArrayOf(1, 2, 3)
+        val imageBytes = byteArrayOf(
+            1,
+            2,
+            3
+        )
 
         advanceUntilIdle()
-        viewModel.uploadProfileImage("image/jpeg", imageBytes)
+        viewModel.uploadProfileImage(
+            "image/jpeg",
+            imageBytes
+        )
         advanceUntilIdle()
 
         assertEquals(
@@ -130,7 +160,10 @@ class BookOnMyViewModelTest {
             viewModel.uiState.value.profileImageUrl,
         )
         assertFalse(viewModel.uiState.value.isProfileImageUploading)
-        assertArrayEquals(imageBytes, uploadedBytes.get())
+        assertArrayEquals(
+            imageBytes,
+            uploadedBytes.get()
+        )
     }
 
     @Test
@@ -143,7 +176,10 @@ class BookOnMyViewModelTest {
         val viewModel = createViewModel(repository)
 
         advanceUntilIdle()
-        viewModel.uploadProfileImage("image/jpeg", byteArrayOf(1))
+        viewModel.uploadProfileImage(
+            "image/jpeg",
+            byteArrayOf(1)
+        )
         advanceUntilIdle()
 
         assertFalse(viewModel.uiState.value.isProfileImageUploading)
@@ -157,18 +193,27 @@ class BookOnMyViewModelTest {
         val viewModel = createViewModel(
             repository = MyRepositoryFake(
                 requestAccountDeletionResult = NetworkResult.Success(
-                    AccountDeletion(requestId = 1L, status = "PENDING", requestedAt = "2026-09-07T00:00:00Z"),
+                    AccountDeletion(
+                        requestId = 1L,
+                        status = "PENDING",
+                        requestedAt = "2026-09-07T00:00:00Z"
+                    ),
                 ),
             ),
             fcmRepository = fcmRepository,
         )
 
         advanceUntilIdle()
-        viewModel.requestAccountDeletion(reason = "테스트 사유") { onSuccessCallCount.incrementAndGet() }
+        viewModel.requestAccountDeletion(reason = "테스트 사유") {
+            onSuccessCallCount.incrementAndGet()
+        }
         advanceUntilIdle()
 
         assertTrue(fcmRepository.unregisterInvoked)
-        assertEquals(1, onSuccessCallCount.get())
+        assertEquals(
+            1,
+            onSuccessCallCount.get()
+        )
         assertFalse(viewModel.uiState.value.isAccountDeletionInProgress)
     }
 
@@ -178,16 +223,25 @@ class BookOnMyViewModelTest {
         val viewModel = createViewModel(
             repository = MyRepositoryFake(
                 requestAccountDeletionResult = NetworkResult.Failure(
-                    NetworkError.Http(404, 4040, "요청하신 API를 찾을 수 없습니다."),
+                    NetworkError.Http(
+                        404,
+                        4040,
+                        "요청하신 API를 찾을 수 없습니다."
+                    ),
                 ),
             ),
         )
 
         advanceUntilIdle()
-        viewModel.requestAccountDeletion { onSuccessCallCount.incrementAndGet() }
+        viewModel.requestAccountDeletion {
+            onSuccessCallCount.incrementAndGet()
+        }
         advanceUntilIdle()
 
-        assertEquals(0, onSuccessCallCount.get())
+        assertEquals(
+            0,
+            onSuccessCallCount.get()
+        )
         assertFalse(viewModel.uiState.value.isAccountDeletionInProgress)
         assertTrue(viewModel.uiState.value.accountDeletionErrorMessage is BookOnUiMessage.Dynamic)
     }
@@ -205,10 +259,121 @@ class BookOnMyViewModelTest {
         )
 
         advanceUntilIdle()
-        viewModel.requestAccountDeletion { }
+        viewModel.requestAccountDeletion {
+
+        }
         advanceUntilIdle()
 
         assertFalse(fcmRepository.unregisterInvoked)
+    }
+
+    @Test
+    fun `notification saving blocks overlap and uses the confirmed response`() = runTest {
+        val pending = CompletableDeferred<NetworkResult<NotificationSettings>>()
+        var requests = 0
+        var successes = 0
+        val repository = MyRepositoryFake(
+            onNotificationUpdate = { _,
+                _,
+                _ ->
+                requests++
+                pending.await()
+            }
+        )
+        val viewModel = createViewModel(repository)
+        runCurrent()
+        viewModel.updateNotifications(
+            true,
+            true,
+            true
+        ) {
+            successes++
+        }
+        viewModel.updateNotifications(
+            false,
+            false,
+            false
+        ) {
+            successes++
+        }
+        runCurrent()
+        assertEquals(
+            1,
+            requests
+        )
+        assertTrue(viewModel.uiState.value.isNotificationSaving)
+        val confirmed = NotificationSettings(
+            true,
+            false,
+            false
+        )
+        pending.complete(NetworkResult.Success(confirmed))
+        runCurrent()
+        assertEquals(
+            confirmed,
+            viewModel.uiState.value.notificationSettings
+        )
+        assertEquals(
+            1,
+            successes
+        )
+        assertFalse(viewModel.uiState.value.isNotificationSaving)
+    }
+
+    @Test
+    fun `notification failure keeps saved settings and reports the save error`() = runTest {
+        val repository = MyRepositoryFake(
+            onNotificationUpdate = { _,
+                _,
+                _ ->
+                NetworkResult.Failure(NetworkError.Network(java.io.IOException("offline")))
+            }
+        )
+        val viewModel = createViewModel(repository)
+        runCurrent()
+        val original = viewModel.uiState.value.notificationSettings
+        var closed = false
+        viewModel.updateNotifications(
+            true,
+            true,
+            true
+        ) {
+            closed = true
+        }
+        runCurrent()
+        assertFalse(closed)
+        assertEquals(
+            original,
+            viewModel.uiState.value.notificationSettings
+        )
+        assertEquals(
+            BookOnUiMessage.Resource(com.teamnative.bookon.R.string.error_save_notifications),
+            viewModel.uiState.value.notificationSaveError
+        )
+        assertFalse(viewModel.uiState.value.isNotificationSaving)
+    }
+
+    @Test
+    fun `late profile cannot undo confirmed notification settings`() = runTest {
+        val pending = CompletableDeferred<NetworkResult<MyProfile>>()
+        val viewModel = createViewModel(MyRepositoryFake(profileGate = pending))
+        runCurrent()
+        viewModel.updateNotifications(
+            true,
+            false,
+            true
+        )
+        runCurrent()
+        pending.complete(NetworkResult.Success(profile()))
+        runCurrent()
+        assertEquals(
+            NotificationSettings(
+                true,
+                false,
+                true
+            ),
+            viewModel.uiState.value.notificationSettings
+        )
     }
 
     private fun createViewModel(
@@ -237,9 +402,12 @@ private class FakeFcmTokenProvider(private val token: String? = "fake-fcm-token"
 
 private class RecordingFcmRepository : FcmRepository {
     var unregisterInvoked = false
-        private set
+    private set
 
-    override suspend fun registerToken(token: String, platform: String): NetworkResult<FcmTokenRegistration> {
+    override suspend fun registerToken(
+        token: String,
+        platform: String
+    ): NetworkResult<FcmTokenRegistration> {
         error("not used")
     }
 
@@ -264,7 +432,8 @@ private fun profile() = MyProfile(
 )
 
 private class MarathonRepositoryFake(
-    private val onRead365MyInfo: () -> Unit = {},
+    private val onRead365MyInfo: () -> Unit = {
+    },
 ) : MarathonRepository {
     override suspend fun read365MyInfo(): NetworkResult<Read365MyInfo> {
         onRead365MyInfo()
@@ -275,19 +444,42 @@ private class MarathonRepositoryFake(
 }
 
 private class MyRepositoryFake(
+    private val profileGate: CompletableDeferred<NetworkResult<MyProfile>>? = null,
+    private val onNotificationUpdate: suspend (
+        Boolean,
+        Boolean,
+        Boolean
+    ) -> NetworkResult<NotificationSettings> = { due, newBook, notice ->
+
+        NetworkResult.Success(NotificationSettings(
+                due,
+                newBook,
+                notice
+        ))
+    },
     private val profileResult: NetworkResult<MyProfile> = NetworkResult.Success(profile()),
     private val uploadProfileImageResult: NetworkResult<ProfileImage> = NetworkResult.Success(
         ProfileImage("https://example.com/profile.jpg"),
     ),
-    private val onUploadProfileImage: (String, ByteArray) -> Unit = { _, _ -> },
-    private val onProfile: () -> Unit = {},
+    private val onUploadProfileImage: (
+        String,
+        ByteArray
+    ) -> Unit = { _, _ ->
+
+    },
+    private val onProfile: () -> Unit = {
+    },
     private val requestAccountDeletionResult: NetworkResult<AccountDeletion> = NetworkResult.Success(
-        AccountDeletion(requestId = 1L, status = "PENDING", requestedAt = "2026-09-07T00:00:00Z"),
+        AccountDeletion(
+            requestId = 1L,
+            status = "PENDING",
+            requestedAt = "2026-09-07T00:00:00Z"
+        ),
     ),
 ) : MyRepository {
     override suspend fun profile(): NetworkResult<MyProfile> {
         onProfile()
-        return profileResult
+        return profileGate?.await() ?: profileResult
     }
 
     override suspend fun updateNotificationSettings(
@@ -295,7 +487,11 @@ private class MyRepositoryFake(
         newBookReminder: Boolean,
         noticeReminder: Boolean,
     ): NetworkResult<NotificationSettings> {
-        return NetworkResult.Success(NotificationSettings(dueDateReminder, newBookReminder, noticeReminder))
+        return onNotificationUpdate(
+            dueDateReminder,
+            newBookReminder,
+            noticeReminder
+        )
     }
 
     override suspend fun updateProfile(
@@ -316,7 +512,10 @@ private class MyRepositoryFake(
         contentType: String,
         imageBytes: ByteArray,
     ): NetworkResult<ProfileImage> {
-        onUploadProfileImage(contentType, imageBytes)
+        onUploadProfileImage(
+            contentType,
+            imageBytes
+        )
         return uploadProfileImageResult
     }
 
@@ -336,7 +535,10 @@ private class MyRepositoryFake(
         error("not used")
     }
 
-    override suspend fun favorites(page: Int, size: Int): NetworkResult<FavoriteBookPage> {
+    override suspend fun favorites(
+        page: Int,
+        size: Int
+    ): NetworkResult<FavoriteBookPage> {
         error("not used")
     }
 }

@@ -53,6 +53,7 @@ fun BookOnSwitchRow(
     modifier: Modifier = Modifier,
     switchModifier: Modifier = Modifier,
     description: String? = null,
+    enabled: Boolean = true,
 ) {
     val toggleStateDescription = stringResource(
         if (checked) R.string.notification_toggle_enabled else R.string.notification_toggle_disabled,
@@ -82,6 +83,7 @@ fun BookOnSwitchRow(
             }
         }
         Switch(
+            enabled = enabled,
             checked = checked,
             onCheckedChange = onCheckedChange,
             modifier = switchModifier.semantics {
