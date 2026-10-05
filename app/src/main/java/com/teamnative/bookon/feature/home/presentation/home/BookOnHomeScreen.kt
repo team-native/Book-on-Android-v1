@@ -101,6 +101,8 @@ fun BookOnHomeScreen(
                         dateText = null,
                         title = stringResource(R.string.empty_notice_title),
                         description = stringResource(R.string.empty_notice_description),
+                        actionText = stringResource(R.string.notices_open_list),
+                        onClick = onNoticesClick,
                     )
                 }
             }

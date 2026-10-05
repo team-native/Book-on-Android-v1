@@ -260,4 +260,5 @@
     <string name="notices_empty">등록된 공지가 없어요.</string>
     <string name="notices_error">공지를 불러오지 못했어요. 다시 시도해 주세요.</string>
     <string name="empty_popular_books">표시할 인기 도서가 없어요.</string>
+    <string name="notices_open_list">공지 목록 보기</string>
 </resources>
