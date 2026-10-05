@@ -11,5 +11,6 @@ data class BookOnLoginUiState(
     val password: BookOnPasswordFieldUiModel,
     val loginEnabled: Boolean = true,
     val isSubmitting: Boolean = false,
+    val hasStorageError: Boolean = false,
     val hasMissingCredentials: Boolean = false,
 )

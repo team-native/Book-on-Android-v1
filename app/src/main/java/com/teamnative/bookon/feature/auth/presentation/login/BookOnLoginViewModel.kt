@@ -8,7 +8,6 @@ import com.teamnative.bookon.core.network.auth.TokenSessionManager
 import com.teamnative.bookon.core.ui.model.BookOnPasswordFieldUiModel
 import com.teamnative.bookon.core.ui.model.BookOnTextFieldUiModel
 import com.teamnative.bookon.feature.auth.domain.LoginUseCase
-import com.teamnative.bookon.feature.fcm.domain.SyncFcmTokenOnAuthenticationUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -20,7 +19,6 @@ import kotlinx.coroutines.launch
 class BookOnLoginViewModel @Inject constructor(
     private val loginUseCase: LoginUseCase,
     private val tokenSessionManager: TokenSessionManager,
-    private val syncFcmTokenOnAuthenticationUseCase: SyncFcmTokenOnAuthenticationUseCase,
 ) : ViewModel() {
     private val mutableUiState = MutableStateFlow(
         BookOnLoginUiState(
@@ -38,6 +36,7 @@ class BookOnLoginViewModel @Inject constructor(
             email = currentState.email.copy(value = email),
             password = currentState.password.copy(errorText = null),
             hasMissingCredentials = false,
+            hasStorageError = false,
         )
     }
 
@@ -45,8 +44,12 @@ class BookOnLoginViewModel @Inject constructor(
     fun updatePassword(password: String) {
         val currentState = mutableUiState.value
         mutableUiState.value = currentState.copy(
-            password = currentState.password.copy(value = password, errorText = null),
+            password = currentState.password.copy(
+                value = password,
+                errorText = null
+            ),
             hasMissingCredentials = false,
+            hasStorageError = false,
         )
     }
 
@@ -62,23 +65,49 @@ class BookOnLoginViewModel @Inject constructor(
             return@launch
         }
 
-        mutableUiState.value = state.copy(isSubmitting = true)
-        val loginId = state.email.value.takeIf { it.contains('@') }
-            ?: "${state.email.value}@gsm.hs.kr"
+        mutableUiState.value = state.copy(
+            isSubmitting = true,
+            hasStorageError = false
+        )
+        val loginId = state.email.value.takeIf {
+            it.contains('@')
+        }
+        ?: "${state.email.value}@gsm.hs.kr"
 
-        when (val result = loginUseCase(loginId, state.password.value)) {
+        val expected = tokenSessionManager.snapshot.value
+        when (val result = loginUseCase(
+                loginId,
+                state.password.value
+        )) {
             is NetworkResult.Success -> {
-                tokenSessionManager.save(
-                    AuthTokens(
-                        result.data.accessToken,
-                        result.data.refreshToken,
-                    ),
-                )
+                val saved = try {
+                    tokenSessionManager.loginIfCurrent(
+                        expected = expected,
+                        tokens =
+                        AuthTokens(
+                            result.data.accessToken,
+                            result.data.refreshToken,
+                        ),
+                    )
+                } catch (exception: com.teamnative.bookon.core.network.auth.SessionStorageException) {
+                    if (tokenSessionManager.isCurrent(expected)) {
+                        mutableUiState.value = mutableUiState.value.copy(
+                            isSubmitting = false,
+                            hasStorageError = true
+                        )
+                    }
+                    return@launch
+                }
+                if (!saved) {
+                    return@launch
+                }
                 mutableUiState.value = mutableUiState.value.copy(isSubmitting = false)
                 onSuccess()
-                syncFcmTokenOnAuthenticationUseCase()
             }
             is NetworkResult.Failure -> {
+                if (!tokenSessionManager.isCurrent(expected)) {
+                    return@launch
+                }
                 val currentState = mutableUiState.value
                 mutableUiState.value = currentState.copy(
                     isSubmitting = false,

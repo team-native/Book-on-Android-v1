@@ -14,15 +14,15 @@ import javax.inject.Singleton
 
 /** Android Keystore 키로 DataStore에 저장할 토큰 문자열을 AES-GCM 암호화한다. */
 @Singleton
-class TokenCipher @Inject constructor() {
-    fun encrypt(plainText: String): String {
+class TokenCipher @Inject constructor() : TokenEncryption {
+    override fun encrypt(plainText: String): String {
         val cipher = Cipher.getInstance(Transformation)
         cipher.init(Cipher.ENCRYPT_MODE, secretKey())
         val encrypted = cipher.doFinal(plainText.toByteArray(StandardCharsets.UTF_8))
         return "${encode(cipher.iv)}:${encode(encrypted)}"
     }
 
-    fun decrypt(cipherText: String): String? = runCatching {
+    override fun decrypt(cipherText: String): String? = runCatching {
         val (initializationVector, encrypted) = cipherText.split(':', limit = 2)
         val cipher = Cipher.getInstance(Transformation)
         cipher.init(

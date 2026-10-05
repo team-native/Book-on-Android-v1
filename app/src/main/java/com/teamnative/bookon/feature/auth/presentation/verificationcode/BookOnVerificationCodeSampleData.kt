@@ -8,7 +8,8 @@ import com.teamnative.bookon.R
 internal fun defaultVerificationCodeUiState() = BookOnVerificationCodeUiState(
     stepText = stringResource(R.string.signup_step_1),
     title = stringResource(R.string.verification_code_title),
-    description = stringResource(R.string.verification_code_description, "s20000@gsm.hs.kr"),
+    description = stringResource(R.string.verification_code_description, ""),
     code = "",
-    expireText = stringResource(R.string.verification_code_expire, "04:52"),
+    confirmEnabled = false,
+    expireText = stringResource(R.string.verification_code_expire, "00:00"),
 )

@@ -24,6 +24,7 @@ class BookOnNotificationDisplayer @Inject constructor(
         body: String,
         notificationType: String?,
         notificationId: Int,
+        bookId: Long? = null,
     ) {
         val hasPermission = ActivityCompat.checkSelfPermission(
             context,
@@ -41,6 +42,9 @@ class BookOnNotificationDisplayer @Inject constructor(
                 // 백그라운드/종료 상태에서 시스템이 알림을 직접 표시할 때도 FCM data의 "type" 키가
                 // 그대로 인텐트 extra에 실리므로, 여기서도 동일한 키 이름을 사용해 두 경로를 통일한다.
                 putExtra(NotificationTypeExtraKey, notificationType)
+                if (notificationType == "new_book" && bookId != null && bookId > 0) {
+                    putExtra("bookId", bookId)
+                }
             }
         }
         val pendingIntent = PendingIntent.getActivity(

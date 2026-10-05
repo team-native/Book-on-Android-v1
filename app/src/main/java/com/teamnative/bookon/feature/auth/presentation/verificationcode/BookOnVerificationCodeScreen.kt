@@ -58,6 +58,7 @@ fun BookOnVerificationCodeScreen(
             expireText = uiState.expireText,
             resendText = stringResource(R.string.verification_code_resend),
             onResendClick = onResendClick,
+            resendEnabled = uiState.resendEnabled,
             errorText = uiState.errorText,
         )
     }

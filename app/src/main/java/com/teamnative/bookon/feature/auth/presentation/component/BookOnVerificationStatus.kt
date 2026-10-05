@@ -23,6 +23,7 @@ fun BookOnVerificationStatus(
     onResendClick: () -> Unit,
     modifier: Modifier = Modifier,
     errorText: String? = null,
+    resendEnabled: Boolean = true,
 ) {
     Column(
         modifier = modifier,
@@ -41,7 +42,11 @@ fun BookOnVerificationStatus(
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )
         Text(
-            modifier = Modifier.clickable(role = Role.Button, onClick = onResendClick),
+            modifier = Modifier.clickable(
+                enabled = resendEnabled,
+                role = Role.Button,
+                onClick = onResendClick,
+            ),
             text = resendText,
             style = bookOnTypography.caption,
             color = MaterialTheme.colorScheme.secondary,

@@ -13,6 +13,7 @@ internal fun defaultPasswordResetUiState() = BookOnPasswordResetUiState(
     description = stringResource(R.string.password_reset_email_description),
     email = BookOnTextFieldUiModel(value = ""),
     verificationCode = "",
+    verificationRemainingSeconds = 0,
     password = BookOnPasswordFieldUiModel(value = ""),
     passwordConfirm = BookOnPasswordFieldUiModel(value = ""),
     nextEnabled = false,
