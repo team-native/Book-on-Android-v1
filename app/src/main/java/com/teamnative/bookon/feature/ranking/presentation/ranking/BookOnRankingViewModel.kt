@@ -14,6 +14,7 @@ import com.teamnative.bookon.feature.ranking.presentation.model.BookOnRankingPod
 import dagger.hilt.android.lifecycle.HiltViewModel
 import java.time.Year
 import javax.inject.Inject
+import kotlinx.coroutines.Job
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +28,9 @@ class BookOnRankingViewModel @Inject constructor(
     private val mutableUiState = MutableStateFlow(initialRankingUiState())
     val uiState: StateFlow<BookOnRankingScreenUiState> = mutableUiState.asStateFlow()
 
+    private var rankingJob: Job? = null
+    private var requestGeneration = 0L
+
     init {
         load()
     }
@@ -34,25 +38,35 @@ class BookOnRankingViewModel @Inject constructor(
     /** 최초 진입과 재시도에서 해당 연도 랭킹을 다시 조회한다. */
     fun retry() = load()
 
-    private fun load() = viewModelScope.launch {
-        mutableUiState.value = mutableUiState.value.copy(errorMessage = null)
-        when (val result = getReaderRanking(Year.now().value, RankingLimit)) {
-            is NetworkResult.Success -> {
-                val members = result.data.readers.map { it.toUiModel() }
-                val podiumMembers = (members + List((PodiumSize - members.size).coerceAtLeast(0)) {
-                    BookOnRankingMemberUiModel(0, "", "", "")
-                }).take(PodiumSize)
-                mutableUiState.value = BookOnRankingScreenUiState(
-                    description = "${result.data.year}년 · ${result.data.resetPolicy}",
-                    podium = BookOnRankingPodiumUiModel(podiumMembers[0], podiumMembers[1], podiumMembers[2]),
-                    list = BookOnRankingListUiModel(members.drop(PodiumSize)),
+    private fun load() {
+        rankingJob?.cancel()
+        requestGeneration += 1L
+        val capturedGeneration = requestGeneration
+        rankingJob = viewModelScope.launch {
+            mutableUiState.value = mutableUiState.value.copy(errorMessage = null)
+            val result = getReaderRanking(Year.now().value, RankingLimit)
+            if (capturedGeneration != requestGeneration) {
+                return@launch
+            }
+            when (result) {
+                is NetworkResult.Success -> {
+                    val members = result.data.readers.map { it.toUiModel() }
+                    val podiumMembers = (members + List((PodiumSize - members.size).coerceAtLeast(0)) {
+                        BookOnRankingMemberUiModel(0, "", "", "")
+                    }).take(PodiumSize)
+                    mutableUiState.value = BookOnRankingScreenUiState(
+                        description = "${result.data.year}년 · ${result.data.resetPolicy}",
+                        podium = BookOnRankingPodiumUiModel(podiumMembers[0], podiumMembers[1], podiumMembers[2]),
+                        list = BookOnRankingListUiModel(members.drop(PodiumSize)),
+                        isEmpty = members.isEmpty(),
+                    )
+                }
+
+                is NetworkResult.Failure -> mutableUiState.value = mutableUiState.value.copy(
+                    isInitialLoading = false,
+                    errorMessage = result.error.toUiMessage(),
                 )
             }
-
-            is NetworkResult.Failure -> mutableUiState.value = initialRankingUiState().copy(
-                isInitialLoading = false,
-                errorMessage = result.error.toUiMessage(),
-            )
         }
     }
 }
