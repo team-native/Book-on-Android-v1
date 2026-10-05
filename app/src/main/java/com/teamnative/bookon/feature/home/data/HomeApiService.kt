@@ -45,6 +45,8 @@ data class HomeBookDto(
 data class NoticePageDto(
     @SerialName("items")
     val items: List<NoticeDto>,
+    @SerialName("pagination")
+    val pagination: com.teamnative.bookon.core.network.ApiPagination,
 )
 
 @Serializable

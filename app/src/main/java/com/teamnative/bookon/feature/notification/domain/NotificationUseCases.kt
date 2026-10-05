@@ -12,6 +12,18 @@ class MarkNotificationReadUseCase @Inject constructor(
 class MarkAllNotificationsReadUseCase @Inject constructor(
     private val repository: NotificationRepository,
 ) {
-    /** 사용자의 모든 알림을 읽음 처리하고 변경 건수를 반환한다. */
+    /** 사용자의 모든 알림을 읽음 처리하고 처리 여부를 반환한다. */
     suspend operator fun invoke() = repository.markAllRead()
+}
+
+class GetNotificationsUseCase @Inject constructor(
+    private val repository: NotificationRepository,
+) {
+    suspend operator fun invoke(page: Int, size: Int) = repository.notifications(page, size)
+}
+
+class GetUnreadNotificationCountUseCase @Inject constructor(
+    private val repository: NotificationRepository,
+) {
+    suspend operator fun invoke() = repository.unreadCount()
 }

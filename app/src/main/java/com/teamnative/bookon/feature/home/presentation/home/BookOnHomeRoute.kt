@@ -15,19 +15,28 @@ fun BookOnHomeRoute(
     onBookClick: (Long) -> Unit,
     onNotificationClick: () -> Unit,
     viewModel: BookOnHomeViewModel = hiltViewModel(),
+    onPopularBooksClick: () -> Unit = onNewBooksClick,
+    onNoticesClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
+    unreadViewModel: com.teamnative.bookon.feature.notification.presentation.BookOnUnreadCountViewModel = hiltViewModel(),
 ) {
-    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    if (uiState.isInitialLoading) {
-        BookOnLoadingScreen()
-    } else {
-        BookOnHomeScreen(
-            uiState = uiState,
-            bottomBar = bottomBar,
-            onSearchClick = onSearchClick,
-            onShowMoreClick = onNewBooksClick,
-            onBookClick = onBookClick,
-            onNotificationClick = onNotificationClick,
-            onRetryClick = viewModel::load,
-        )
+    val unreadCount by unreadViewModel.count.collectAsStateWithLifecycle()
+    androidx.lifecycle.compose.LifecycleResumeEffect(unreadViewModel) {
+        unreadViewModel.refresh()
+        onPauseOrDispose { }
     }
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    BookOnHomeScreen(
+        uiState = uiState,
+        bottomBar = bottomBar,
+        onSearchClick = onSearchClick,
+        onShowMoreClick = onNewBooksClick,
+        onBookClick = onBookClick,
+        onNotificationClick = onNotificationClick,
+        onRetryClick = viewModel::load,
+        onPopularBooksClick = onPopularBooksClick,
+        onNoticesClick = onNoticesClick,
+        onProfileClick = onProfileClick,
+        unreadCount = unreadCount,
+    )
 }

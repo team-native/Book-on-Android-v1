@@ -4,6 +4,11 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.animation.togetherWith
 import androidx.compose.runtime.Composable
+import com.teamnative.bookon.feature.home.presentation.popular.BookOnPopularBooksRoute
+import com.teamnative.bookon.feature.home.presentation.notices.BookOnNoticesRoute
+import com.teamnative.bookon.feature.home.presentation.notices.BookOnNoticeSummaryScreen
+import com.teamnative.bookon.feature.notification.presentation.BookOnNotificationsRoute
+import com.teamnative.bookon.feature.notification.domain.NotificationKind
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -265,9 +270,10 @@ private fun BookOnMainNavDisplay(pendingDeepLink: BookOnPendingDeepLink?, onLogo
                         onSearchClick = { navigator.push(BookOnDestination.Search) },
                         onNewBooksClick = { navigator.push(BookOnDestination.NewBooks) },
                         onBookClick = { bookId -> navigator.push(BookOnDestination.BookDetail(bookId)) },
-                        onNotificationClick = {
-                            // TODO: 서버 알림 API 또는 알림 화면이 준비되면 이 이벤트에 연결한다.
-                        },
+                        onNotificationClick = { navigator.push(BookOnDestination.Notifications) },
+                        onPopularBooksClick = { navigator.push(BookOnDestination.PopularBooks) },
+                        onNoticesClick = { navigator.push(BookOnDestination.Notices) },
+                        onProfileClick = { navigator.navigateToTab(BookOnDestination.My) },
                     )
                 }
                 entry<BookOnDestination.Ranking> {
@@ -303,8 +309,48 @@ private fun BookOnMainNavDisplay(pendingDeepLink: BookOnPendingDeepLink?, onLogo
                         onBackClick = navigator::goBack,
                     )
                 }
+                entry<BookOnDestination.PopularBooks> {
+                    BookOnPopularBooksRoute(
+                        onBackClick = navigator::goBack,
+                        onBookClick = { navigator.push(BookOnDestination.BookDetail(it)) },
+                    )
+                }
+                entry<BookOnDestination.Notices> {
+                    BookOnNoticesRoute(
+                        onBackClick = navigator::goBack,
+                        onNoticeClick = { notice ->
+                            navigator.push(BookOnDestination.NoticeSummary(notice.title, notice.createdAt, notice.summary))
+                        },
+                    )
+                }
+                entry<BookOnDestination.NoticeSummary> { notice ->
+                    BookOnNoticeSummaryScreen(notice.title, notice.createdAt, notice.summary, navigator::goBack)
+                }
+                entry<BookOnDestination.Notifications> {
+                    BookOnNotificationsRoute(
+                        onBackClick = navigator::goBack,
+                        onRelatedClick = { notification ->
+                            when (notification.kind) {
+                                NotificationKind.LoanDue -> {
+                                    navigator.navigateToTab(BookOnDestination.My)
+                                    navigator.push(BookOnDestination.LoanHistory)
+                                }
+                                NotificationKind.Notice -> navigator.push(BookOnDestination.Notices)
+                                NotificationKind.NewBook -> notification.bookId?.let {
+                                    navigator.push(BookOnDestination.BookDetail(it))
+                                }
+                                NotificationKind.Unknown -> Unit
+                            }
+                        },
+                    )
+                }
                 entry<BookOnDestination.NewBooks> {
-                    BookOnNewBooksRoute(onBackClick = navigator::goBack)
+                    BookOnNewBooksRoute(
+                    onBackClick = navigator::goBack,
+                    onBookClick = { bookId ->
+                        navigator.push(BookOnDestination.BookDetail(bookId))
+                    },
+                )
                 }
                 entry<BookOnDestination.LoanHistory> {
                     BookOnLoanHistoryRoute(

@@ -46,6 +46,7 @@ fun BookOnHomeHeader(
     modifier: Modifier = Modifier,
     onNotificationClick: (() -> Unit)? = null,
     onProfileClick: (() -> Unit)? = null,
+    unreadCount: Int? = null,
 ) {
     Row(
         modifier = modifier.fillMaxWidth(),
@@ -71,11 +72,19 @@ fun BookOnHomeHeader(
             )
         }
 
+        androidx.compose.material3.BadgedBox(
+            badge = {
+                if (unreadCount != null && unreadCount > 0) {
+                    androidx.compose.material3.Badge { Text(unreadCount.toString()) }
+                }
+            },
+        ) {
         BookOnHomeIconButton(
             iconRes = R.drawable.notification,
             contentDescription = notificationContentDescription,
             onClick = onNotificationClick,
         )
+        }
 
         Spacer(modifier = Modifier.width(AppSpacing.Content))
 
