@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -29,7 +30,7 @@ import com.teamnative.bookon.feature.auth.presentation.component.BookOnThirdPart
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 
 /**
- * 독서마라톤 계정 연동 화면은 아이디, 비밀번호, 개인정보 제공 동의를 받는다.
+ * 독서마라톤 계정 연동 화면은 아이디, 비밀번호, 개인정보 제공 동의와 Read365 웹 접속을 제공한다.
  */
 @Composable
 fun BookOnReadingMarathonLinkScreen(
@@ -38,6 +39,7 @@ fun BookOnReadingMarathonLinkScreen(
     onIdChange: (String) -> Unit,
     onPasswordChange: (String) -> Unit,
     onAgreementChange: (Boolean) -> Unit,
+    onOpenRead365Click: () -> Unit,
     onOauthClick: () -> Unit,
     onSkipClick: () -> Unit,
     onCompleteClick: () -> Unit,
@@ -57,6 +59,13 @@ fun BookOnReadingMarathonLinkScreen(
                 onClick = onCompleteClick,
                 enabled = uiState.linkEnabled,
             )
+
+            TextButton(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = onOpenRead365Click,
+            ) {
+                Text(text = stringResource(R.string.open_read365_website))
+            }
 
             Spacer(modifier = Modifier.height(AppSpacing.Item))
 
@@ -136,6 +145,7 @@ private fun BookOnReadingMarathonLinkScreenPreview() {
             onIdChange = {},
             onPasswordChange = {},
             onAgreementChange = {},
+            onOpenRead365Click = {},
             onOauthClick = {},
             onSkipClick = {},
             onCompleteClick = {},
