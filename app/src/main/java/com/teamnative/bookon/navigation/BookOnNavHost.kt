@@ -17,6 +17,11 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.teamnative.bookon.feature.auth.presentation.signup.RegistrationNavigation
 import com.teamnative.bookon.feature.auth.presentation.passwordreset.PasswordResetNavigation
 import com.teamnative.bookon.feature.auth.presentation.readingmarathonsignup.BookOnReadingMarathonSignupRoute
+import com.teamnative.bookon.feature.home.presentation.popular.BookOnPopularBooksRoute
+import com.teamnative.bookon.feature.home.presentation.notices.BookOnNoticesRoute
+import com.teamnative.bookon.feature.home.presentation.notices.BookOnNoticeSummaryScreen
+import com.teamnative.bookon.feature.notification.presentation.BookOnNotificationsRoute
+import com.teamnative.bookon.feature.notification.domain.NotificationKind
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.lifecycle.HasDefaultViewModelProviderFactory
 import androidx.lifecycle.ViewModelProvider
@@ -430,10 +435,11 @@ private fun BookOnMainNavDisplay(
                         bottomBar = bottomBar,
                         onSearchClick = { navigator.push(BookOnDestination.Search) },
                         onNewBooksClick = { navigator.push(BookOnDestination.NewBooks) },
-                        onBookClick = { bookId ->
-                            navigator.push(BookOnDestination.BookDetail(bookId))
-                        },
-                        onNotificationClick = {},
+                        onBookClick = { bookId -> navigator.push(BookOnDestination.BookDetail(bookId)) },
+                        onNotificationClick = { navigator.push(BookOnDestination.Notifications) },
+                        onPopularBooksClick = { navigator.push(BookOnDestination.PopularBooks) },
+                        onNoticesClick = { navigator.push(BookOnDestination.Notices) },
+                        onProfileClick = { navigator.navigateToTab(BookOnDestination.My) },
                     )
                 }
                 entry<BookOnDestination.Ranking> {
@@ -472,9 +478,44 @@ private fun BookOnMainNavDisplay(
                         onBackClick = goBack,
                     )
                 }
+                entry<BookOnDestination.PopularBooks> {
+                    BookOnPopularBooksRoute(
+                        onBackClick = goBack,
+                        onBookClick = { navigator.push(BookOnDestination.BookDetail(it)) },
+                    )
+                }
+                entry<BookOnDestination.Notices> {
+                    BookOnNoticesRoute(
+                        onBackClick = goBack,
+                        onNoticeClick = { notice ->
+                            navigator.push(BookOnDestination.NoticeSummary(notice.title, notice.createdAt, notice.summary))
+                        },
+                    )
+                }
+                entry<BookOnDestination.NoticeSummary> { notice ->
+                    BookOnNoticeSummaryScreen(notice.title, notice.createdAt, notice.summary, goBack)
+                }
+                entry<BookOnDestination.Notifications> {
+                    BookOnNotificationsRoute(
+                        onBackClick = goBack,
+                        onRelatedClick = { notification ->
+                            when (notification.kind) {
+                                NotificationKind.LoanDue -> {
+                                    navigator.navigateToTab(BookOnDestination.My)
+                                    navigator.push(BookOnDestination.LoanHistory)
+                                }
+                                NotificationKind.Notice -> navigator.push(BookOnDestination.Notices)
+                                NotificationKind.NewBook -> notification.bookId?.let {
+                                    navigator.push(BookOnDestination.BookDetail(it))
+                                }
+                                NotificationKind.Unknown -> Unit
+                            }
+                        },
+                    )
+                }
                 entry<BookOnDestination.NewBooks> {
                     BookOnNewBooksRoute(
-                    onBackClick = navigator::goBack,
+                    onBackClick = goBack,
                     onBookClick = { bookId ->
                         navigator.push(BookOnDestination.BookDetail(bookId))
                     },

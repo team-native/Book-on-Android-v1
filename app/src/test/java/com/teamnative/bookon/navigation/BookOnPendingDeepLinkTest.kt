@@ -11,8 +11,17 @@ class BookOnPendingDeepLinkTest {
     }
 
     @Test
-    fun `notice 타입은 아직 대응 화면이 없어 null로 수렴한다`() {
-        assertNull("notice".toPendingDeepLinkDestination())
+    fun `notice 타입은 공지 목록으로 이동한다`() {
+        assertEquals(BookOnDestination.Notices, "notice".toPendingDeepLinkDestination())
+    }
+
+    @Test
+    fun `new book requires positive identifier`() {
+        assertNull("new_book".toPendingDeepLinkDestination())
+        assertNull("new_book".toPendingDeepLinkDestination(0))
+        assertNull("new_book".toPendingDeepLinkDestination(-1))
+        assertEquals(BookOnDestination.BookDetail(17), "new_book".toPendingDeepLinkDestination(17))
+        assertNull("https://example.com".toPendingDeepLinkDestination(17))
     }
 
     @Test

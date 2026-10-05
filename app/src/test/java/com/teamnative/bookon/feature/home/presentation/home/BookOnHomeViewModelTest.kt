@@ -9,15 +9,15 @@ import com.teamnative.bookon.feature.book.domain.BookPage
 import com.teamnative.bookon.feature.book.domain.BookRepository
 import com.teamnative.bookon.feature.book.domain.BookSort
 import com.teamnative.bookon.feature.book.domain.GetBooksUseCase
-import com.teamnative.bookon.feature.book.domain.GetNewBooksUseCase
-import com.teamnative.bookon.feature.book.domain.GetTodayRecommendationsUseCase
 import com.teamnative.bookon.feature.book.domain.Loan
 import com.teamnative.bookon.feature.book.domain.LoanExtension
 import com.teamnative.bookon.feature.book.domain.PurchaseLink
 import com.teamnative.bookon.feature.book.domain.TodayRecommendation
+import com.teamnative.bookon.feature.home.domain.GetHomeUseCase
+import com.teamnative.bookon.feature.home.domain.HomeNoticePage
+import com.teamnative.bookon.feature.home.domain.HomeRecommendation
 import com.teamnative.bookon.feature.home.domain.GetNoticesUseCase
 import com.teamnative.bookon.feature.home.domain.HomeData
-import com.teamnative.bookon.feature.home.domain.HomeNotice
 import com.teamnative.bookon.feature.home.domain.HomeRepository
 import com.teamnative.bookon.feature.my.domain.AccountDeletion
 import com.teamnative.bookon.feature.my.domain.FavoriteBookPage
@@ -58,42 +58,24 @@ class BookOnHomeViewModelTest {
     }
 
     @Test
-    fun `추천 API의 전체 목록과 첫 번째 유효한 추천 사유를 화면 상태에 반영한다`() = runTest {
-        val recommendations = listOf(
-            recommendation(bookId = 1L, reason = null),
-            recommendation(bookId = 2L, reason = "학교 대출 통계 기반 추천"),
-            recommendation(bookId = 3L, reason = "다른 추천 사유"),
+    fun `홈 추천 도서와 사유를 기존 홈 계약대로 화면에 반영한다`() = runTest {
+        val viewModel = createViewModel(
+            HomeBookRepository(),
+            NetworkResult.Success(HomeData(recommendation(1L, "학교 대출 통계 기반 추천"))),
         )
-        val bookRepository = HomeBookRepository(
-            recommendationsResult = NetworkResult.Success(recommendations),
-        )
-
-        val viewModel = createViewModel(bookRepository)
         advanceUntilIdle()
 
-        assertEquals(
-            listOf(1L, 2L, 3L),
-            viewModel.uiState.value.aiRecommendedBooks.map { book -> book.id },
-        )
-        assertEquals(
-            "학교 대출 통계 기반 추천",
-            viewModel.uiState.value.aiRecommendationDescription,
-        )
-        assertEquals(
-            listOf(101L),
-            viewModel.uiState.value.popularBooks.map { book -> book.id },
-        )
+        assertEquals(listOf(1L), viewModel.uiState.value.aiRecommendedBooks.map { it.id })
+        assertEquals("학교 대출 통계 기반 추천", viewModel.uiState.value.aiRecommendationDescription)
+        assertEquals(listOf(101L), viewModel.uiState.value.popularBooks.map { it.id })
     }
 
     @Test
     fun `추천 조회가 실패해도 성공한 인기 책은 유지하고 오류를 표시한다`() = runTest {
-        val bookRepository = HomeBookRepository(
-            recommendationsResult = NetworkResult.Failure(
-                NetworkError.Network(IllegalStateException("network")),
-            ),
+        val viewModel = createViewModel(
+            HomeBookRepository(),
+            NetworkResult.Failure(NetworkError.Network(IllegalStateException("network"))),
         )
-
-        val viewModel = createViewModel(bookRepository)
         advanceUntilIdle()
 
         assertTrue(viewModel.uiState.value.aiRecommendedBooks.isEmpty())
@@ -102,10 +84,13 @@ class BookOnHomeViewModelTest {
     }
 
     /** Home에서 사용하는 UseCase에 테스트 Repository를 연결해 ViewModel을 만든다. */
-    private fun createViewModel(bookRepository: BookRepository): BookOnHomeViewModel {
+    private fun createViewModel(
+        bookRepository: BookRepository,
+        homeResult: NetworkResult<HomeData>,
+    ): BookOnHomeViewModel {
         return BookOnHomeViewModel(
-            getTodayRecommendations = GetTodayRecommendationsUseCase(bookRepository),
-            getNotices = GetNoticesUseCase(HomeNoticeRepository()),
+            getHome = GetHomeUseCase(HomeNoticeRepository(homeResult)),
+            getNotices = GetNoticesUseCase(HomeNoticeRepository(homeResult)),
             getBooks = GetBooksUseCase(bookRepository),
             getMyProfile = GetMyProfileUseCase(HomeProfileRepository()),
         )
@@ -114,7 +99,7 @@ class BookOnHomeViewModelTest {
     private fun recommendation(
         bookId: Long,
         reason: String?,
-    ) = TodayRecommendation(
+    ) = HomeRecommendation(
         bookId = bookId,
         title = "추천 도서 $bookId",
         author = "추천 작가",
@@ -124,7 +109,7 @@ class BookOnHomeViewModelTest {
 }
 
 private class HomeBookRepository(
-    private val recommendationsResult: NetworkResult<List<TodayRecommendation>>,
+    private val recommendationsResult: NetworkResult<List<TodayRecommendation>> = NetworkResult.Success(emptyList()),
 ) : BookRepository {
     override suspend fun books(
         page: Int,
@@ -187,13 +172,15 @@ private class HomeBookRepository(
     )
 }
 
-private class HomeNoticeRepository : HomeRepository {
-    override suspend fun home(limit: Int): NetworkResult<HomeData> = error("not used")
+private class HomeNoticeRepository(
+    private val homeResult: NetworkResult<HomeData>,
+) : HomeRepository {
+    override suspend fun home(limit: Int): NetworkResult<HomeData> = homeResult
 
     override suspend fun notices(
         page: Int,
         size: Int,
-    ): NetworkResult<List<HomeNotice>> = NetworkResult.Success(emptyList())
+    ): NetworkResult<HomeNoticePage> = NetworkResult.Success(HomeNoticePage(emptyList(), page, false, 0))
 }
 
 private class HomeProfileRepository : MyRepository {

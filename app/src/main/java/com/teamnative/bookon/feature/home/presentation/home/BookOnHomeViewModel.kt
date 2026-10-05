@@ -6,7 +6,7 @@ import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.core.ui.model.BookOnBookCardUiModel
 import com.teamnative.bookon.feature.book.domain.BookSort
 import com.teamnative.bookon.feature.book.domain.GetBooksUseCase
-import com.teamnative.bookon.feature.book.domain.GetTodayRecommendationsUseCase
+import com.teamnative.bookon.feature.home.domain.GetHomeUseCase
 import com.teamnative.bookon.feature.home.domain.GetNoticesUseCase
 import com.teamnative.bookon.feature.home.presentation.model.BookOnHomeNoticeUiModel
 import com.teamnative.bookon.feature.home.presentation.model.BookOnPopularBookRowUiModel
@@ -27,7 +27,7 @@ private const val FirstPage = 1
 /** 홈의 공개 데이터와 도서 목록을 병렬 조회해 표시 모델로 변환한다. */
 @HiltViewModel
 class BookOnHomeViewModel @Inject constructor(
-    private val getTodayRecommendations: GetTodayRecommendationsUseCase,
+    private val getHome: GetHomeUseCase,
     private val getNotices: GetNoticesUseCase,
     private val getBooks: GetBooksUseCase,
     private val getMyProfile: GetMyProfileUseCase,
@@ -59,23 +59,21 @@ class BookOnHomeViewModel @Inject constructor(
         loadJob = viewModelScope.launch {
             coroutineScope {
                 launch {
-                    applyResponse(HomeSection.Recommendation, requestGeneration, getTodayRecommendations()) { current, home ->
+                    applyResponse(HomeSection.Recommendation, requestGeneration, getHome(HomeLimit)) { current, home ->
                         current.copy(
-                            aiRecommendationDescription = home.firstNotNullOfOrNull { recommendation ->
-                                recommendation.reason?.takeIf { it.isNotBlank() }
-                            }.orEmpty(),
-                            aiRecommendedBooks = home.map { recommendation ->
-                                BookOnBookCardUiModel(
+                            aiRecommendationDescription = home.todayRecommendation?.reason.orEmpty(),
+                            aiRecommendedBooks = home.todayRecommendation?.let { recommendation ->
+                                listOf(BookOnBookCardUiModel(
                                     recommendation.title, recommendation.author,
                                     recommendation.coverImageUrl, recommendation.bookId,
-                                )
-                            },
+                                ))
+                            }.orEmpty(),
                         )
                     }
                 }
                 launch {
                     applyResponse(HomeSection.Notice, requestGeneration, getNotices(FirstPage, HomeLimit)) { current, notices ->
-                        current.copy(notice = notices.firstOrNull()?.let { notice ->
+                        current.copy(notice = notices.items.firstOrNull()?.let { notice ->
                             BookOnHomeNoticeUiModel("공지", notice.createdAt, notice.title, notice.summary)
                         })
                     }

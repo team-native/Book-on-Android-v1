@@ -50,6 +50,7 @@ class MainActivity : ComponentActivity() {
         pendingDeepLinkState.value?.let { pending ->
             val kind = when (pending.destination) {
                 com.teamnative.bookon.navigation.BookOnDestination.LoanHistory -> "loan_due"
+                com.teamnative.bookon.navigation.BookOnDestination.Notices -> "notice"
                 is com.teamnative.bookon.navigation.BookOnDestination.BookDetail -> "new_book"
                 else -> null
             }

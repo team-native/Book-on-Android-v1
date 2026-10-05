@@ -35,13 +35,15 @@ fun BookOnNewBooksScreen(
     onRetryClick: () -> Unit,
     onLoadMoreClick: () -> Unit,
     modifier: Modifier = Modifier,
+    titleRes: Int = R.string.new_books_recent,
+    emptyRes: Int = R.string.empty_new_books,
 ) {
     Scaffold(
         modifier = modifier,
         containerColor = MaterialTheme.colorScheme.background,
         topBar = {
             BookOnTopBar(
-                title = stringResource(R.string.new_books_recent),
+                title = stringResource(titleRes),
                 onBackClick = onBackClick,
                 modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
             )
@@ -67,7 +69,7 @@ fun BookOnNewBooksScreen(
             if (uiState.errorMessage == null && uiState.books.isEmpty()) {
                 item {
                     Text(
-                        text = stringResource(R.string.empty_new_books),
+                        text = stringResource(emptyRes),
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
                 }

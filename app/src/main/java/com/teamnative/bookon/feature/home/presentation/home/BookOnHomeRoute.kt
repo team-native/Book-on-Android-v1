@@ -12,22 +12,31 @@ fun BookOnHomeRoute(
     bottomBar: @Composable () -> Unit,
     onSearchClick: () -> Unit,
     onNewBooksClick: () -> Unit,
-    onNotificationClick: () -> Unit,
     onBookClick: (Long) -> Unit,
+    onNotificationClick: () -> Unit,
     viewModel: BookOnHomeViewModel = hiltViewModel(),
+    onPopularBooksClick: () -> Unit = onNewBooksClick,
+    onNoticesClick: () -> Unit = {},
+    onProfileClick: () -> Unit = {},
+    unreadViewModel: com.teamnative.bookon.feature.notification.presentation.BookOnUnreadCountViewModel = hiltViewModel(),
 ) {
+    val unreadCount by unreadViewModel.count.collectAsStateWithLifecycle()
+    androidx.lifecycle.compose.LifecycleResumeEffect(unreadViewModel) {
+        unreadViewModel.refresh()
+        onPauseOrDispose { }
+    }
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     BookOnHomeScreen(
         uiState = uiState,
         bottomBar = bottomBar,
-        onEvent = { event ->
-            when (event) {
-                BookOnHomeScreenEvent.SearchClicked -> onSearchClick()
-                BookOnHomeScreenEvent.NotificationClicked -> onNotificationClick()
-                BookOnHomeScreenEvent.PopularBooksMoreClicked -> onNewBooksClick()
-                BookOnHomeScreenEvent.RetryClicked -> viewModel.load()
-                is BookOnHomeScreenEvent.BookClicked -> onBookClick(event.bookId)
-            }
-        },
+        onSearchClick = onSearchClick,
+        onShowMoreClick = onNewBooksClick,
+        onBookClick = onBookClick,
+        onNotificationClick = onNotificationClick,
+        onRetryClick = viewModel::load,
+        onPopularBooksClick = onPopularBooksClick,
+        onNoticesClick = onNoticesClick,
+        onProfileClick = onProfileClick,
+        unreadCount = unreadCount,
     )
 }

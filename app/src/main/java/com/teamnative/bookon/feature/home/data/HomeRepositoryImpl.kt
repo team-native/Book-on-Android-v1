@@ -2,6 +2,7 @@ package com.teamnative.bookon.feature.home.data
 
 import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.feature.home.domain.HomeData
+import com.teamnative.bookon.feature.home.domain.HomeNoticePage
 import com.teamnative.bookon.feature.home.domain.HomeNotice
 import com.teamnative.bookon.feature.home.domain.HomeRecommendation
 import com.teamnative.bookon.feature.home.domain.HomeRepository
@@ -22,8 +23,15 @@ class HomeRepositoryImpl @Inject constructor(
         })
     }
 
-    override suspend fun notices(page: Int, size: Int): NetworkResult<List<HomeNotice>> = remote.notices(page, size).map { pageDto ->
-        pageDto.items.map { notice -> HomeNotice(notice.noticeId, notice.title, notice.summary, notice.createdAt) }
+    override suspend fun notices(page: Int, size: Int): NetworkResult<HomeNoticePage> = remote.notices(page, size).map { pageDto ->
+        HomeNoticePage(
+            items = pageDto.items.map { notice ->
+                HomeNotice(notice.noticeId, notice.title, notice.summary, notice.createdAt)
+            },
+            page = pageDto.pagination.page,
+            hasNext = pageDto.pagination.hasNext,
+            totalCount = pageDto.pagination.totalCount,
+        )
     }
 }
 

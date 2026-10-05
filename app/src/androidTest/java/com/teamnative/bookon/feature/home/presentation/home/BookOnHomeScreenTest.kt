@@ -24,8 +24,8 @@ class BookOnHomeScreenTest {
     val composeRule = createAndroidComposeRule<ComponentActivity>()
 
     @Test
-    fun homeBooks_sendSelectedBookIdAndOnlyPopularSectionShowsMoreAction() {
-        var latestEvent: BookOnHomeScreenEvent? = null
+    fun homeBooks_sendSelectedBookIdAndKeepExistingMoreActions() {
+        var selectedBookId: Long? = null
         val showMoreText = composeRule.activity.getString(R.string.action_show_more)
 
         composeRule.setContent {
@@ -33,9 +33,11 @@ class BookOnHomeScreenTest {
                 BookOnHomeScreen(
                     uiState = homeUiState(),
                     bottomBar = {},
-                    onEvent = { event ->
-                        latestEvent = event
-                    },
+                    onSearchClick = {},
+                    onShowMoreClick = {},
+                    onBookClick = { selectedBookId = it },
+                    onNotificationClick = {},
+                    onRetryClick = {},
                 )
             }
         }
@@ -47,8 +49,8 @@ class BookOnHomeScreenTest {
 
         composeRule.runOnIdle {
             assertEquals(
-                BookOnHomeScreenEvent.BookClicked(11L),
-                latestEvent,
+                11L,
+                selectedBookId,
             )
         }
 
@@ -59,14 +61,14 @@ class BookOnHomeScreenTest {
 
         composeRule.runOnIdle {
             assertEquals(
-                BookOnHomeScreenEvent.BookClicked(21L),
-                latestEvent,
+                21L,
+                selectedBookId,
             )
         }
 
         composeRule
             .onAllNodesWithText(showMoreText)
-            .assertCountEquals(1)
+            .assertCountEquals(2)
     }
 
     private fun homeUiState() = BookOnHomeScreenUiState(
