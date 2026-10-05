@@ -430,7 +430,9 @@ private fun BookOnMainNavDisplay(
                         bottomBar = bottomBar,
                         onSearchClick = { navigator.push(BookOnDestination.Search) },
                         onNewBooksClick = { navigator.push(BookOnDestination.NewBooks) },
-                        onBookClick = { bookId -> navigator.push(BookOnDestination.BookDetail(bookId)) },
+                        onBookClick = { bookId ->
+                            navigator.push(BookOnDestination.BookDetail(bookId))
+                        },
                         onNotificationClick = {},
                     )
                 }
