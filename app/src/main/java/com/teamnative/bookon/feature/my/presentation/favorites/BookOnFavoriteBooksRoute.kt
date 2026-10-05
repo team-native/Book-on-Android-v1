@@ -3,6 +3,7 @@ package com.teamnative.bookon.feature.my.presentation.favorites
 import androidx.compose.runtime.Composable
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 
 /** 즐겨찾기 샘플 상태와 도서 선택 이벤트를 연결한다. */
@@ -12,6 +13,10 @@ fun BookOnFavoriteBooksRoute(
     onBookClick: (Long) -> Unit,
     viewModel: BookOnFavoriteBooksViewModel = hiltViewModel(),
 ) {
+    LifecycleResumeEffect(viewModel) {
+        viewModel.onResume()
+        onPauseOrDispose { }
+    }
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
     if (uiState.isInitialLoading) {
         BookOnLoadingScreen()
@@ -19,7 +24,10 @@ fun BookOnFavoriteBooksRoute(
         BookOnFavoriteBooksScreen(
             uiState = uiState,
             onBackClick = onBackClick,
-            onBookClick = onBookClick,
+            onBookClick = { bookId ->
+                viewModel.markDetailOpened()
+                onBookClick(bookId)
+            },
             onRetryClick = viewModel::retry,
             onLoadMoreClick = viewModel::loadNextPage,
             onRemoveFavoriteClick = viewModel::removeFavorite,

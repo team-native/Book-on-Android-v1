@@ -1,8 +1,10 @@
 package com.teamnative.bookon.feature.book.presentation.detail
 
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
@@ -13,6 +15,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
@@ -22,6 +25,7 @@ import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
+import com.teamnative.bookon.feature.book.presentation.component.BookOnBookFavoriteButton
 import com.teamnative.bookon.feature.book.presentation.component.BookOnBookDetailCover
 import com.teamnative.bookon.feature.book.presentation.component.BookOnBookDetailInfoRow
 
@@ -29,9 +33,13 @@ import com.teamnative.bookon.feature.book.presentation.component.BookOnBookDetai
 @Composable
 fun BookOnBookDetailScreen(
     uiState: BookOnBookDetailScreenUiState,
+    errorMessage: String?,
     onBackClick: () -> Unit,
     onLoanClick: () -> Unit,
+    onFavoriteClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isLoanConfirmationRequired: Boolean = false,
+    onRetryClick: () -> Unit = {},
 ) {
     Scaffold(
         modifier = modifier,
@@ -41,17 +49,30 @@ fun BookOnBookDetailScreen(
                 title = "",
                 onBackClick = onBackClick,
                 modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
+
             )
         },
         bottomBar = {
-            BookOnPrimaryButton(
-                text = stringResource(
-                    if (uiState.loanAvailable) R.string.loan_request else R.string.loan_unavailable,
-                ),
-                onClick = onLoanClick,
-                enabled = uiState.loanAvailable && !uiState.isSubmitting,
+            Row(
                 modifier = Modifier.padding(AppSpacing.ScreenHorizontal),
-            )
+                horizontalArrangement = Arrangement.spacedBy(AppSpacing.Item),
+                verticalAlignment = Alignment.CenterVertically,
+            ) {
+                BookOnBookFavoriteButton(
+                    isFavorite = uiState.isFavorite,
+                    enabled = !uiState.isFavoriteSubmitting && !uiState.isSubmitting,
+                    onClick = onFavoriteClick,
+                )
+                BookOnPrimaryButton(
+                    text = stringResource(
+                        if (uiState.loanAvailable) R.string.loan_request else R.string.loan_unavailable,
+                    ),
+                    onClick = onLoanClick,
+                    enabled = uiState.loanAvailable && !uiState.isSubmitting &&
+                        !uiState.isFavoriteSubmitting && !isLoanConfirmationRequired,
+                    modifier = Modifier.weight(1f),
+                )
+            }
         },
     ) { innerPadding ->
         LazyColumn(
@@ -63,6 +84,22 @@ fun BookOnBookDetailScreen(
             ),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Content),
         ) {
+            if (!errorMessage.isNullOrBlank()) {
+                item {
+                    Text(
+                        text = errorMessage,
+                        style = bookOnTypography.caption,
+                        color = MaterialTheme.colorScheme.error,
+                    )
+                }
+            }
+            if (!errorMessage.isNullOrBlank() || isLoanConfirmationRequired) {
+                item {
+                    Button(onClick = onRetryClick) {
+                        Text(text = stringResource(R.string.action_retry))
+                    }
+                }
+            }
             item {
                 BookOnBookDetailCover(
                     coverImageUrl = uiState.coverImageUrl,
@@ -112,8 +149,10 @@ private fun BookOnBookDetailScreenPreview() {
     BookOnTheme {
         BookOnBookDetailScreen(
             uiState = sampleBookDetailUiState(loanAvailable = true),
+            errorMessage = null,
             onBackClick = {},
             onLoanClick = {},
+            onFavoriteClick = {},
         )
     }
 }
