@@ -24,6 +24,7 @@ fun BookOnLoanHistoryRoute(
                 BookOnLoanHistoryScreenEvent.BackClicked -> onBackClick()
                 is BookOnLoanHistoryScreenEvent.FilterClicked -> viewModel.selectFilter(event.filterIndex)
                 is BookOnLoanHistoryScreenEvent.BookClicked -> onBookClick(event.bookId)
+                is BookOnLoanHistoryScreenEvent.ExtendClicked -> viewModel.extend(event.loanId)
                 BookOnLoanHistoryScreenEvent.RetryClicked -> viewModel.retry()
                 BookOnLoanHistoryScreenEvent.LoadMoreClicked -> viewModel.loadMore()
             }

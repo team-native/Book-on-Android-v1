@@ -258,4 +258,6 @@
     <string name="signup_complete_generic_message">가입이 완료됐어요. 로그인하고 Book-on을 시작해 보세요.</string>
     <string name="favorite_add_description">관심 도서로 추가</string>
     <string name="favorite_remove_description">관심 도서에서 삭제</string>
+    <string name="loan_extension">연장</string>
+    <string name="loan_extension_in_progress">처리 중</string>
 </resources>

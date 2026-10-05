@@ -90,11 +90,41 @@ fun BookOnLoanHistoryScreen(
                 item {
                     SectionTitle(text = uiState.currentTitle)
                 }
-                items(uiState.currentLoans) { book ->
+                items(uiState.currentLoans) { loanItem ->
                     BookOnBookListItem(
-                        uiState = book,
+                        uiState = loanItem.book,
                         onClick = {
-                            onEvent(BookOnLoanHistoryScreenEvent.BookClicked(book.id))
+                            onEvent(
+                                BookOnLoanHistoryScreenEvent.BookClicked(
+                                    loanItem.book.id,
+                                ),
+                            )
+                        },
+                        trailingContent = if (loanItem.extensionAvailable) {
+                            {
+                                TextButton(
+                                    enabled = !loanItem.isExtending,
+                                    onClick = {
+                                        onEvent(
+                                            BookOnLoanHistoryScreenEvent.ExtendClicked(
+                                                loanItem.loanId,
+                                            ),
+                                        )
+                                    },
+                                ) {
+                                    Text(
+                                        text = stringResource(
+                                            if (loanItem.isExtending) {
+                                                R.string.loan_extension_in_progress
+                                            } else {
+                                                R.string.loan_extension
+                                            },
+                                        ),
+                                    )
+                                }
+                            }
+                        } else {
+                            null
                         },
                     )
                 }
@@ -103,11 +133,15 @@ fun BookOnLoanHistoryScreen(
                 item {
                     SectionTitle(text = uiState.pastTitle)
                 }
-                items(uiState.pastLoans) { book ->
+                items(uiState.pastLoans) { loanItem ->
                     BookOnBookListItem(
-                        uiState = book,
+                        uiState = loanItem.book,
                         onClick = {
-                            onEvent(BookOnLoanHistoryScreenEvent.BookClicked(book.id))
+                            onEvent(
+                                BookOnLoanHistoryScreenEvent.BookClicked(
+                                    loanItem.book.id,
+                                ),
+                            )
                         },
                     )
                 }
