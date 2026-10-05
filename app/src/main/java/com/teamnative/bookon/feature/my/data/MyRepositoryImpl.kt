@@ -11,6 +11,8 @@ import com.teamnative.bookon.feature.my.domain.NotificationSettings
 import com.teamnative.bookon.feature.my.domain.AccountDeletion
 import com.teamnative.bookon.feature.my.domain.MyUser
 import com.teamnative.bookon.feature.my.domain.ProfileImage
+import com.teamnative.bookon.feature.my.domain.MyCurrentLoanSummary
+import kotlinx.serialization.json.longOrNull
 import javax.inject.Inject
 
 class MyRepositoryImpl @Inject constructor(private val remote: MyRemoteDataSource) : MyRepository {
@@ -23,6 +25,12 @@ class MyRepositoryImpl @Inject constructor(private val remote: MyRemoteDataSourc
             currentLoanCount = myPage.loanSummary.currentLoanCount,
             overdueCount = myPage.loanSummary.overdueCount,
             totalLoanCount = myPage.loanSummary.totalLoanCount,
+            currentLoans = myPage.currentLoans.map { loan ->
+                require(loan.loanId.isString || loan.loanId.longOrNull != null) {
+                    "Invalid profile loan identifier"
+                }
+                MyCurrentLoanSummary(loan.dDay, loan.dueDate)
+            },
             notificationSettings = NotificationSettings(
                 dueDateReminder = myPage.notificationSettings.dueDateReminder,
                 newBookReminder = myPage.notificationSettings.newBookReminder,
@@ -74,6 +82,10 @@ private fun LoanHistoryDto.toDomain() = MyLoan(
     extensionAvailable = extensionAvailable,
 )
 private fun <T, R> NetworkResult<T>.map(transform: (T) -> R): NetworkResult<R> = when (this) {
-    is NetworkResult.Success -> NetworkResult.Success(transform(data))
+    is NetworkResult.Success -> try {
+        NetworkResult.Success(transform(data))
+    } catch (exception: IllegalArgumentException) {
+        NetworkResult.Failure(com.teamnative.bookon.core.network.NetworkError.Serialization(exception))
+    }
     is NetworkResult.Failure -> this
 }
