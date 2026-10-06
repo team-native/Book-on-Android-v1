@@ -7,7 +7,6 @@ import com.teamnative.bookon.feature.book.domain.BookDetail
 import com.teamnative.bookon.feature.book.domain.BookRepository
 import com.teamnative.bookon.feature.book.domain.BookSort
 import com.teamnative.bookon.feature.book.domain.GetBookDetailUseCase
-import com.teamnative.bookon.feature.book.domain.RequestLoanUseCase
 import com.teamnative.bookon.feature.book.domain.ToggleFavoriteUseCase
 import com.teamnative.bookon.feature.book.domain.Loan
 import com.teamnative.bookon.feature.book.presentation.detail.viewmodel.BookOnBookDetailViewModel
@@ -75,7 +74,7 @@ class BookOnBookDetailViewModelTest {
     }
 
     @Test
-    fun `관심 요청 중에는 관심 중복과 대출을 차단한다`() = runTest {
+    fun `관심 요청 중에는 중복 요청을 차단하고 서버 상태를 사용한다`() = runTest {
         val repository = DetailRepository()
         val viewModel = createViewModel(repository)
         viewModel.load(1)
@@ -83,10 +82,8 @@ class BookOnBookDetailViewModelTest {
         repository.favoriteGate = CompletableDeferred()
         viewModel.toggleFavorite()
         viewModel.toggleFavorite()
-        viewModel.loan()
         runCurrent()
         assertEquals(1, repository.favoriteCalls)
-        assertEquals(0, repository.loanCalls)
         repository.favoriteGate?.complete(true)
         advanceUntilIdle()
         assertTrue(viewModel.state.value.content!!.isFavorite)
@@ -95,28 +92,6 @@ class BookOnBookDetailViewModelTest {
         advanceUntilIdle()
         // 서버가 true를 확정하면 요청한 false 대신 서버값을 사용한다.
         assertTrue(viewModel.state.value.content!!.isFavorite)
-    }
-
-    @Test
-    fun `대출 성공 후 재조회 실패에도 제출 상태가 남지 않는다`() = runTest {
-        val repository = DetailRepository()
-        val viewModel = createViewModel(repository)
-        viewModel.load(1)
-        advanceUntilIdle()
-        repository.failLoad = true
-        viewModel.loan()
-        advanceUntilIdle()
-        assertNotNull(viewModel.state.value.content)
-        assertFalse(viewModel.state.value.content!!.isSubmitting)
-        assertTrue(viewModel.state.value.isLoanStateUnconfirmed)
-        viewModel.loan()
-        advanceUntilIdle()
-        assertEquals(1, repository.loanCalls)
-        repository.failLoad = false
-        viewModel.load(1, forceRefresh = true)
-        advanceUntilIdle()
-        assertFalse(viewModel.state.value.isLoanStateUnconfirmed)
-        assertFalse(viewModel.state.value.isRefreshing)
     }
 
     @Test
@@ -135,7 +110,7 @@ class BookOnBookDetailViewModelTest {
 
 
     @Test
-    fun `관심과 대출 실패는 기존 정보와 버튼 상태를 복원한다`() = runTest {
+    fun `관심 실패는 기존 정보와 버튼 상태를 복원한다`() = runTest {
         val repository = DetailRepository()
         val viewModel = createViewModel(repository)
         viewModel.load(1)
@@ -145,34 +120,12 @@ class BookOnBookDetailViewModelTest {
         advanceUntilIdle()
         assertFalse(viewModel.state.value.content!!.isFavorite)
         assertFalse(viewModel.state.value.content!!.isFavoriteSubmitting)
-        viewModel.loan()
         advanceUntilIdle()
-        assertFalse(viewModel.state.value.content!!.isSubmitting)
         assertTrue(viewModel.state.value.content!!.loanAvailable)
-        assertFalse(viewModel.state.value.isLoanStateUnconfirmed)
-    }
-
-    @Test
-    fun `대출 중 연속 클릭과 관심 요청을 차단한다`() = runTest {
-        val repository = DetailRepository()
-        val viewModel = createViewModel(repository)
-        viewModel.load(1)
-        advanceUntilIdle()
-        repository.loanGate = CompletableDeferred()
-        viewModel.loan()
-        viewModel.loan()
-        viewModel.toggleFavorite()
-        runCurrent()
-        assertEquals(1, repository.loanCalls)
-        assertEquals(0, repository.favoriteCalls)
-        repository.loanGate!!.complete(Unit)
-        advanceUntilIdle()
-        assertFalse(viewModel.state.value.content!!.isSubmitting)
     }
 
     private fun createViewModel(repository: BookRepository) = BookOnBookDetailViewModel(
         GetBookDetailUseCase(repository),
-        RequestLoanUseCase(repository),
         ToggleFavoriteUseCase(repository),
     )
 }
@@ -180,9 +133,7 @@ class BookOnBookDetailViewModelTest {
 private class DetailRepository : BookRepository {
     var failLoad = false
     var failMutation = false
-    var loanGate: CompletableDeferred<Unit>? = null
     var favoriteCalls = 0
-    var loanCalls = 0
     var favoriteGate: CompletableDeferred<Boolean>? = null
     var detailGate: CompletableDeferred<Unit>? = null
     override suspend fun book(bookId: Long): NetworkResult<BookDetail> {
@@ -209,14 +160,7 @@ private class DetailRepository : BookRepository {
         }
         return NetworkResult.Success(favoriteGate?.await() ?: favorite)
     }
-    override suspend fun loan(bookId: Long): NetworkResult<Loan> {
-        loanCalls++
-        loanGate?.await()
-        if (failMutation) {
-            return NetworkResult.Failure(NetworkError.Network(IllegalStateException()))
-        }
-        return NetworkResult.Success(Loan(1, bookId, "2026-10-20", "PENDING", "책"))
-    }
+    override suspend fun loan(bookId: Long): NetworkResult<Loan> = error("상세에서 대출 요청하지 않음")
     override suspend fun books(page: Int, size: Int, sort: BookSort, category: String?) = error("unused")
     override suspend fun search(keyword: String?, libraryNumber: String?, page: Int, size: Int) = error("unused")
     override suspend fun newBooks(page: Int, size: Int) = error("unused")

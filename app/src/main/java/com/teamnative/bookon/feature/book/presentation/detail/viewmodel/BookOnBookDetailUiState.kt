@@ -13,6 +13,5 @@ data class BookOnBookDetailScreenUiState(
     val intro: String,
     val loanAvailable: Boolean,
     val isFavorite: Boolean = false,
-    val isSubmitting: Boolean = false,
     val isFavoriteSubmitting: Boolean = false,
 )

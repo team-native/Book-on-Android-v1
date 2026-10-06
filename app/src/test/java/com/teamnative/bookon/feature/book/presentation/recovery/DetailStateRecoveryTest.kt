@@ -66,26 +66,18 @@ class DetailStateRecoveryTest {
     }
 
     @Test
-    fun `duplicate favorite and loan during favorite are blocked`() = runTest {
+    fun `duplicate favorite and refresh during favorite are blocked`() = runTest {
         val pending = CompletableDeferred<NetworkResult<Boolean>>()
         var favorites = 0
-        var loans = 0
+        var detailCalls = 0
         val repository = RecoveryBookRepository().apply {
+            onDetail = { id ->
+                detailCalls++
+                detailResponse(id)
+            }
             onFavorite = { _, _ ->
-
                 favorites++
                 pending.await()
-            }
-            onLoan = { id ->
-
-                loans++
-                NetworkResult.Success(Loan(
-                        1L,
-                        id,
-                        "date",
-                        "BORROWED",
-                        "book"
-                ))
             }
         }
         val viewModel = detail(repository)
@@ -94,16 +86,10 @@ class DetailStateRecoveryTest {
         viewModel.toggleFavorite()
         runCurrent()
         viewModel.toggleFavorite()
-        viewModel.loan()
+        viewModel.load(1L, forceRefresh = true)
         runCurrent()
-        assertEquals(
-            1,
-            favorites
-        )
-        assertEquals(
-            0,
-            loans
-        )
+        assertEquals(1, favorites)
+        assertEquals(1, detailCalls)
         pending.complete(NetworkResult.Success(true))
         runCurrent()
         assertTrue(viewModel.state.value.content?.isFavorite == true)
@@ -111,61 +97,36 @@ class DetailStateRecoveryTest {
     }
 
     @Test
-    fun `loan success and failed detail refresh require GET retry before another POST`() = runTest {
+    fun `failed detail refresh keeps content and error until successful retry`() = runTest {
         var detailCalls = 0
-        var loanCalls = 0
         var detailFails = true
         val repository = RecoveryBookRepository().apply {
             onDetail = { id ->
-
                 detailCalls++
                 if (detailCalls > 1 && detailFails) failure() else detailResponse(id)
-            }
-            onLoan = { id ->
-
-                loanCalls++
-                NetworkResult.Success(Loan(
-                        1L,
-                        id,
-                        "date",
-                        "BORROWED",
-                        "book"
-                ))
             }
         }
         val viewModel = detail(repository)
         viewModel.load(1L)
         runCurrent()
-        viewModel.loan()
+        viewModel.load(1L, forceRefresh = true)
         runCurrent()
-        assertTrue(viewModel.state.value.isLoanStateUnconfirmed)
+        assertEquals("book 1", viewModel.state.value.content?.title)
+        assertFalse(viewModel.state.value.isRefreshing)
         assertNotNull(viewModel.state.value.errorMessage)
         viewModel.toggleFavorite()
         runCurrent()
-        assertTrue(viewModel.state.value.isLoanStateUnconfirmed)
         assertNotNull(viewModel.state.value.errorMessage)
-        viewModel.loan()
-        runCurrent()
-        assertEquals(
-            1,
-            loanCalls
-        )
+        assertFalse(viewModel.state.value.content?.isFavoriteSubmitting == true)
         detailFails = false
-        viewModel.load(
-            1L,
-            forceRefresh = true
-        )
+        viewModel.load(1L, forceRefresh = true)
         runCurrent()
-        assertFalse(viewModel.state.value.isLoanStateUnconfirmed)
-        assertEquals(
-            3,
-            detailCalls
-        )
+        assertNull(viewModel.state.value.errorMessage)
+        assertEquals(3, detailCalls)
     }
 
     private fun detail(repository: BookRepository) = BookOnBookDetailViewModel(
         GetBookDetailUseCase(repository),
-        RequestLoanUseCase(repository),
         ToggleFavoriteUseCase(repository),
     )
 
