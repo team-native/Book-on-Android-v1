@@ -11,7 +11,7 @@ import com.teamnative.bookon.feature.book.domain.GetNewBooksUseCase
 import com.teamnative.bookon.feature.book.domain.Loan
 import com.teamnative.bookon.feature.book.domain.PurchaseLink
 import com.teamnative.bookon.feature.book.domain.TodayRecommendation
-import com.teamnative.bookon.feature.home.presentation.newbooks.BookOnNewBooksViewModel
+import com.teamnative.bookon.feature.home.presentation.newbooks.viewmodel.BookOnNewBooksViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher

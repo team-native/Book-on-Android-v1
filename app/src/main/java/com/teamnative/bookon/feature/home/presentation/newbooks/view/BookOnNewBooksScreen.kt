@@ -1,5 +1,10 @@
-package com.teamnative.bookon.feature.home.presentation.newbooks
+package com.teamnative.bookon.feature.home.presentation.newbooks.view
 
+import com.teamnative.bookon.feature.home.presentation.newbooks.viewmodel.BookOnNewBooksScreenUiState
+import com.teamnative.bookon.feature.home.presentation.newbooks.viewmodel.sampleNewBooksUiState
+import androidx.compose.foundation.clickable
+import androidx.compose.ui.semantics.Role
+import com.teamnative.bookon.feature.home.presentation.newbooks.viewmodel.BookOnNewBooksScreenEvent
 import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.foundation.layout.Arrangement
@@ -29,9 +34,7 @@ import com.teamnative.bookon.core.ui.model.resolve
 @Composable
 fun BookOnNewBooksScreen(
     uiState: BookOnNewBooksScreenUiState,
-    onBackClick: () -> Unit,
-    onRetryClick: () -> Unit,
-    onLoadMoreClick: () -> Unit,
+    onEvent: (BookOnNewBooksScreenEvent) -> Unit,
     modifier: Modifier = Modifier,
 ) {
     Scaffold(
@@ -40,7 +43,7 @@ fun BookOnNewBooksScreen(
         topBar = {
             BookOnTopBar(
                 title = stringResource(R.string.new_books_recent),
-                onBackClick = onBackClick,
+                onBackClick = { onEvent(BookOnNewBooksScreenEvent.BackClicked) },
                 modifier = Modifier.padding(horizontal = AppSpacing.ScreenHorizontal),
             )
         },
@@ -57,7 +60,7 @@ fun BookOnNewBooksScreen(
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
 
-                    Button(onClick = onRetryClick) {
+                    Button(onClick = { onEvent(BookOnNewBooksScreenEvent.RetryClicked) }) {
                         Text(text = stringResource(R.string.action_retry))
                     }
                 }
@@ -76,7 +79,12 @@ fun BookOnNewBooksScreen(
                     horizontalArrangement = Arrangement.SpaceBetween,
                 ) {
                     rowBooks.forEach { book ->
-                        BookOnBookCard(uiState = book)
+                        BookOnBookCard(
+                            uiState = book,
+                            modifier = Modifier.clickable(role = Role.Button) {
+                                onEvent(BookOnNewBooksScreenEvent.BookClicked(book.id))
+                            },
+                        )
                     }
 
                     if (rowBooks.size == 1) {
@@ -93,7 +101,7 @@ fun BookOnNewBooksScreen(
                 item {
                     Button(
                         modifier = Modifier.fillMaxWidth(),
-                        onClick = onLoadMoreClick,
+                        onClick = { onEvent(BookOnNewBooksScreenEvent.LoadMoreClicked) },
                     ) {
                         Text(text = stringResource(R.string.action_load_more))
                     }
@@ -109,9 +117,7 @@ private fun BookOnNewBooksScreenPreview() {
     BookOnTheme {
         BookOnNewBooksScreen(
             uiState = sampleNewBooksUiState(),
-            onBackClick = {},
-            onRetryClick = {},
-            onLoadMoreClick = {},
+            onEvent = {},
         )
     }
 }

@@ -19,8 +19,6 @@ fun BookOnSearchRoute(
         onBackClick = onBackClick,
         onBookClick = onBookClick,
         onLoadMore = viewModel::loadNextPage,
-        onRetry = {
-            viewModel.search(uiState.query)
-        },
+        onRetry = viewModel::retry,
     )
 }
