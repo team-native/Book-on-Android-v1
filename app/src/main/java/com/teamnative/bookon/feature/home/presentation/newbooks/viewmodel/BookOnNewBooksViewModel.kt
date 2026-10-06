@@ -1,4 +1,4 @@
-package com.teamnative.bookon.feature.home.presentation.newbooks
+package com.teamnative.bookon.feature.home.presentation.newbooks.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -38,7 +38,7 @@ class BookOnNewBooksViewModel @Inject constructor(
         load(append = false)
     }
 
-    /** 최초 진입과 재시도 시 첫 페이지를 조회한다. */
+    /** 실패한 추가 페이지를 재시도하거나 첫 페이지를 다시 조회한다. */
     fun retry() {
         if (mutableUiState.value.isInitialLoading || mutableUiState.value.isPagingLoading) {
             return

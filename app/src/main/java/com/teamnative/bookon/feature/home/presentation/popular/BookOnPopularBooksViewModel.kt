@@ -1,6 +1,6 @@
 package com.teamnative.bookon.feature.home.presentation.popular
 
-import com.teamnative.bookon.feature.home.presentation.newbooks.BookOnNewBooksScreenUiState
+import com.teamnative.bookon.feature.home.presentation.newbooks.viewmodel.BookOnNewBooksScreenUiState
 import com.teamnative.bookon.feature.book.domain.BookSort
 
 import androidx.lifecycle.ViewModel

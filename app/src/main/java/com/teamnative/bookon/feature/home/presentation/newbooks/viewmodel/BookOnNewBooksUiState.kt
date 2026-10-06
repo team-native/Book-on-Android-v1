@@ -1,4 +1,4 @@
-package com.teamnative.bookon.feature.home.presentation.newbooks
+package com.teamnative.bookon.feature.home.presentation.newbooks.viewmodel
 
 import androidx.compose.runtime.Immutable
 import com.teamnative.bookon.core.ui.model.BookOnBookCardUiModel

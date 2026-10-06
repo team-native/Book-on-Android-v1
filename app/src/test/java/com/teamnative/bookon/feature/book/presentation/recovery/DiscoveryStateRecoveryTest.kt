@@ -4,7 +4,7 @@ import com.teamnative.bookon.core.network.NetworkError
 import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.feature.book.domain.*
 import com.teamnative.bookon.feature.book.presentation.search.BookOnSearchViewModel
-import com.teamnative.bookon.feature.home.presentation.newbooks.BookOnNewBooksViewModel
+import com.teamnative.bookon.feature.home.presentation.newbooks.viewmodel.BookOnNewBooksViewModel
 import com.teamnative.bookon.feature.library.presentation.library.BookOnLibraryViewModel
 import com.teamnative.bookon.feature.library.presentation.library.BookOnLibraryScreenEvent
 import kotlinx.coroutines.CompletableDeferred

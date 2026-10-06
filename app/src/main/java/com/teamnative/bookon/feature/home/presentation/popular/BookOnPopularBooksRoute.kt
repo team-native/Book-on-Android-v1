@@ -4,9 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.teamnative.bookon.feature.home.presentation.newbooks.viewmodel.BookOnNewBooksScreenEvent
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
-import com.teamnative.bookon.feature.home.presentation.newbooks.BookOnNewBooksScreen
+import com.teamnative.bookon.feature.home.presentation.newbooks.view.BookOnNewBooksScreen
 
 @Composable
 fun BookOnPopularBooksRoute(
@@ -20,10 +21,14 @@ fun BookOnPopularBooksRoute(
     } else {
         BookOnNewBooksScreen(
             uiState = uiState,
-            onBackClick = onBackClick,
-            onBookClick = onBookClick,
-            onRetryClick = viewModel::retry,
-            onLoadMoreClick = viewModel::loadNextPage,
+            onEvent = { event ->
+                when (event) {
+                    BookOnNewBooksScreenEvent.BackClicked -> onBackClick()
+                    BookOnNewBooksScreenEvent.RetryClicked -> viewModel.retry()
+                    BookOnNewBooksScreenEvent.LoadMoreClicked -> viewModel.loadNextPage()
+                    is BookOnNewBooksScreenEvent.BookClicked -> onBookClick(event.bookId)
+                }
+            },
             titleRes = R.string.popular_books_school,
             emptyRes = R.string.empty_popular_books,
         )

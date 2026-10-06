@@ -48,7 +48,7 @@ import com.teamnative.bookon.feature.auth.presentation.verificationcode.BookOnVe
 import com.teamnative.bookon.feature.book.presentation.detail.view.BookOnBookDetailRoute
 import com.teamnative.bookon.feature.book.presentation.search.BookOnSearchRoute
 import com.teamnative.bookon.feature.home.presentation.home.BookOnHomeRoute
-import com.teamnative.bookon.feature.home.presentation.newbooks.BookOnNewBooksRoute
+import com.teamnative.bookon.feature.home.presentation.newbooks.view.BookOnNewBooksRoute
 import com.teamnative.bookon.feature.library.presentation.library.BookOnLibraryRoute
 import com.teamnative.bookon.feature.my.presentation.favorites.BookOnFavoriteBooksRoute
 import com.teamnative.bookon.feature.my.presentation.loanhistory.BookOnLoanHistoryRoute
