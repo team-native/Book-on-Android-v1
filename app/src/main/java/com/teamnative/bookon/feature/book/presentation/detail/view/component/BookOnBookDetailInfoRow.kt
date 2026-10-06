@@ -28,6 +28,8 @@ import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.book.presentation.detail.viewmodel.model.BookOnBookDetailInfoItemUiModel
 import com.teamnative.bookon.feature.book.presentation.detail.viewmodel.model.BookOnBookDetailInfoRowUiModel
 
+private const val DetailInfoShadowOpacity = 0.25f
+
 @Composable
 fun BookOnBookDetailInfoRow(
     uiState: BookOnBookDetailInfoRowUiModel,
@@ -81,6 +83,8 @@ private fun BookOnBookDetailInfoItem(
             .shadow(
                 elevation = AppElevation.Card,
                 shape = RoundedCornerShape(AppRadius.Chip),
+                ambientColor = MaterialTheme.colorScheme.onSurface.copy(alpha = DetailInfoShadowOpacity),
+                spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = DetailInfoShadowOpacity),
             )
             .background(
                 color = MaterialTheme.colorScheme.surface,
