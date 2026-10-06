@@ -17,6 +17,8 @@ object AppSpacing {
     val Small = 8.dp
     val Tiny = 4.dp
     val NavigationDividerToIcon = 21.dp
+    val BookDetailCoverToTitle = 44.dp
+    val BookDetailIntroTop = 30.dp
 }
 
 object AppRadius {
@@ -94,6 +96,12 @@ object AppComponentSize {
     val RankingListRowHeight = 64.dp
     val StatSummaryCardHeight = 76.dp
     val InfoCardIcon = 36.dp
+    val BookDetailActionMinHeight = 60.dp
+    val BookDetailCoverWidth = 160.dp
+    val BookDetailInfoMinWidth = 96.dp
+    val BookDetailInfoMinHeight = 68.dp
+    val BookDetailBackWidth = 6.dp
+    val BookDetailBackHeight = 12.dp
 }
 
 object AppStrokeWidth {

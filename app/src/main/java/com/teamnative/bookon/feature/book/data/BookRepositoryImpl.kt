@@ -41,7 +41,17 @@ class BookRepositoryImpl @Inject constructor(private val remote: BookRemoteDataS
     override suspend fun purchaseLinks(bookId: Long) = remote.purchaseLinks(bookId).map { response ->
         response.items.map { PurchaseLink(it.provider, it.label, it.url) }
     }
-    override suspend fun book(bookId: Long) = remote.book(bookId).map { dto -> BookDetail(dto.toBook(), dto.description, dto.favorite, dto.locationName, dto.returnPlanDate) }
+    override suspend fun book(bookId: Long) = remote.book(bookId).map { dto ->
+        BookDetail(
+            book = dto.toBook(),
+            description = dto.description,
+            favorite = dto.favorite,
+            locationName = dto.locationName,
+            returnPlanDate = dto.returnPlanDate,
+            totalQuantity = dto.totalQuantity,
+            availableQuantity = dto.availableQuantity,
+        )
+    }
     override suspend fun favorite(bookId: Long, favorite: Boolean) = remote.favorite(bookId, favorite).map { it.favorite }
     override suspend fun loan(bookId: Long) = remote.loan(bookId).map {
         Loan(it.loanId, it.bookId, it.dueDate, it.status, it.title, it.extensionAvailable)
@@ -78,7 +88,7 @@ private fun BookDetailDto.toBook() = Book(
     libraryNumber = libraryNumber,
     coverImageUrl = coverUrl ?: coverImageUrl,
     loanAvailable = loanAvailable,
-    status = status,
+    status = status.orEmpty(),
 )
 
 private fun <T, R> NetworkResult<T>.map(transform: (T) -> R): NetworkResult<R> = when (this) {

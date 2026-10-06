@@ -1,5 +1,7 @@
 package com.teamnative.bookon.feature.book.presentation.detail
 
+import com.teamnative.bookon.feature.book.presentation.detail.view.BookOnBookDetailScreen
+import com.teamnative.bookon.feature.book.presentation.detail.viewmodel.*
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithContentDescription
@@ -22,11 +24,14 @@ class BookOnBookDetailScreenTest {
         composeTestRule.setContent {
             BookOnTheme {
                 BookOnBookDetailScreen(
-                    uiState = sampleBookDetailUiState(loanAvailable = true),
-                    errorMessage = null,
-                    onBackClick = {},
-                    onLoanClick = { loanClicks++ },
-                    onFavoriteClick = { favoriteClicks++ },
+                    state = BookOnBookDetailState(isInitialLoading = false, content = sampleBookDetailUiState(loanAvailable = true)),
+                    onEvent = { event ->
+                        when (event) {
+                            BookOnBookDetailScreenEvent.LoanClicked -> loanClicks++
+                            BookOnBookDetailScreenEvent.FavoriteClicked -> favoriteClicks++
+                            else -> Unit
+                        }
+                    },
                 )
             }
         }
@@ -49,11 +54,8 @@ class BookOnBookDetailScreenTest {
         composeTestRule.setContent {
             BookOnTheme {
                 BookOnBookDetailScreen(
-                    uiState = sampleBookDetailUiState(loanAvailable = true).copy(isSubmitting = true),
-                    errorMessage = null,
-                    onBackClick = {},
-                    onLoanClick = {},
-                    onFavoriteClick = {},
+                    state = BookOnBookDetailState(isInitialLoading = false, content = sampleBookDetailUiState(loanAvailable = true).copy(isSubmitting = true)),
+                    onEvent = {},
                 )
             }
         }

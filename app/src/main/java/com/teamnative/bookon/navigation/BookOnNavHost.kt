@@ -45,7 +45,7 @@ import com.teamnative.bookon.feature.auth.presentation.readingmarathonlink.BookO
 import com.teamnative.bookon.feature.auth.presentation.signupcomplete.BookOnSignupCompleteRoute
 import com.teamnative.bookon.feature.auth.presentation.signup.BookOnSignupRoute
 import com.teamnative.bookon.feature.auth.presentation.verificationcode.BookOnVerificationCodeRoute
-import com.teamnative.bookon.feature.book.presentation.detail.BookOnBookDetailRoute
+import com.teamnative.bookon.feature.book.presentation.detail.view.BookOnBookDetailRoute
 import com.teamnative.bookon.feature.book.presentation.search.BookOnSearchRoute
 import com.teamnative.bookon.feature.home.presentation.home.BookOnHomeRoute
 import com.teamnative.bookon.feature.home.presentation.newbooks.BookOnNewBooksRoute

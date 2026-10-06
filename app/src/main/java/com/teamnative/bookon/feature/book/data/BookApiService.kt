@@ -115,11 +115,13 @@ data class BookDetailDto(
     @SerialName("coverImageUrl") val coverImageUrl: String? = null,
     @SerialName("coverUrl") val coverUrl: String? = null,
     @SerialName("loanAvailable") val loanAvailable: Boolean,
-    @SerialName("status") val status: String,
+    @SerialName("status") val status: String? = null,
     @SerialName("description") val description: String? = null,
     @SerialName("favorite") val favorite: Boolean = false,
     @SerialName("locationName") val locationName: String? = null,
     @SerialName("returnPlanDate") val returnPlanDate: String? = null,
+    @SerialName("totalQuantity") val totalQuantity: Int? = null,
+    @SerialName("availableQuantity") val availableQuantity: Int? = null,
 )
 
 @Serializable

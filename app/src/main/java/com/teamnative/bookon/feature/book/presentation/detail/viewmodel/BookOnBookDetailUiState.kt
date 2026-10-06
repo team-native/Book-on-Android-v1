@@ -1,14 +1,15 @@
-package com.teamnative.bookon.feature.book.presentation.detail
+package com.teamnative.bookon.feature.book.presentation.detail.viewmodel
 
 import androidx.compose.runtime.Immutable
-import com.teamnative.bookon.feature.book.presentation.model.BookOnBookDetailInfoRowUiModel
 
 @Immutable
 data class BookOnBookDetailScreenUiState(
     val title: String,
     val author: String,
     val coverImageUrl: String? = null,
-    val info: BookOnBookDetailInfoRowUiModel,
+    val libraryNumber: String,
+    val totalQuantity: Int? = null,
+    val availableQuantity: Int? = null,
     val intro: String,
     val loanAvailable: Boolean,
     val isFavorite: Boolean = false,
