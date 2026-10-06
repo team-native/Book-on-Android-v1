@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -59,7 +58,6 @@ fun BookOnBookDetailScreen(
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds,
                 modifier = Modifier
-                    .statusBarsPadding()
                     .fillMaxWidth()
                     .aspectRatio(392f / 360f),
             )
@@ -77,9 +75,7 @@ fun BookOnBookDetailScreen(
                     BookOnBookDetailActions(
                         uiState = content,
                         isRefreshing = state.isRefreshing,
-                        isLoanStateUnconfirmed = state.isLoanStateUnconfirmed,
                         onFavoriteClick = { onEvent(BookOnBookDetailScreenEvent.FavoriteClicked) },
-                        onLoanClick = { onEvent(BookOnBookDetailScreenEvent.LoanClicked) },
                     )
                 }
             },

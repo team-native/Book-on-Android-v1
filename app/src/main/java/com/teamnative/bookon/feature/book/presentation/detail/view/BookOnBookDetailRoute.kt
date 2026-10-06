@@ -55,7 +55,6 @@ fun BookOnBookDetailRoute(
                 BookOnBookDetailScreenEvent.BackClicked -> onBackClick()
                 BookOnBookDetailScreenEvent.RetryClicked -> viewModel.load(bookId, forceRefresh = true)
                 BookOnBookDetailScreenEvent.FavoriteClicked -> viewModel.toggleFavorite()
-                BookOnBookDetailScreenEvent.LoanClicked -> viewModel.loan()
             }
         },
     )

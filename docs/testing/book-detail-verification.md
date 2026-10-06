@@ -1,52 +1,68 @@
 # 책 상세 화면 디자인·동작 검증
 
-## 디자인 기준
+## 최종 승인 동작
 
-Figma 플러그인의 `figma-design-to-code` 흐름으로 다음 실제 상세 노드의 디자인 컨텍스트와 캡처를 확인했다.
+- [대출 가능](https://www.figma.com/design/nJLeurKROi9jA3Pul9cdAK/Bookon?node-id=164-214), [대출 불가](https://www.figma.com/design/nJLeurKROi9jA3Pul9cdAK/Bookon?node-id=164-403), [관심 도서](https://www.figma.com/design/nJLeurKROi9jA3Pul9cdAK/Bookon?node-id=166-531) 실제 디자인 컨텍스트를 기준으로 구현했다.
+- 배경은 시스템 상태 영역까지 그린다. 상단 콘텐츠와 48dp 뒤로가기/관심 터치 영역은 시스템 inset을 유지한다.
+- 하단 고정 관심·대출 버튼을 제거하고 원본 빈/채운 하트로 관심 등록·해제를 표시한다. 이 변경은 상세 화면에 한정하며 다른 화면의 대출 기능과 공유 API/Domain은 유지한다.
+- 도서 ID 조회로 표지·제목·저자·도서관 번호·전체/가용 재고·대출 가능 여부·책 소개를 표시한다. 정보 누락은 --로 표시한다.
+- 표지 그림자는 고정 박스가 아니라 실제 표시된 이미지 경계에 맞춘다. 가로 표지·누락 URL·실패·URL 변경을 처리한다.
 
-- [대출 가능](https://www.figma.com/design/nJLeurKROi9jA3Pul9cdAK/Bookon?node-id=164-214)
-- [대출 불가](https://www.figma.com/design/nJLeurKROi9jA3Pul9cdAK/Bookon?node-id=164-403)
-- [관심 도서](https://www.figma.com/design/nJLeurKROi9jA3Pul9cdAK/Bookon?node-id=166-531)
+## 자산·구조
 
-표지 160×240 비율, Pretendard 제목·저자·본문, 정보 카드 간격·모서리·그림자, 원본 배경과 뒤로가기 이미지를 Android 제약 기반 레이아웃으로 반영했다. 서버 표지 URL은 동적으로 유지하고 Figma 표지 파일은 테스트 fixture로만 사용한다. 다크 모드에서는 원본 뒤로가기 이미지의 흰 배경을 테마 표면으로 매핑한다.
+원본 배경/뒤로가기 이미지와 Figma 하트 SVG 전체를 투명 PNG 3x Android 자산으로 변환해 사용한다. 외부 앱 운영 dependency를 추가하지 않았다. 운영 표지는 서버 URL을 유지하며 Figma 표지 이미지는 계측 fixture에만 사용한다.
 
-사용자와 합의한 차이: 관심·대출 텍스트 버튼 두 개를 하단에 고정하고, 전체 재고와 대출 가능 재고를 함께 표시한다. Android 시스템 inset과 큰 글꼴에서는 화면·텍스트 크기에 맞춰 배치가 달라진다. Figma의 불가 시안에 남아 있는 `가능` 문구 대신 실제 서버의 대출 가능 여부를 표시한다.
+책 ID → Route → ViewModel → 기존 UseCase → Repository → RemoteDataSource → DTO/Domain → StateFlow → Screen 경계를 유지한다. 상세 대출 이벤트/상태/주입만 제거했다. 기존 관심 목록 복귀 동기화와 탐색 경쟁 보호를 보존하며 Hilt binding·BuildConfig·공유 API 계약은 변경하지 않았다.
 
-## 검증 결과
+## 검증
 
-- root: `:app:compileDebugKotlin`, `:app:testDebugUnitTest`(50개), `:app:lintDebug` 성공.
-- 상세 관련 UI 테스트 13개씩 Android 14(API 34), API 37에서 모두 성공.
-- 실제 Home 추천 컴포넌트의 책 ID callback, Search/NewBooks/Library Route와 Navigation 3 push/pop을 검증했다. 검색어·결과·스크롤·원래 탭 유지와 시스템 뒤로가기를 확인했다.
-- 성공·초기 오류/재시도·대출 불가·관심 해제·중복 제출 차단·대출 상태 미확정·null 데이터·320dp/1.6배 글꼴/다크 UI를 검증했다.
-- 최종 그림자 조정 뒤 API 34에서 상세 시각 테스트 7개를 다시 실행해 성공했다. 실제 가능·불가·관심·다크/큰 글꼴 캡처를 디자인과 대조했다.
-- 배포 서버의 공개 `/books/8013595087` 조회: HTTP 200, errorCode 0. 전체/가용 수량과 대출 가능 필드 응답을 확인했다.
+- root 단위 테스트 48개 및 컴파일·Lint 성공. 상세 UI 17개씩 API 34/API 37 성공(34개).
+- #151 격리 작업트리 단위 테스트 53개·컴파일·Lint·계측 Kotlin 컴파일 성공.
+- #161 통합 작업트리 단위 테스트 117개·컴파일·Lint·계측 APK 성공. 최종 상세 패키지 계측 19개씩 신규 격리 API 34/API 37 모두 성공(38개, 실패 0).
+- 조회 실패·기존 콘텐츠 보존·재시도·관심 변경 실패·중복 클릭·요청 중 재조회 보호·오래된 응답을 fake Repository로 검증했다.
+- 홈 callback과 검색·신간·도서실 실제 Route 복귀의 검색어·목록·스크롤·탭을 검증했다.
+- 실제 MainActivity에서 UiAutomation 물리 화면 캡처로 시스템 상태 영역 배경, 콘텐츠 inset, 하트 터치 영역을 검증했다. Window APPEARANCE_LIGHT_STATUS_BARS 및 시스템 UI idle을 함께 확인했다. 정상 글꼴의 신규 격리 AVD API 34/API 37에서 root 17개씩 모두 통과했다.
 
-## 제한 및 발견 사항
+## 제한
 
-로그인된 테스트 계정이 없어 실제 서버 관심 변경·대출 변경 요청은 실행하지 않았다. 변경 실패·중복 제출·재조회 실패는 fake Repository로 검증했다. 회전·프로세스 사망 복원은 이번 검증에 포함하지 않았다.
+배포 서버 공개 상세 GET은 이전 확인에서 HTTP 200/errorCode 0을 반환했다. 로그인 계정이 없어 실서버 관심 변경을 실행하지 않았으며 성공·실패·중복 요청은 fake Repository로 검증했다. 상세에서 대출 요청은 제공하지 않는다. 회전·프로세스 사망 복원 및 인기 목록 별도 기기 복귀는 미검증이다.
 
-root 전체 UI 테스트(19개/기기)에서는 상세 관련 12개가 두 기기에서 통과했고, 범위 밖 `BookOnNotificationSettingsBottomSheetContentTest.notificationSwitches_updateTheirOwnSelection`이 `notification_switch_2` 노드를 찾지 못해 실패했다. 이를 상세 수정의 성공 결과로 숨기지 않는다. 이후 미확정 대출 UI 검증을 추가해 상세 범위는 13개가 됐다.
+이전 root 전체 UI 실행에서 범위 밖 알림 설정 테스트의 notification_switch_2 태그 누락 실패가 발견됐다. 이 문제를 수정하거나 상세 성공에 포함하지 않았다. Espresso 3.7.0은 이전 API 37 계측 호환 변경이며 이번 UI 수정에서 새 의존성을 추가하지 않았다.
 
-Android 최신 API에서 실패하던 Espresso 3.5.1을 기존 테스트 의존성 3.7.0으로 갱신했다. 앱 운영 의존성은 추가하지 않았다.
+## 추가 실행의 환경 차이
 
-## 구조
+초기 공유 API 37 기기의 추가 11개 실행에서 3개 실패(Compose hierarchy 부재 2개, 물리 픽셀 검증 1개)가 발생했다. 해당 기기 전역 font_scale=2와 다른 앱의 foreground가 관측됐으나 정확한 실패 원인으로 단정하지 않는다. 기존 기기 설정을 바꾸지 않고 새 격리 AVD를 만들어 재검증했다. 최종 증거는 이 격리 실행과 아래 캡처를 사용한다.
 
-책 ID → 상세 Route → ViewModel → 기존 UseCase → Repository → RemoteDataSource → DTO/Domain → StateFlow → Screen. 화면 이벤트는 Route에서 ViewModel/뒤로가기로 전달하며 기존 Hilt binding과 BuildConfig는 유지한다. 비동기 작업은 ViewModel 수명을 따르고 화면 객체를 장기 보관하지 않는다.
+## 최종 캡처
 
-## 개별 PR 및 통합 검증
+### API 34
 
-- #151 격리 작업트리: 컴파일·단위 테스트 55개·Lint·계측 Kotlin 컴파일 성공.
-- #152 격리 작업트리: 컴파일·단위 테스트 46개·Lint·계측 Kotlin 컴파일 성공.
-- #161 통합 작업트리: 컴파일·단위 테스트 119개·Lint·계측 APK 빌드 성공. 최종 상세 범위 15개씩 API 34/API 37 모두 성공(30개, 실패 0). 기존 버튼 테스트 2개는 승인된 세로 고정 텍스트 버튼 계약으로 갱신한 뒤 재실행했다.
-- 기존 인기 목록의 신간 Screen 재사용은 title/empty 인자와 ScreenEvent 연결을 보존해 통합했다. 인기 목록의 별도 기기 복귀 테스트는 실행하지 않았다.
+![실제 시스템 영역 포함](book-detail-captures/api34/book-detail-edge-to-edge.png)
 
-## 최종 API 34 캡처
+![오류 상태 시스템 영역](book-detail-captures/api34/book-detail-edge-error.png)
 
-![대출 가능](book-detail-captures/available.png)
+![대출 가능](book-detail-captures/api34/book-detail-available.png)
 
-![대출 불가](book-detail-captures/unavailable.png)
+![대출 불가](book-detail-captures/api34/book-detail-unavailable.png)
 
-![관심 도서](book-detail-captures/favorite.png)
+![관심 도서](book-detail-captures/api34/book-detail-favorite.png)
 
-![다크 모드·큰 글꼴](book-detail-captures/dark-large-font.png)
+![가로 표지](book-detail-captures/api34/book-detail-wide-cover.png)
 
+![다크 모드·큰 글꼴](book-detail-captures/api34/book-detail-dark-large-font.png)
+
+### API 37
+
+![실제 시스템 영역 포함](book-detail-captures/api37/book-detail-edge-to-edge.png)
+
+![오류 상태 시스템 영역](book-detail-captures/api37/book-detail-edge-error.png)
+
+![대출 가능](book-detail-captures/api37/book-detail-available.png)
+
+![대출 불가](book-detail-captures/api37/book-detail-unavailable.png)
+
+![관심 도서](book-detail-captures/api37/book-detail-favorite.png)
+
+![가로 표지](book-detail-captures/api37/book-detail-wide-cover.png)
+
+![다크 모드·큰 글꼴](book-detail-captures/api37/book-detail-dark-large-font.png)

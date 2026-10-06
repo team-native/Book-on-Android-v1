@@ -3,6 +3,7 @@ package com.teamnative.bookon.core.designsystem.theme
 import androidx.compose.ui.unit.dp
 
 object AppSpacing {
+    val BookDetailFavoriteHorizontal = 18.dp
     val ScreenHorizontal = 24.dp
     val AuthHorizontal = 31.dp
     val HomeHorizontal = 28.dp
@@ -61,6 +62,9 @@ object AppIconSize {
 }
 
 object AppComponentSize {
+    val BookDetailFavoriteWidth = 20.dp
+    val BookDetailFavoriteHeight = 17.dp
+    val BookDetailFavoriteTouchSize = 48.dp
     val MinTouchTarget = 48.dp
     val ButtonHeight = 52.dp
     val FieldHeight = 52.dp

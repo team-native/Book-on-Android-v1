@@ -38,7 +38,6 @@ import com.teamnative.bookon.feature.book.domain.GetBookDetailUseCase
 import com.teamnative.bookon.feature.book.domain.GetBooksUseCase
 import com.teamnative.bookon.feature.book.domain.GetNewBooksUseCase
 import com.teamnative.bookon.feature.book.domain.Loan
-import com.teamnative.bookon.feature.book.domain.RequestLoanUseCase
 import com.teamnative.bookon.feature.book.domain.SearchBooksUseCase
 import com.teamnative.bookon.feature.book.domain.ToggleFavoriteUseCase
 import com.teamnative.bookon.feature.book.presentation.detail.view.BookOnBookDetailRoute
@@ -196,7 +195,6 @@ class BookOnDetailNavigationTest {
                                 initializer {
                                     BookOnBookDetailViewModel(
                                         GetBookDetailUseCase(repository),
-                                        RequestLoanUseCase(repository),
                                         ToggleFavoriteUseCase(repository),
                                     )
                                 }

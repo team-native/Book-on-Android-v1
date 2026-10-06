@@ -7,7 +7,6 @@ import com.teamnative.bookon.core.network.NetworkError
 import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.core.ui.model.BookOnUiMessage
 import com.teamnative.bookon.feature.book.domain.GetBookDetailUseCase
-import com.teamnative.bookon.feature.book.domain.RequestLoanUseCase
 import com.teamnative.bookon.feature.book.domain.ToggleFavoriteUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
@@ -26,13 +25,11 @@ data class BookOnBookDetailState(
     val isInitialLoading: Boolean = true,
     val errorMessage: BookOnUiMessage? = null,
     val isRefreshing: Boolean = false,
-    val isLoanStateUnconfirmed: Boolean = false,
 )
 
 @HiltViewModel
 class BookOnBookDetailViewModel @Inject constructor(
     private val getBookDetail: GetBookDetailUseCase,
-    private val requestLoan: RequestLoanUseCase,
     private val toggleFavoriteUseCase: ToggleFavoriteUseCase,
 ) : ViewModel() {
     private val _state = MutableStateFlow(BookOnBookDetailState())
@@ -117,35 +114,6 @@ class BookOnBookDetailViewModel @Inject constructor(
         }
     }
 
-    // 대출을 신청하고 서버의 상세 상태를 다시 조회한다.
-    fun loan() {
-        val bookId = currentBookId ?: return
-        val content = _state.value.content ?: return
-        if (
-            !content.loanAvailable || isMutationPending() ||
-            _state.value.isRefreshing || _state.value.isLoanStateUnconfirmed
-        ) {
-            return
-        }
-        _state.value = _state.value.copy(content = content.copy(isSubmitting = true))
-        mutationJob = viewModelScope.launch {
-            val response = requestLoan(bookId)
-            if (currentBookId != bookId) {
-                return@launch
-            }
-            updateContent { it.copy(isSubmitting = false) }
-            when (response) {
-                is NetworkResult.Success -> {
-                    _state.value = _state.value.copy(isLoanStateUnconfirmed = true)
-                    load(bookId, forceRefresh = true)
-                }
-                is NetworkResult.Failure -> errorEffects.send(
-                    response.error.toUiMessage(R.string.book_detail_action_error),
-                )
-            }
-        }
-    }
-
     // 서버가 확정한 관심 도서 상태를 화면에 반영한다.
     fun toggleFavorite() {
         val bookId = currentBookId ?: return
@@ -173,7 +141,7 @@ class BookOnBookDetailViewModel @Inject constructor(
 
     private fun isMutationPending(): Boolean {
         val content = _state.value.content
-        return content?.isSubmitting == true || content?.isFavoriteSubmitting == true
+        return content?.isFavoriteSubmitting == true
     }
 
     private fun updateContent(transform: (BookOnBookDetailScreenUiState) -> BookOnBookDetailScreenUiState) {
