@@ -1,5 +1,9 @@
 # 책 상세 화면 디자인·동작 검증
 
+## 표지 크기 후속 변경
+
+사용자 요청으로 상세 표지 최대 너비를 160dp에서 216dp로 35% 확대했다. 2:3 표지 기준 높이는 240dp에서 324dp가 되며 실제 이미지 비율과 작은 화면의 너비 제한은 유지한다. 이 한 줄 토큰 변경은 root 및 두 게시 작업트리에서 Kotlin 컴파일로 검증했다. 아래 캡처와 이전 UI 테스트는 확대 전 화면의 증거이며 이번 크기로 새 기기 캡처를 촬영하지 않았다.
+
 ## 최종 승인 동작
 
 - [대출 가능](https://www.figma.com/design/nJLeurKROi9jA3Pul9cdAK/Bookon?node-id=164-214), [대출 불가](https://www.figma.com/design/nJLeurKROi9jA3Pul9cdAK/Bookon?node-id=164-403), [관심 도서](https://www.figma.com/design/nJLeurKROi9jA3Pul9cdAK/Bookon?node-id=166-531) 실제 디자인 컨텍스트를 기준으로 구현했다.
