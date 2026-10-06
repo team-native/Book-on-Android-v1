@@ -3,7 +3,7 @@ package com.teamnative.bookon.feature.book.presentation.recovery
 import com.teamnative.bookon.core.network.NetworkError
 import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.feature.book.domain.*
-import com.teamnative.bookon.feature.book.presentation.detail.BookOnBookDetailViewModel
+import com.teamnative.bookon.feature.book.presentation.detail.viewmodel.BookOnBookDetailViewModel
 import kotlinx.coroutines.CompletableDeferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.NonCancellable
@@ -138,12 +138,12 @@ class DetailStateRecoveryTest {
         runCurrent()
         viewModel.loan()
         runCurrent()
-        assertTrue(viewModel.state.value.isLoanConfirmationRequired)
+        assertTrue(viewModel.state.value.isLoanStateUnconfirmed)
         assertNotNull(viewModel.state.value.errorMessage)
         viewModel.toggleFavorite()
         runCurrent()
-        assertTrue(viewModel.state.value.isLoanConfirmationRequired)
-        assertEquals(null, viewModel.state.value.errorMessage)
+        assertTrue(viewModel.state.value.isLoanStateUnconfirmed)
+        assertNotNull(viewModel.state.value.errorMessage)
         viewModel.loan()
         runCurrent()
         assertEquals(
@@ -156,7 +156,7 @@ class DetailStateRecoveryTest {
             forceRefresh = true
         )
         runCurrent()
-        assertFalse(viewModel.state.value.isLoanConfirmationRequired)
+        assertFalse(viewModel.state.value.isLoanStateUnconfirmed)
         assertEquals(
             3,
             detailCalls

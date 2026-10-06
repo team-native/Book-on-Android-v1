@@ -1,4 +1,4 @@
-package com.teamnative.bookon.feature.book.presentation.model
+package com.teamnative.bookon.feature.book.presentation.detail.viewmodel.model
 
 import androidx.compose.runtime.Immutable
 
@@ -7,9 +7,4 @@ data class BookOnBookDetailInfoItemUiModel(
     val label: String,
     val value: String,
     val highlighted: Boolean = false,
-)
-
-@Immutable
-data class BookOnBookDetailInfoRowUiModel(
-    val items: List<BookOnBookDetailInfoItemUiModel>,
 )

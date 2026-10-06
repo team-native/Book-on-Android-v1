@@ -23,7 +23,15 @@ data class BookCategory(
     val name: String,
     val bookCount: Int,
 )
-data class BookDetail(val book: Book, val description: String?, val favorite: Boolean, val locationName: String?, val returnPlanDate: String?)
+data class BookDetail(
+    val book: Book,
+    val description: String?,
+    val favorite: Boolean,
+    val locationName: String?,
+    val returnPlanDate: String?,
+    val totalQuantity: Int? = null,
+    val availableQuantity: Int? = null,
+)
 data class Loan(
     val id: Long,
     val bookId: Long,
