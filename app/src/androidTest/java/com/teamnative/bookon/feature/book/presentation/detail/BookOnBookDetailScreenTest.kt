@@ -4,7 +4,7 @@ import com.teamnative.bookon.feature.book.presentation.detail.view.BookOnBookDet
 import com.teamnative.bookon.feature.book.presentation.detail.viewmodel.*
 import androidx.compose.ui.test.assertIsNotEnabled
 import androidx.compose.ui.test.junit4.createComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
+import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
@@ -18,7 +18,7 @@ class BookOnBookDetailScreenTest {
     val composeTestRule = createComposeRule()
 
     @Test
-    fun favoriteAndLoan_shareBottomRowAndKeepTheirActions() {
+    fun favoriteAndLoan_keepSeparateFixedActions() {
         var favoriteClicks = 0
         var loanClicks = 0
         composeTestRule.setContent {
@@ -35,12 +35,11 @@ class BookOnBookDetailScreenTest {
                 )
             }
         }
-        val favorite = composeTestRule.onNodeWithContentDescription("관심 도서로 추가")
-        val loan = composeTestRule.onNodeWithText("대출 신청하기")
+        val favorite = composeTestRule.onNodeWithTag("book_detail_favorite")
+        val loan = composeTestRule.onNodeWithTag("book_detail_loan")
         val favoriteBounds = favorite.fetchSemanticsNode().boundsInRoot
         val loanBounds = loan.fetchSemanticsNode().boundsInRoot
-        assertTrue(favoriteBounds.right < loanBounds.left)
-        assertTrue(favoriteBounds.top <= loanBounds.center.y && favoriteBounds.bottom >= loanBounds.center.y)
+        assertTrue(favoriteBounds.bottom < loanBounds.top)
         favorite.performClick()
         loan.performClick()
         composeTestRule.runOnIdle {
@@ -59,7 +58,7 @@ class BookOnBookDetailScreenTest {
                 )
             }
         }
-        composeTestRule.onNodeWithContentDescription("관심 도서로 추가").assertIsNotEnabled()
-        composeTestRule.onNodeWithText("대출 신청하기").assertIsNotEnabled()
+        composeTestRule.onNodeWithTag("book_detail_favorite").assertIsNotEnabled()
+        composeTestRule.onNodeWithTag("book_detail_loan").assertIsNotEnabled()
     }
 }
