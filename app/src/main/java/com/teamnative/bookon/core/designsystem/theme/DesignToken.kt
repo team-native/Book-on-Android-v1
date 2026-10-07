@@ -1,6 +1,7 @@
 package com.teamnative.bookon.core.designsystem.theme
 
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.DpOffset
 
 object AppSpacing {
     val BookDetailFavoriteHorizontal = 18.dp
@@ -114,4 +115,14 @@ object AppStrokeWidth {
     val Progress = 4.dp
     val BackChevron = 2.dp
     val MenuChevron = 1.5.dp
+}
+
+object AppShadow {
+    val PopularBookBlurRadius = 18.dp
+    val PopularBookSpread = 0.dp
+    val PopularBookOffset = DpOffset(
+        x = 1.dp,
+        y = 1.dp,
+    )
+    const val POPULAR_BOOK_OPACITY = 0.15f
 }

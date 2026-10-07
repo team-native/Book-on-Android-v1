@@ -18,11 +18,15 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.dropShadow
+import androidx.compose.ui.graphics.shadow.Shadow
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
+import com.teamnative.bookon.core.designsystem.theme.AppShadow
+import com.teamnative.bookon.core.designsystem.theme.extraColors
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
@@ -64,6 +68,16 @@ fun BookOnPopularBookRow(
         modifier = modifier
             .width(PopularBookRowWidth)
             .height(PopularBookRowHeight)
+            .dropShadow(
+                shape = RoundedCornerShape(AppRadius.Chip),
+                shadow = Shadow(
+                    radius = AppShadow.PopularBookBlurRadius,
+                    color = MaterialTheme.extraColors.popularBookShadow,
+                    spread = AppShadow.PopularBookSpread,
+                    offset = AppShadow.PopularBookOffset,
+                    alpha = AppShadow.POPULAR_BOOK_OPACITY,
+                ),
+            )
             .clip(RoundedCornerShape(AppRadius.Chip))
             .background(MaterialTheme.colorScheme.surface)
             .padding(AppSpacing.Small),
