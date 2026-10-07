@@ -32,7 +32,6 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.core.content.ContextCompat
 import com.teamnative.bookon.R
-import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 import com.teamnative.bookon.core.ui.model.BookOnMenuRowUiModel
 import com.teamnative.bookon.core.ui.model.BookOnStatItemUiModel
 import com.teamnative.bookon.feature.my.presentation.component.BookOnNotificationSettingsBottomSheetContent
@@ -69,11 +68,6 @@ fun BookOnMyRoute(
     var isLogoutDialogVisible by rememberSaveable { mutableStateOf(false) }
     var isNotificationSettingsVisible by rememberSaveable { mutableStateOf(false) }
     var notificationSelections by rememberSaveable { mutableStateOf(InitialNotificationSelections) }
-
-    if (uiState.isInitialLoading) {
-        BookOnLoadingScreen()
-        return
-    }
 
     val applicationContext = LocalContext.current.applicationContext
     val coroutineScope = rememberCoroutineScope()
@@ -164,7 +158,11 @@ fun BookOnMyRoute(
     BookOnMyScreen(
         uiState = screenUiState,
         bottomBar = bottomBar,
-        modifier = if (isLogoutDialogVisible) Modifier.blur(radius = 8.dp) else Modifier,
+        modifier = if (isLogoutDialogVisible && !uiState.isInitialLoading) {
+            Modifier.blur(radius = 8.dp)
+        } else {
+            Modifier
+        },
         onEvent = { event ->
             when (event) {
                 is BookOnMyScreenEvent.MenuClicked -> {
@@ -196,14 +194,14 @@ fun BookOnMyRoute(
         },
     )
 
-    if (isLogoutDialogVisible) {
+    if (isLogoutDialogVisible && !uiState.isInitialLoading) {
         BookOnLogoutAlertDialog(
             onDismissRequest = { isLogoutDialogVisible = false },
             onLogoutRequest = onLogoutRequest,
         )
     }
 
-    if (isNotificationSettingsVisible) {
+    if (isNotificationSettingsVisible && !uiState.isInitialLoading) {
         val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
         ModalBottomSheet(

@@ -1,5 +1,6 @@
 package com.teamnative.bookon.feature.home.presentation.home
 
+import com.teamnative.bookon.feature.home.presentation.component.BookOnHomeSkeletonContent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
@@ -42,6 +43,10 @@ fun BookOnHomeScreen(
         bottomBar = bottomBar,
         containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
+        if (uiState.isInitialLoading) {
+            BookOnHomeSkeletonContent(Modifier.padding(innerPadding))
+            return@Scaffold
+        }
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
             contentPadding = PaddingValues(

@@ -3,7 +3,6 @@ package com.teamnative.bookon.feature.library.presentation.library
 import androidx.compose.runtime.Composable
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 
 
 
@@ -18,14 +17,10 @@ fun BookOnLibraryRoute(
 ) {
     val uiState = viewModel.uiState.collectAsStateWithLifecycle().value
 
-    if (uiState.isInitialLoading) {
-        BookOnLoadingScreen()
-    } else {
-        BookOnLibraryScreen(
-            uiState = uiState,
-            bottomBar = bottomBar,
-            onEvent = viewModel::onEvent,
-            onBookClick = onBookClick,
-        )
-    }
+    BookOnLibraryScreen(
+        uiState = uiState,
+        bottomBar = bottomBar,
+        onEvent = viewModel::onEvent,
+        onBookClick = onBookClick,
+    )
 }

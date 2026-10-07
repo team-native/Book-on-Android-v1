@@ -1,5 +1,6 @@
 package com.teamnative.bookon.feature.my.presentation.loanhistory
 
+import com.teamnative.bookon.feature.my.presentation.component.BookOnLoanHistorySkeletonContent
 import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.foundation.layout.Arrangement
@@ -43,6 +44,10 @@ fun BookOnLoanHistoryScreen(
             )
         },
     ) { innerPadding ->
+        if (uiState.isInitialLoading) {
+            BookOnLoanHistorySkeletonContent(Modifier.padding(innerPadding))
+            return@Scaffold
+        }
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
             contentPadding = PaddingValues(AppSpacing.ScreenHorizontal),

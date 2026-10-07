@@ -37,3 +37,6 @@ val DarkTertiaryContainer = Color(0xFF6B4329)
 val DarkSurfaceContainerHighest = Color(0xFF45454B)
 val DarkOutlineVariant = Color(0xFF48484D)
 val DarkNavigationDivider = DarkOutlineVariant
+
+val LightPopularBookShadow = Color(0xFF000000)
+val DarkPopularBookShadow = Color(0xFF000000)

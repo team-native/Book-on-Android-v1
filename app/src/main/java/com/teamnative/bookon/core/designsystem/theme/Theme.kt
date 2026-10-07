@@ -5,6 +5,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.material3.lightColorScheme
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.ReadOnlyComposable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
@@ -13,6 +14,7 @@ import androidx.compose.runtime.Immutable
 @Immutable
 data class BookOnExtraColors(
     val navigationDivider: Color,
+    val popularBookShadow: Color,
 )
 
 val LocalBookOnExtraColors = staticCompositionLocalOf<BookOnExtraColors> {
@@ -93,10 +95,12 @@ fun BookOnTheme(
     val extraColors = if (darkTheme) {
         BookOnExtraColors(
             navigationDivider = DarkNavigationDivider,
+            popularBookShadow = DarkPopularBookShadow,
         )
     } else {
         BookOnExtraColors(
             navigationDivider = LightNavigationDivider,
+            popularBookShadow = LightPopularBookShadow,
         )
     }
 
@@ -111,3 +115,8 @@ fun BookOnTheme(
         )
     }
 }
+
+val MaterialTheme.extraColors: BookOnExtraColors
+    @Composable
+    @ReadOnlyComposable
+    get() = LocalBookOnExtraColors.current
