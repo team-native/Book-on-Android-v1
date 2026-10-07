@@ -261,4 +261,6 @@
     <string name="book_detail_stock_pair">전체 %1$s\n대출 가능 %2$s</string>
     <string name="book_detail_back">뒤로가기</string>
     <string name="book_detail_title_description">도서 상세</string>
+    <string name="book_detail_favorite_add">관심도서 추가</string>
+    <string name="book_detail_favorite_remove">관심도서 제외</string>
 </resources>

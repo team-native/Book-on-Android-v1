@@ -95,6 +95,28 @@ class BookOnBookDetailViewModelTest {
     }
 
     @Test
+    fun `관심 등록과 제외는 서버 상태를 반영하고 제외 실패에는 등록을 유지한다`() = runTest {
+        val repository = DetailRepository()
+        val viewModel = createViewModel(repository)
+        viewModel.load(1)
+        advanceUntilIdle()
+        viewModel.toggleFavorite()
+        advanceUntilIdle()
+        assertTrue(viewModel.state.value.content!!.isFavorite)
+        repository.failMutation = true
+        viewModel.toggleFavorite()
+        advanceUntilIdle()
+        assertTrue(viewModel.state.value.content!!.isFavorite)
+        assertFalse(viewModel.state.value.content!!.isFavoriteSubmitting)
+        repository.failMutation = false
+        viewModel.toggleFavorite()
+        advanceUntilIdle()
+        assertFalse(viewModel.state.value.content!!.isFavorite)
+        assertFalse(viewModel.state.value.content!!.isFavoriteSubmitting)
+        assertEquals(3, repository.favoriteCalls)
+    }
+
+    @Test
     fun `다른 책 진입은 이전 조회를 취소하고 새 책만 표시한다`() = runTest {
         val repository = DetailRepository()
         repository.detailGate = CompletableDeferred()
