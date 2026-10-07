@@ -111,18 +111,18 @@ data class ProfileImageDto(
 data class LoanSummaryDto(
     @SerialName("currentLoanCount") val currentLoanCount: Int,
     @SerialName("overdueCount") val overdueCount: Int,
-    @SerialName("totalLoanCount") val totalLoanCount: Int = 0,
+    @SerialName("totalLoanCount") val totalLoanCount: Int? = null,
     @SerialName("nearestDueDate") val nearestDueDate: String? = null,
     @SerialName("nearestDueDday") val nearestDueDday: Int? = null,
 )
 
 @Serializable
 data class UserLoanDto(
-    @SerialName("loanId") val loanId: Long,
-    @SerialName("bookId") val bookId: Long,
+    @SerialName("loanId") val loanId: kotlinx.serialization.json.JsonPrimitive,
+    @SerialName("bookId") val bookId: Long? = null,
     @SerialName("title") val title: String,
-    @SerialName("dueDate") val dueDate: String,
-    @SerialName("dDay") val dDay: Int,
+    @SerialName("dueDate") val dueDate: String? = null,
+    @SerialName("dDay") val dDay: Int? = null,
     @SerialName("extensionAvailable") val extensionAvailable: Boolean,
 )
 
@@ -156,6 +156,7 @@ data class LoanHistoryDto(
     @SerialName("returnedAt") val returnedAt: String? = null,
     @SerialName("dDay") val dDay: Int? = null,
     @SerialName("status") val status: String,
+    @SerialName("extensionAvailable") val extensionAvailable: Boolean = false,
 )
 
 @Serializable

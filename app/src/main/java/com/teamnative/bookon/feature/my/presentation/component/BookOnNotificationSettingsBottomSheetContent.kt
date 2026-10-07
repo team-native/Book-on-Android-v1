@@ -40,6 +40,8 @@ fun BookOnNotificationSettingsBottomSheetContent(
     onCheckedChange: (Int, Boolean) -> Unit,
     onCompleteClick: () -> Unit,
     modifier: Modifier = Modifier,
+    isSaving: Boolean = false,
+    errorText: String? = null,
 ) {
     val notificationRows = listOf(
         NotificationSettingRow(
@@ -101,6 +103,7 @@ fun BookOnNotificationSettingsBottomSheetContent(
             BookOnSwitchRow(
                 title = row.title,
                 description = row.description,
+                enabled = !isSaving,
                 checked = notificationSelections.getOrElse(index) { false },
                 onCheckedChange = { checked -> onCheckedChange(index, checked) },
                 modifier = Modifier.semantics { testTag = "notification_setting_row_$index" },
@@ -114,8 +117,12 @@ fun BookOnNotificationSettingsBottomSheetContent(
 
         Spacer(modifier = Modifier.height(AppSpacing.Section + AppSpacing.Content))
 
+        errorText?.let { message ->
+            Text(text = message, color = MaterialTheme.colorScheme.error)
+        }
         BookOnPrimaryButton(
-            text = stringResource(R.string.action_complete_signup),
+            text = stringResource(R.string.action_save_settings),
+            enabled = !isSaving,
             onClick = onCompleteClick,
             modifier = Modifier.semantics { testTag = "notification_complete_button" },
         )

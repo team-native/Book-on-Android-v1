@@ -25,9 +25,19 @@ data class MyProfile(
     val profileImageUrl: String?,
     val currentLoanCount: Int,
     val overdueCount: Int,
-    val totalLoanCount: Int,
+    val totalLoanCount: Int?,
     val notificationSettings: NotificationSettings,
-)
+    val currentLoans: List<MyCurrentLoanSummary> = emptyList(),
+) {
+    val dueSoonCount: Int?
+        get() = if (currentLoans.size != currentLoanCount || currentLoans.any { it.dDay == null }) {
+            null
+        } else {
+            currentLoans.count { it.dDay in 0..3 }
+        }
+}
+
+data class MyCurrentLoanSummary(val dDay: Int?, val dueDate: String?)
 data class MyUser(
     val userId: Long,
     val email: String,
@@ -49,6 +59,7 @@ data class MyLoan(
     val dueDate: String?,
     val dDay: Int?,
     val status: String,
+    val extensionAvailable: Boolean = false,
 )
 data class MyLoanPage(val items: List<MyLoan>, val page: Int, val hasNext: Boolean)
 data class FavoriteBook(val bookId: Long, val title: String, val author: String, val libraryNumber: String, val loanAvailable: Boolean)

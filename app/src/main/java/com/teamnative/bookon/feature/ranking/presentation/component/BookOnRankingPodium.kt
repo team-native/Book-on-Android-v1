@@ -152,21 +152,12 @@ private fun RankingAvatar(
             .background(MaterialTheme.colorScheme.surfaceContainerHighest),
         contentAlignment = Alignment.Center,
     ) {
-        if (avatarRes != null) {
-            Image(
-                modifier = Modifier.fillMaxSize(),
-                painter = painterResource(avatarRes),
-                contentDescription = contentDescription,
-                contentScale = ContentScale.Crop,
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .size(AppIconSize.Default)
-                    .clip(CircleShape)
-                    .background(MaterialTheme.colorScheme.surface),
-            )
-        }
+        Image(
+            modifier = Modifier.fillMaxSize(),
+            painter = painterResource(avatarRes ?: R.drawable.main_profile),
+            contentDescription = contentDescription,
+            contentScale = ContentScale.Crop,
+        )
     }
 }
 

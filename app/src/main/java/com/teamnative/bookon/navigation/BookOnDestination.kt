@@ -37,6 +37,10 @@ internal sealed interface BookOnDestination : NavKey {
 
     @Serializable data object Search : BookOnDestination
     @Serializable data class BookDetail(val bookId: Long) : BookOnDestination
+    @Serializable data object Notifications : BookOnDestination
+    @Serializable data object Notices : BookOnDestination
+    @Serializable data class NoticeSummary(val title: String, val createdAt: String, val summary: String) : BookOnDestination
+    @Serializable data object PopularBooks : BookOnDestination
     @Serializable data object NewBooks : BookOnDestination
     @Serializable data object LoanHistory : BookOnDestination
     @Serializable data object Favorites : BookOnDestination

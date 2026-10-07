@@ -5,6 +5,7 @@ sealed interface BookOnLoanHistoryScreenEvent {
     data object BackClicked : BookOnLoanHistoryScreenEvent
     data class FilterClicked(val filterIndex: Int) : BookOnLoanHistoryScreenEvent
     data class BookClicked(val bookId: Long) : BookOnLoanHistoryScreenEvent
+    data class ExtendClicked(val loanId: Long) : BookOnLoanHistoryScreenEvent
     data object RetryClicked : BookOnLoanHistoryScreenEvent
     data object LoadMoreClicked : BookOnLoanHistoryScreenEvent
 }

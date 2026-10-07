@@ -7,9 +7,10 @@ import androidx.compose.runtime.Composable
 fun BookOnSignupCompleteRoute(
     isReadingMarathonLinked: Boolean,
     onStartClick: () -> Unit,
+    registeredName: String = "",
 ) {
     BookOnSignupCompleteScreen(
-        uiState = defaultSignupCompleteUiState(isReadingMarathonLinked),
+        uiState = defaultSignupCompleteUiState(isReadingMarathonLinked, registeredName),
         onStartClick = onStartClick,
     )
 }

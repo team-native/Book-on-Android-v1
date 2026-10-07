@@ -31,11 +31,13 @@ class FcmTokenRegistrationWorker @AssistedInject constructor(
     /** onNewToken에서 전달된 토큰을, 로그인 상태일 때만 신뢰성 있게 서버에 등록한다. 미로그인 상태면 성공으로 스킵한다. */
     override suspend fun doWork(): Result {
         val token = inputData.getString(TokenKey) ?: return Result.failure()
-        if (tokenSessionManager.accessToken() == null) {
+        val expected = tokenSessionManager.snapshot.value
+        tokenSessionManager.awaitCleanup()
+        if (expected.tokens == null || !tokenSessionManager.isCurrent(expected) || inputData.getLong(SessionEpochKey, -1L) != expected.epoch) {
             return Result.success()
         }
 
-        return when (val result = registerFcmTokenUseCase(token)) {
+        return when (val result = registerFcmTokenUseCase(token, expected)) {
             is NetworkResult.Success -> Result.success()
             is NetworkResult.Failure -> when (val error = result.error) {
                 is NetworkError.Network -> Result.retry()
@@ -46,13 +48,19 @@ class FcmTokenRegistrationWorker @AssistedInject constructor(
     }
 
     companion object {
+        private const val SessionEpochKey = "session_epoch"
         private const val TokenKey = "fcm_token"
         private const val UniqueWorkName = "fcm-token-registration"
 
+        fun cancel(context: Context) {
+            WorkManager.getInstance(context).cancelAllWorkByTag(UniqueWorkName)
+        }
+
         /** FirebaseMessagingService가 네트워크를 직접 호출하지 않고 신뢰성 있는 등록을 예약하도록 돕는다. */
-        fun enqueue(context: Context, token: String) {
+        fun enqueue(context: Context, token: String, epoch: Long) {
             val request = OneTimeWorkRequestBuilder<FcmTokenRegistrationWorker>()
-                .setInputData(workDataOf(TokenKey to token))
+                .setInputData(workDataOf(TokenKey to token, SessionEpochKey to epoch))
+                .addTag(UniqueWorkName)
                 .setConstraints(Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED).build())
                 .setBackoffCriteria(BackoffPolicy.EXPONENTIAL, WorkRequest.MIN_BACKOFF_MILLIS, TimeUnit.MILLISECONDS)
                 .build()

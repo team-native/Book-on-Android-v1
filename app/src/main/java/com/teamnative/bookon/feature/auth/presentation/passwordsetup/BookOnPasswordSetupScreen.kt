@@ -4,6 +4,8 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Text
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -85,6 +87,11 @@ fun BookOnPasswordSetupScreen(
                     uiState = uiState.passwordConfirm,
                     onValueChange = onPasswordConfirmChange,
                 )
+            }
+            uiState.errorText?.let { errorText ->
+                item {
+                    Text(text = errorText, color = MaterialTheme.colorScheme.error)
+                }
             }
             item {
                 BookOnPrivacyAgreementCard(

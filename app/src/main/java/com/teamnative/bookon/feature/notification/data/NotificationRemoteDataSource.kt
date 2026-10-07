@@ -5,6 +5,9 @@ import com.teamnative.bookon.core.network.NetworkResult
 import javax.inject.Inject
 
 interface NotificationRemoteDataSource {
+    suspend fun notifications(page: Int, size: Int): NetworkResult<NotificationPageDto>
+    suspend fun unreadCount(): NetworkResult<NotificationUnreadCountDto>
+
     suspend fun markRead(notificationId: Long): NetworkResult<NotificationReadResponseDto>
     suspend fun markAllRead(): NetworkResult<NotificationReadAllResponseDto>
 }
@@ -13,6 +16,14 @@ class NotificationRemoteDataSourceImpl @Inject constructor(
     private val api: NotificationApiService,
     private val executor: ApiExecutor,
 ) : NotificationRemoteDataSource {
+    override suspend fun notifications(page: Int, size: Int) = executor.execute {
+        api.notifications(page, size)
+    }
+
+    override suspend fun unreadCount() = executor.execute {
+        api.unreadCount()
+    }
+
     /** 단일 알림의 읽음 상태를 서버에 반영한다. */
     override suspend fun markRead(notificationId: Long) = executor.execute { api.markRead(notificationId) }
 

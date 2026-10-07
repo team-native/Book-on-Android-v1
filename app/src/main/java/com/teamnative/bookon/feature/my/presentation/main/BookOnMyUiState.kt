@@ -22,9 +22,12 @@ data class BookOnMyScreenUiState(
     ),
     val isReadingMarathonLinked: Boolean = false,
     val isProfileImageUploading: Boolean = false,
+    val isNotificationSaving: Boolean = false,
+    val notificationSaveError: BookOnUiMessage? = null,
     val isInitialLoading: Boolean = false,
     val isAccountDeletionInProgress: Boolean = false,
     val errorMessage: BookOnUiMessage? = null,
+    val read365ErrorMessage: BookOnUiMessage? = null,
     val profileImageErrorMessage: BookOnUiMessage? = null,
     val accountDeletionErrorMessage: BookOnUiMessage? = null,
 )

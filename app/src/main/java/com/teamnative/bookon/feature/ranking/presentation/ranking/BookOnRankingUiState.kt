@@ -11,5 +11,6 @@ data class BookOnRankingScreenUiState(
     val podium: BookOnRankingPodiumUiModel,
     val list: BookOnRankingListUiModel,
     val isInitialLoading: Boolean = false,
+    val isEmpty: Boolean = false,
     val errorMessage: BookOnUiMessage? = null,
 )

@@ -10,6 +10,7 @@ import com.teamnative.bookon.feature.auth.domain.AuthRepository
 import com.teamnative.bookon.feature.auth.domain.Read365Repository
 import dagger.Binds
 import dagger.Module
+import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
@@ -19,4 +20,8 @@ abstract class AuthDataModule {
     @Binds abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
     @Binds abstract fun bindRead365RemoteDataSource(impl: Read365RemoteDataSourceImpl): Read365RemoteDataSource
     @Binds abstract fun bindRead365Repository(impl: Read365RepositoryImpl): Read365Repository
+    companion object {
+        @Provides
+        fun provideVerificationClock(): java.time.Clock = java.time.Clock.systemUTC()
+    }
 }

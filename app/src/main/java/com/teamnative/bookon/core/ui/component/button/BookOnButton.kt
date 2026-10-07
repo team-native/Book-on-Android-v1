@@ -6,6 +6,13 @@ import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.padding
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
+import androidx.compose.ui.text.TextStyle
+import androidx.compose.ui.unit.Dp
+import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
@@ -41,9 +48,13 @@ fun BookOnPrimaryButton(
     modifier: Modifier = Modifier,
     enabled: Boolean = true,
     loading: Boolean = false,
+    containerColor: Color = MaterialTheme.colorScheme.primary,
+    shape: Shape = RoundedCornerShape(AppRadius.Button),
+    textStyle: TextStyle = bookOnTypography.button,
+    fixedHeight: Dp? = AppComponentSize.ButtonHeight,
 ) {
     val isClickable = enabled && !loading
-    val targetBackgroundColor = if (enabled) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant
+    val targetBackgroundColor = if (enabled) containerColor else MaterialTheme.colorScheme.surfaceVariant
     val targetContentColor = if (enabled) MaterialTheme.colorScheme.surface else MaterialTheme.colorScheme.onSurfaceVariant
     val backgroundColor by animateColorAsState(targetValue = targetBackgroundColor)
     val contentColor by animateColorAsState(targetValue = targetContentColor)
@@ -52,12 +63,18 @@ fun BookOnPrimaryButton(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .height(AppComponentSize.ButtonHeight)
+            .then(
+                if (fixedHeight != null) {
+                    Modifier.height(fixedHeight)
+                } else {
+                    Modifier.heightIn(min = AppComponentSize.ButtonHeight)
+                },
+            )
             .shadow(
                 elevation = if (enabled) AppElevation.Button else AppElevation.None,
-                shape = RoundedCornerShape(AppRadius.Button),
+                shape = shape,
             )
-            .clip(RoundedCornerShape(AppRadius.Button))
+            .clip(shape)
             .background(backgroundColor)
             .semantics {
                 if (!enabled) disabled()
@@ -67,6 +84,13 @@ fun BookOnPrimaryButton(
                 enabled = isClickable,
                 role = Role.Button,
                 onClick = onClick,
+            )
+            .then(
+                if (fixedHeight == null) {
+                    Modifier.padding(vertical = AppSpacing.Medium)
+                } else {
+                    Modifier
+                },
             ),
         contentAlignment = Alignment.Center,
     ) {
@@ -79,7 +103,7 @@ fun BookOnPrimaryButton(
         } else {
             Text(
                 text = text,
-                style = bookOnTypography.button,
+                style = textStyle,
                 color = contentColor,
             )
         }

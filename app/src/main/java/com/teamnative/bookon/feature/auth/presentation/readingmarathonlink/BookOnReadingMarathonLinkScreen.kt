@@ -105,6 +105,8 @@ fun BookOnReadingMarathonLinkScreen(
 
         Spacer(modifier = Modifier.height(AuthOauthTopSpacing))
 
+        Text(text = stringResource(R.string.oauth_preparing))
+
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.Center,
@@ -112,24 +114,27 @@ fun BookOnReadingMarathonLinkScreen(
         ) {
             BookOnMarathonCircleAction(
                 iconRes = R.drawable.oauth_google,
-                contentDescription = stringResource(R.string.oauth_google_description),
+                contentDescription = stringResource(R.string.oauth_preparing_description, stringResource(R.string.oauth_google_description)),
                 onSelected = onOauthClick,
+                enabled = false,
             )
 
             Spacer(modifier = Modifier.width(AppSpacing.Section))
 
             BookOnMarathonCircleAction(
                 iconRes = R.drawable.oauth_naver,
-                contentDescription = stringResource(R.string.oauth_naver_description),
+                contentDescription = stringResource(R.string.oauth_preparing_description, stringResource(R.string.oauth_naver_description)),
                 onSelected = onOauthClick,
+                enabled = false,
             )
 
             Spacer(modifier = Modifier.width(AppSpacing.Section))
 
             BookOnMarathonCircleAction(
                 iconRes = R.drawable.oauth_kakao,
-                contentDescription = stringResource(R.string.oauth_kakao_description),
+                contentDescription = stringResource(R.string.oauth_preparing_description, stringResource(R.string.oauth_kakao_description)),
                 onSelected = onOauthClick,
+                enabled = false,
             )
         }
     }

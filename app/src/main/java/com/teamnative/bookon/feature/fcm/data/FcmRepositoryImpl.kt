@@ -9,12 +9,48 @@ import javax.inject.Inject
 class FcmRepositoryImpl @Inject constructor(
     private val remote: FcmRemoteDataSource,
 ) : FcmRepository {
-    override suspend fun registerToken(token: String, platform: String): NetworkResult<FcmTokenRegistration> =
-        remote.registerToken(FcmTokenRegisterRequestDto(token = token, platform = platform))
-            .map { FcmTokenRegistration(it.registered) }
+    override suspend fun registerToken(
+        token: String,
+        platform: String
+    ): NetworkResult<FcmTokenRegistration> =
+    remote.registerToken(FcmTokenRegisterRequestDto(
+            token = token,
+            platform = platform
+    ))
+    .map {
+        FcmTokenRegistration(it.registered)
+    }
+
+    override suspend fun registerToken(
+        token: String,
+        snapshot: com.teamnative.bookon.core.network.auth.SessionSnapshot
+    ): NetworkResult<FcmTokenRegistration> =
+    remote.registerToken(
+        FcmTokenRegisterRequestDto(
+            token = token,
+            platform = "android"
+        ),
+        snapshot
+    )
+    .map {
+        FcmTokenRegistration(it.registered)
+    }
+
+    override suspend fun unregisterToken(
+        token: String,
+        cleanup: com.teamnative.bookon.feature.auth.domain.SessionCleanupHandle
+    ): NetworkResult<FcmTokenUnregistration> =
+    remote.unregisterToken(
+        token,
+        cleanup
+    ).map {
+        FcmTokenUnregistration(it.unregistered)
+    }
 
     override suspend fun unregisterToken(token: String): NetworkResult<FcmTokenUnregistration> =
-        remote.unregisterToken(token).map { FcmTokenUnregistration(it.unregistered) }
+    remote.unregisterToken(token).map {
+        FcmTokenUnregistration(it.unregistered)
+    }
 }
 
 private fun <T, R> NetworkResult<T>.map(transform: (T) -> R): NetworkResult<R> = when (this) {

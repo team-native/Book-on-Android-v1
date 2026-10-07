@@ -7,18 +7,25 @@ import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.HTTP
 import retrofit2.http.POST
+import retrofit2.http.Tag
 
 /** 실서버 명세(POST/DELETE /me/fcm-token)에 맞춘 FCM 등록 토큰 등록·해제 HTTP 계약이다. */
 interface FcmApiService {
     @POST("me/fcm-token")
     suspend fun registerToken(
         @Body request: FcmTokenRegisterRequestDto,
+        @Tag snapshot: com.teamnative.bookon.core.network.auth.SessionSnapshot? = null,
     ): Response<ApiEnvelope<FcmTokenRegisterResponseDto>>
 
     // Retrofit의 @DELETE는 @Body를 지원하지 않으므로 hasBody=true인 @HTTP를 사용한다.
-    @HTTP(method = "DELETE", path = "me/fcm-token", hasBody = true)
+    @HTTP(
+        method = "DELETE",
+        path = "me/fcm-token",
+        hasBody = true
+    )
     suspend fun unregisterToken(
         @Body request: FcmTokenUnregisterRequestDto,
+        @Tag cleanup: com.teamnative.bookon.core.network.auth.SessionCleanupAuthorization? = null,
     ): Response<ApiEnvelope<FcmTokenUnregisterResponseDto>>
 }
 
