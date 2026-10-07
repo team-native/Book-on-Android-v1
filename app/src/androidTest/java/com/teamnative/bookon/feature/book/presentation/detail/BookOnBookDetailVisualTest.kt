@@ -9,6 +9,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.asAndroidBitmap
 import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.test.assertTextEquals
 import androidx.compose.ui.test.assertIsDisplayed
 import androidx.compose.ui.test.assertIsEnabled
 import androidx.compose.ui.test.assertIsNotEnabled
@@ -50,11 +51,14 @@ class BookOnBookDetailVisualTest {
         compose.onNodeWithTag("book_detail_loan").assertDoesNotExist()
         val coverBounds = compose.onNodeWithTag("book_detail_cover").fetchSemanticsNode().boundsInRoot
         assertEquals(2f / 3f, coverBounds.width / coverBounds.height, 0.01f)
+        compose.onNodeWithTag("book_detail_favorite_button").assertIsDisplayed().assertTextEquals("관심도서 추가")
+        val buttonBounds = compose.onNodeWithTag("book_detail_favorite_button").fetchSemanticsNode().boundsInRoot
         val actionBounds = compose.onNodeWithTag("book_detail_favorite").fetchSemanticsNode().boundsInRoot
         saveScreenshot("available")
         compose.onNodeWithTag("book_detail_content").performScrollToNode(hasText("책 소개"))
         compose.onNodeWithText("책 소개").assertIsDisplayed()
         compose.onNodeWithTag("book_detail_favorite").assertIsDisplayed()
+        assertEquals(buttonBounds, compose.onNodeWithTag("book_detail_favorite_button").fetchSemanticsNode().boundsInRoot)
         assertEquals(actionBounds, compose.onNodeWithTag("book_detail_favorite").fetchSemanticsNode().boundsInRoot)
     }
 
@@ -80,6 +84,8 @@ class BookOnBookDetailVisualTest {
         }
         compose.onNodeWithContentDescription("관심 도서에서 삭제").assertIsDisplayed().performClick()
         compose.runOnIdle { assertEquals(BookOnBookDetailScreenEvent.FavoriteClicked, event) }
+        compose.onNodeWithTag("book_detail_favorite_button").assertTextEquals("관심도서 제외").performClick()
+        compose.runOnIdle { assertEquals(BookOnBookDetailScreenEvent.FavoriteClicked, event) }
         saveScreenshot("favorite")
     }
 
@@ -87,14 +93,64 @@ class BookOnBookDetailVisualTest {
     fun pendingMutationCannotBeSubmitted() {
         render(content().copy(isFavoriteSubmitting = true))
         compose.onNodeWithTag("book_detail_favorite").assertIsNotEnabled()
+        compose.onNodeWithTag("book_detail_favorite_button").assertIsNotEnabled()
         compose.onNodeWithTag("book_detail_loan").assertDoesNotExist()
+    }
+
+    @Test
+    fun refreshDisablesBothFavoriteControls() {
+        compose.setContent {
+            BookOnTheme {
+                BookOnBookDetailScreen(
+                    state = BookOnBookDetailState(
+                        content = content(),
+                        isInitialLoading = false,
+                        isRefreshing = true,
+                    ),
+                    onEvent = {},
+                )
+            }
+        }
+        compose.onNodeWithTag("book_detail_favorite").assertIsNotEnabled()
+        compose.onNodeWithTag("book_detail_favorite_button").assertIsNotEnabled()
+    }
+
+    @Test
+    fun bothControlsReflectTheSameFavoriteState() {
+        val detailContent = mutableStateOf(content())
+        var favoriteClicks = 0
+        compose.setContent {
+            BookOnTheme {
+                BookOnBookDetailScreen(
+                    state = BookOnBookDetailState(content = detailContent.value, isInitialLoading = false),
+                    onEvent = { screenEvent ->
+                        if (screenEvent == BookOnBookDetailScreenEvent.FavoriteClicked) {
+                            favoriteClicks++
+                        }
+                    },
+                )
+            }
+        }
+        compose.onNodeWithTag("book_detail_favorite_button").assertTextEquals("관심도서 추가").performClick()
+        compose.runOnIdle {
+            assertEquals(1, favoriteClicks)
+            detailContent.value = detailContent.value.copy(isFavorite = true)
+        }
+        compose.onNodeWithContentDescription("관심 도서에서 삭제").assertIsDisplayed().performClick()
+        compose.onNodeWithTag("book_detail_favorite_button").assertTextEquals("관심도서 제외")
+        compose.runOnIdle {
+            assertEquals(2, favoriteClicks)
+            detailContent.value = detailContent.value.copy(isFavorite = false)
+        }
+        compose.onNodeWithContentDescription("관심 도서로 추가").assertIsDisplayed()
+        compose.onNodeWithTag("book_detail_favorite_button").assertTextEquals("관심도서 추가")
     }
 
     @Test
     fun missingDataAndLargeFontOnNarrowDarkScreenRemainReadable() {
         compose.setContent {
             val density = LocalDensity.current.density
-            CompositionLocalProvider(LocalDensity provides Density(density, 1.6f)) {
+            CompositionLocalProvider(LocalDensity provides Density(density, 2f)) {
                 BookOnTheme(themeMode = BookOnThemeMode.DARK) {
                     Box(modifier = Modifier.width(320.dp).fillMaxHeight()) {
                         BookOnBookDetailScreen(
@@ -118,6 +174,10 @@ class BookOnBookDetailVisualTest {
         compose.onNodeWithTag("book_detail_loan").assertDoesNotExist()
         compose.onNodeWithTag("book_detail_content").performScrollToNode(hasText("책 소개"))
         compose.onNodeWithText("책 소개가 없습니다.").assertIsDisplayed()
+        compose.onNodeWithTag("book_detail_favorite_button").assertIsDisplayed().assertTextEquals("관심도서 추가")
+        val heart = compose.onNodeWithTag("book_detail_favorite").fetchSemanticsNode().boundsInRoot
+        val button = compose.onNodeWithTag("book_detail_favorite_button").fetchSemanticsNode().boundsInRoot
+        assertTrue(heart.right <= button.left)
         saveScreenshot("dark-large-font")
     }
 

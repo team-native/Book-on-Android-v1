@@ -2,6 +2,10 @@ package com.teamnative.bookon.feature.book.presentation.detail.view.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.ui.Alignment
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -24,6 +28,8 @@ import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
+import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
+import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.book.presentation.detail.viewmodel.BookOnBookDetailScreenUiState
 
 @Composable
@@ -51,6 +57,8 @@ fun BookOnBookDetailActions(
                     horizontal = AppSpacing.BookDetailFavoriteHorizontal,
                     vertical = AppSpacing.Item,
                 ),
+            horizontalArrangement = Arrangement.spacedBy(AppSpacing.Item),
+            verticalAlignment = Alignment.CenterVertically,
         ) {
             IconToggleButton(
                 checked = uiState.isFavorite,
@@ -89,6 +97,26 @@ fun BookOnBookDetailActions(
                     )
                 }
             }
+            BookOnPrimaryButton(
+                text = stringResource(
+                    if (uiState.isFavorite) {
+                        R.string.book_detail_favorite_remove
+                    } else {
+                        R.string.book_detail_favorite_add
+                    },
+                ),
+                onClick = onFavoriteClick,
+                modifier = Modifier
+                    .weight(1f)
+                    .heightIn(min = AppComponentSize.BookDetailActionMinHeight)
+                    .testTag("book_detail_favorite_button"),
+                enabled = !isPending,
+                loading = uiState.isFavoriteSubmitting,
+                containerColor = MaterialTheme.colorScheme.secondary,
+                shape = RoundedCornerShape(AppRadius.LargeCard),
+                textStyle = bookOnTypography.bookDetailAction,
+                fixedHeight = null,
+            )
         }
     }
 }
