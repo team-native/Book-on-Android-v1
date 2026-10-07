@@ -1,12 +1,14 @@
 package com.teamnative.bookon.feature.auth.presentation.readingmarathonlink
 
 import androidx.compose.ui.test.junit4.createComposeRule
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performClick
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.ui.model.BookOnPasswordFieldUiModel
 import com.teamnative.bookon.core.ui.model.BookOnTextFieldUiModel
 import com.teamnative.bookon.feature.auth.presentation.model.BookOnMarathonAgreementUiModel
+import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
@@ -42,6 +44,34 @@ class BookOnReadingMarathonLinkScreenTest {
 
         composeTestRule.runOnIdle {
             assertTrue(isRead365WebsiteOpened)
+        }
+    }
+
+    @Test
+    fun socialButtonsInvokeSharedNoticeCallbackWithoutCompletingLink() {
+        var noticeCount = 0
+        var completeCount = 0
+        composeTestRule.setContent {
+            BookOnTheme {
+                BookOnReadingMarathonLinkScreen(
+                    uiState = createReadingMarathonLinkUiState(),
+                    onBackClick = {},
+                    onIdChange = {},
+                    onPasswordChange = {},
+                    onAgreementChange = {},
+                    onOpenRead365Click = {},
+                    onOauthClick = { noticeCount++ },
+                    onSkipClick = {},
+                    onCompleteClick = { completeCount++ },
+                )
+            }
+        }
+        listOf("구글 계정 연동", "네이버 계정 연동", "카카오 계정 연동").forEachIndexed { index, description ->
+            composeTestRule.onNodeWithContentDescription(description).performClick()
+            composeTestRule.runOnIdle {
+                assertEquals(index + 1, noticeCount)
+                assertEquals(0, completeCount)
+            }
         }
     }
 

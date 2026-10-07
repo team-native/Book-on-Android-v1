@@ -256,4 +256,5 @@
     <string name="oauth_preparing_description">%1$s · 준비 중</string>
     <string name="password_reset_expired">인증번호가 만료됐어요. 다시 발송해 주세요.</string>
     <string name="signup_complete_generic_message">가입이 완료됐어요. 로그인하고 Book-on을 시작해 보세요.</string>
+    <string name="reading_marathon_oauth_not_ready">아직 준비 중입니다.</string>
 </resources>

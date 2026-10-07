@@ -4,6 +4,7 @@ import android.content.ActivityNotFoundException
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.widget.Toast
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -61,7 +62,13 @@ fun BookOnReadingMarathonLinkRoute(
         onPasswordChange = { password = it },
         onAgreementChange = { agreementChecked = it },
         onOpenRead365Click = { openRead365Website(currentContext) },
-        onOauthClick = {},
+        onOauthClick = {
+            Toast.makeText(
+                currentContext.applicationContext,
+                R.string.reading_marathon_oauth_not_ready,
+                Toast.LENGTH_SHORT,
+            ).show()
+        },
         onSkipClick = onSkipClick,
         onCompleteClick = { viewModel.link(marathonId, password, onCompleteClick) },
     )
