@@ -1,5 +1,6 @@
 package com.teamnative.bookon.feature.ranking.presentation.ranking
 
+import com.teamnative.bookon.feature.ranking.presentation.component.BookOnRankingSkeletonContent
 import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.foundation.layout.Arrangement
@@ -37,6 +38,10 @@ fun BookOnRankingScreen(
         bottomBar = bottomBar,
         containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
+        if (uiState.isInitialLoading) {
+            BookOnRankingSkeletonContent(Modifier.padding(innerPadding))
+            return@Scaffold
+        }
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
             contentPadding = PaddingValues(AppSpacing.ScreenHorizontal),

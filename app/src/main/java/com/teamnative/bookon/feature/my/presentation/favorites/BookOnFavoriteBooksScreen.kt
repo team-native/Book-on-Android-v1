@@ -1,5 +1,6 @@
 package com.teamnative.bookon.feature.my.presentation.favorites
 
+import com.teamnative.bookon.feature.my.presentation.component.BookOnFavoriteBooksSkeletonContent
 import androidx.compose.material3.MaterialTheme
 
 import androidx.compose.foundation.Image
@@ -55,6 +56,10 @@ fun BookOnFavoriteBooksScreen(
             )
         },
     ) { innerPadding ->
+        if (uiState.isInitialLoading) {
+            BookOnFavoriteBooksSkeletonContent(Modifier.padding(innerPadding))
+            return@Scaffold
+        }
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
             contentPadding = PaddingValues(AppSpacing.ScreenHorizontal),

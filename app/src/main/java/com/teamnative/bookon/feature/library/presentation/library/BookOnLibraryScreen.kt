@@ -1,5 +1,6 @@
 package com.teamnative.bookon.feature.library.presentation.library
 
+import com.teamnative.bookon.feature.library.presentation.component.BookOnLibrarySkeletonContent
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
@@ -46,6 +47,10 @@ fun BookOnLibraryScreen(
         bottomBar = bottomBar,
         containerColor = MaterialTheme.colorScheme.surface,
     ) { innerPadding ->
+        if (uiState.isInitialLoading) {
+            BookOnLibrarySkeletonContent(Modifier.padding(innerPadding))
+            return@Scaffold
+        }
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.padding(innerPadding),

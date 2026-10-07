@@ -1,5 +1,6 @@
 package com.teamnative.bookon.feature.book.presentation.detail.view
 
+import com.teamnative.bookon.feature.book.presentation.detail.view.component.BookOnBookDetailSkeletonContent
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -80,7 +81,9 @@ fun BookOnBookDetailScreen(
                 }
             },
         ) { innerPadding ->
-            if (content == null) {
+            if (content == null && state.isInitialLoading) {
+                BookOnBookDetailSkeletonContent(Modifier.padding(innerPadding))
+            } else if (content == null) {
                 BookOnBookDetailStatus(
                     isLoading = state.isInitialLoading,
                     errorMessage = state.errorMessage,
