@@ -15,6 +15,7 @@ fun BookOnRemoteBookCover(
     coverImageUrl: String?,
     placeholderColor: Color,
     modifier: Modifier = Modifier,
+    contentScale: ContentScale = ContentScale.Crop,
 ) {
     val placeholderPainter = ColorPainter(placeholderColor)
 
@@ -24,7 +25,7 @@ fun BookOnRemoteBookCover(
         placeholder = placeholderPainter,
         error = placeholderPainter,
         fallback = placeholderPainter,
-        contentScale = ContentScale.Crop,
+        contentScale = contentScale,
         modifier = modifier,
     )
 }

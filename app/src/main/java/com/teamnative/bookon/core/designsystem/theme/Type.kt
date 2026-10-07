@@ -63,9 +63,44 @@ data class BookOnExtraTypography(
     val badge: TextStyle,
     val bookTitle: TextStyle,
     val bookMeta: TextStyle,
+    val bookDetailAction: TextStyle,
+    val bookDetailTitle: TextStyle,
+    val bookDetailAuthor: TextStyle,
+    val bookDetailIntro: TextStyle,
+    val bookDetailInfoValue: TextStyle,
 )
 
 internal val DefaultBookOnExtraTypography = BookOnExtraTypography(
+    bookDetailAction = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 16.sp,
+        lineHeight = 20.sp,
+    ),
+    bookDetailTitle = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 24.sp,
+        lineHeight = 29.sp,
+    ),
+    bookDetailAuthor = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.SemiBold,
+        fontSize = 14.sp,
+        lineHeight = 17.sp,
+    ),
+    bookDetailIntro = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.Medium,
+        fontSize = 12.sp,
+        lineHeight = 20.sp,
+    ),
+    bookDetailInfoValue = TextStyle(
+        fontFamily = PretendardFontFamily,
+        fontWeight = FontWeight.Bold,
+        fontSize = 14.sp,
+        lineHeight = 20.sp,
+    ),
     screenTitle = TextStyle(
         fontFamily = PretendardFontFamily,
         fontWeight = FontWeight.Medium,

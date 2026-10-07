@@ -248,4 +248,19 @@
     <string name="error_load_my_page">내 서재 정보를 불러오지 못했습니다.</string>
     <string name="error_upload_profile_image">프로필 이미지를 변경하지 못했습니다. 다시 시도해 주세요.</string>
     <string name="error_load_ranking">랭킹을 불러오지 못했습니다.</string>
+    <string name="favorite_add_description">관심 도서로 추가</string>
+    <string name="favorite_remove_description">관심 도서에서 삭제</string>
+    <string name="book_detail_load_error">도서 상세 정보를 불러오지 못했습니다.</string>
+    <string name="book_detail_action_error">요청을 처리하지 못했습니다. 다시 시도해 주세요.</string>
+    <string name="book_detail_unknown">--</string>
+    <string name="book_detail_quantity">%1$d권</string>
+    <string name="book_detail_total_quantity">전체 수량</string>
+    <string name="book_detail_available_quantity">대출 가능 수량</string>
+    <string name="book_detail_no_intro">책 소개가 없습니다.</string>
+    <string name="loan_available">대출 가능</string>
+    <string name="book_detail_stock_pair">전체 %1$s\n대출 가능 %2$s</string>
+    <string name="book_detail_back">뒤로가기</string>
+    <string name="book_detail_title_description">도서 상세</string>
+    <string name="book_detail_favorite_add">관심도서 추가</string>
+    <string name="book_detail_favorite_remove">관심도서 제외</string>
 </resources>
