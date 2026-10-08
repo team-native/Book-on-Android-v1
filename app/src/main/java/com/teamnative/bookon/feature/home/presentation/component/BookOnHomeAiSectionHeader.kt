@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -12,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -51,15 +50,15 @@ fun BookOnHomeAiSectionHeader(
                 overflow = TextOverflow.Ellipsis,
             )
             if (badgeText != null) {
-
                 Spacer(modifier = Modifier.width(AppSpacing.Small))
 
                 Row(
-                    modifier = Modifier
-                        .height(HomeAiBadgeHeight)
-                        .clip(RoundedCornerShape(AppRadius.Small))
-                        .background(MaterialTheme.colorScheme.primary)
-                        .padding(horizontal = AppSpacing.Small),
+                    modifier =
+                        Modifier
+                            .height(HomeAiBadgeHeight)
+                            .clip(RoundedCornerShape(AppRadius.Small))
+                            .background(MaterialTheme.colorScheme.primary)
+                            .padding(horizontal = AppSpacing.Small),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     Text(
@@ -74,10 +73,11 @@ fun BookOnHomeAiSectionHeader(
 
             if (actionText != null && onActionClick != null) {
                 Text(
-                    modifier = Modifier
-                        .clip(RoundedCornerShape(AppRadius.Small))
-                        .clickable(role = Role.Button, onClick = onActionClick)
-                        .padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Tiny),
+                    modifier =
+                        Modifier
+                            .clip(RoundedCornerShape(AppRadius.Small))
+                            .clickable(role = Role.Button, onClick = onActionClick)
+                            .padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Tiny),
                     text = actionText,
                     style = bookOnTypography.caption,
                     color = MaterialTheme.colorScheme.secondary,

@@ -8,9 +8,11 @@ interface MarathonRemoteDataSource {
     suspend fun myInfo(): NetworkResult<Read365MyInfoDto>
 }
 
-class MarathonRemoteDataSourceImpl @Inject constructor(
-    private val api: MarathonApiService,
-    private val executor: ApiExecutor,
-) : MarathonRemoteDataSource {
-    override suspend fun myInfo() = executor.execute { api.myInfo() }
-}
+class MarathonRemoteDataSourceImpl
+    @Inject
+    constructor(
+        private val api: MarathonApiService,
+        private val executor: ApiExecutor,
+    ) : MarathonRemoteDataSource {
+        override suspend fun myInfo() = executor.execute { api.myInfo() }
+    }

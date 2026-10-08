@@ -74,13 +74,15 @@ fun BookOnPasswordResetVerificationScreen(
 private fun BookOnPasswordResetVerificationScreenPreview() {
     BookOnTheme {
         BookOnPasswordResetVerificationScreen(
-            uiState = defaultPasswordResetUiState().copy(
-                title = stringResource(R.string.password_reset_verification_title),
-                description = stringResource(
-                    R.string.password_reset_verification_description,
-                    "s26031",
+            uiState =
+                defaultPasswordResetUiState().copy(
+                    title = stringResource(R.string.password_reset_verification_title),
+                    description =
+                        stringResource(
+                            R.string.password_reset_verification_description,
+                            "s26031",
+                        ),
                 ),
-            ),
             onEvent = {},
         )
     }

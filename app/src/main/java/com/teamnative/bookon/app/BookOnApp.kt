@@ -1,19 +1,19 @@
 package com.teamnative.bookon.app
 
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.material3.Button
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
@@ -33,21 +33,32 @@ internal fun BookOnApp(pendingDeepLink: BookOnPendingDeepLink? = null) {
     val sessionViewModel: BookOnSessionViewModel = hiltViewModel()
     val sessionUiState by sessionViewModel.uiState.collectAsStateWithLifecycle()
     when (sessionUiState) {
-        BookOnSessionUiState.Checking -> BookOnLoadingScreen()
-        BookOnSessionUiState.Authenticated -> BookOnNavHost(
-            isInitiallyAuthenticated = true,
-            pendingDeepLink = pendingDeepLink,
-            onLogout = sessionViewModel::logout,
-        )
-        BookOnSessionUiState.Unauthenticated -> BookOnNavHost(
-            isInitiallyAuthenticated = false,
-            pendingDeepLink = pendingDeepLink,
-            onLogout = sessionViewModel::logout,
-        )
-        BookOnSessionUiState.RetryableError -> BookOnSessionRetryScreen(
-            onRetryClick = sessionViewModel::retryAutoLogin,
-            onLoginClick = sessionViewModel::logout,
-        )
+        BookOnSessionUiState.Checking -> {
+            BookOnLoadingScreen()
+        }
+
+        BookOnSessionUiState.Authenticated -> {
+            BookOnNavHost(
+                isInitiallyAuthenticated = true,
+                pendingDeepLink = pendingDeepLink,
+                onLogout = sessionViewModel::logout,
+            )
+        }
+
+        BookOnSessionUiState.Unauthenticated -> {
+            BookOnNavHost(
+                isInitiallyAuthenticated = false,
+                pendingDeepLink = pendingDeepLink,
+                onLogout = sessionViewModel::logout,
+            )
+        }
+
+        BookOnSessionUiState.RetryableError -> {
+            BookOnSessionRetryScreen(
+                onRetryClick = sessionViewModel::retryAutoLogin,
+                onLoginClick = sessionViewModel::logout,
+            )
+        }
     }
 }
 
@@ -59,10 +70,11 @@ private fun BookOnSessionRetryScreen(
 ) {
     Scaffold { innerPadding ->
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(innerPadding)
-                .padding(AppSpacing.ScreenHorizontal),
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .padding(innerPadding)
+                    .padding(AppSpacing.ScreenHorizontal),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.Center,
         ) {

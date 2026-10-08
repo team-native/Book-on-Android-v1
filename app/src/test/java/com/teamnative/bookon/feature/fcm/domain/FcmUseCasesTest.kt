@@ -7,29 +7,33 @@ import org.junit.Test
 
 class FcmUseCasesTest {
     @Test
-    fun `기기 토큰이 없으면 등록을 서버에 요청하지 않는다`() = kotlinx.coroutines.test.runTest {
-        val fcmTokenProvider = FakeFcmTokenProvider(token = null)
-        val repository = RecordingFcmRepository()
-        val useCase = SyncFcmTokenOnAuthenticationUseCase(fcmTokenProvider, RegisterFcmTokenUseCase(repository))
+    fun `기기 토큰이 없으면 등록을 서버에 요청하지 않는다`() =
+        kotlinx.coroutines.test.runTest {
+            val fcmTokenProvider = FakeFcmTokenProvider(token = null)
+            val repository = RecordingFcmRepository()
+            val useCase = SyncFcmTokenOnAuthenticationUseCase(fcmTokenProvider, RegisterFcmTokenUseCase(repository))
 
-        useCase()
+            useCase()
 
-        assertFalse(repository.registerInvoked)
-    }
+            assertFalse(repository.registerInvoked)
+        }
 
     @Test
-    fun `기기 토큰이 없으면 해제를 서버에 요청하지 않는다`() = kotlinx.coroutines.test.runTest {
-        val fcmTokenProvider = FakeFcmTokenProvider(token = null)
-        val repository = RecordingFcmRepository()
-        val useCase = ClearFcmTokenOnLogoutUseCase(fcmTokenProvider, UnregisterFcmTokenUseCase(repository))
+    fun `기기 토큰이 없으면 해제를 서버에 요청하지 않는다`() =
+        kotlinx.coroutines.test.runTest {
+            val fcmTokenProvider = FakeFcmTokenProvider(token = null)
+            val repository = RecordingFcmRepository()
+            val useCase = ClearFcmTokenOnLogoutUseCase(fcmTokenProvider, UnregisterFcmTokenUseCase(repository))
 
-        useCase()
+            useCase()
 
-        assertFalse(repository.unregisterInvoked)
-    }
+            assertFalse(repository.unregisterInvoked)
+        }
 }
 
-private class FakeFcmTokenProvider(private val token: String?) : FcmTokenProvider {
+private class FakeFcmTokenProvider(
+    private val token: String?,
+) : FcmTokenProvider {
     override suspend fun currentToken(): String? = token
 }
 
@@ -39,7 +43,10 @@ private class RecordingFcmRepository : FcmRepository {
     var unregisterInvoked = false
         private set
 
-    override suspend fun registerToken(token: String, platform: String): NetworkResult<FcmTokenRegistration> {
+    override suspend fun registerToken(
+        token: String,
+        platform: String,
+    ): NetworkResult<FcmTokenRegistration> {
         registerInvoked = true
         return NetworkResult.Success(FcmTokenRegistration(registered = true))
     }

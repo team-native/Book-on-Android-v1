@@ -7,8 +7,8 @@ import android.view.WindowInsets
 import android.view.WindowInsetsController
 import androidx.activity.compose.setContent
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
-import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onAllNodesWithTag
+import androidx.compose.ui.test.onNodeWithContentDescription
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.test.platform.app.InstrumentationRegistry
 import com.teamnative.bookon.MainActivity
@@ -18,11 +18,11 @@ import com.teamnative.bookon.core.ui.model.BookOnUiMessage
 import com.teamnative.bookon.feature.book.presentation.detail.view.BookOnBookDetailScreen
 import com.teamnative.bookon.feature.book.presentation.detail.viewmodel.BookOnBookDetailState
 import com.teamnative.bookon.feature.book.presentation.detail.viewmodel.sampleBookDetailUiState
-import java.io.File
-import kotlin.math.abs
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import java.io.File
+import kotlin.math.abs
 
 class BookOnDetailSystemBarsTest {
     @get:Rule
@@ -37,11 +37,15 @@ class BookOnDetailSystemBarsTest {
         }
         render(
             BookOnBookDetailState(
-                content = sampleBookDetailUiState(true).copy(
-                    coverImageUrl = cover.toURI().toString(),
-                    libraryNumber = "000",
-                    intro = "《토마토 컵라면》은 상처와 고민을 안고 살아가는 사람들이 우연한 만남을 통해 서로를 이해하고 위로받는 과정을 그린 이야기이다. 토마토 컵라면은 인물들의 추억과 마음을 이어 주는 상징적인 매개체로 등장한다. 이 책은 작은 일상의 소중함과 사람 사이의 따뜻한 관계가 삶에 큰 힘이 될 수 있다는 메시지를 전한다.",
-                ),
+                content =
+                    sampleBookDetailUiState(true).copy(
+                        coverImageUrl = cover.toURI().toString(),
+                        libraryNumber = "000",
+                        intro =
+                            "《토마토 컵라면》은 상처와 고민을 안고 살아가는 사람들이 우연한 만남을 통해 서로를 이해하고 위로받는 과정을 그린 이야기이다. 토마토 컵라면은 " +
+                                "인물들의 추억과 마음을 이어 주는 상징적인 매개체로 등장한다. 이 책은 작은 일상의 소중함과 사람 사이의 따뜻한 관계가 삶에 큰 힘이 될 수 있다는 " +
+                                "메시지를 전한다.",
+                    ),
                 isInitialLoading = false,
             ),
         )
@@ -52,11 +56,12 @@ class BookOnDetailSystemBarsTest {
         val systemInsets = compose.activity.window.decorView.rootWindowInsets
         val statusHeight = systemInsets.getInsets(WindowInsets.Type.statusBars()).top
         val navigationHeight = systemInsets.getInsets(WindowInsets.Type.navigationBars()).bottom
-        val screenHeight = InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot().let {
-            val height = it.height
-            it.recycle()
-            height
-        }
+        val screenHeight =
+            InstrumentationRegistry.getInstrumentation().uiAutomation.takeScreenshot().let {
+                val height = it.height
+                it.recycle()
+                height
+            }
         val back = compose.onNodeWithContentDescription("뒤로가기").fetchSemanticsNode().boundsInRoot
         val favorite = compose.onNodeWithTag("book_detail_favorite").fetchSemanticsNode().boundsInRoot
         assertTrue(back.top >= statusHeight)
@@ -84,7 +89,9 @@ class BookOnDetailSystemBarsTest {
         }
         compose.waitForIdle()
         compose.runOnUiThread {
-            val appearance = compose.activity.window.insetsController?.systemBarsAppearance ?: 0
+            val appearance =
+                compose.activity.window.insetsController
+                    ?.systemBarsAppearance ?: 0
             assertTrue(appearance and WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS != 0)
         }
     }

@@ -4,9 +4,9 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.assertIsOff
 import androidx.compose.ui.test.assertIsOn
-import androidx.compose.ui.test.assertHasNoClickAction
 import androidx.compose.ui.test.junit4.createComposeRule
 import androidx.compose.ui.test.onNodeWithTag
 import androidx.compose.ui.test.performClick
@@ -28,9 +28,10 @@ class BookOnNotificationSettingsBottomSheetContentTest {
                 BookOnNotificationSettingsBottomSheetContent(
                     notificationSelections = selections,
                     onCheckedChange = { index, checked ->
-                        selections = selections.mapIndexed { selectionIndex, selected ->
-                            if (selectionIndex == index) checked else selected
-                        }
+                        selections =
+                            selections.mapIndexed { selectionIndex, selected ->
+                                if (selectionIndex == index) checked else selected
+                            }
                     },
                     onCompleteClick = {},
                 )

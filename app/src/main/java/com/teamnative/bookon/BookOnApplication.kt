@@ -9,15 +9,19 @@ import javax.inject.Inject
 
 /** 앱 전체 의존성 그래프를 초기화하고, 커스텀 WorkManager 설정과 알림 채널을 준비한다. */
 @HiltAndroidApp
-class BookOnApplication : Application(), Configuration.Provider {
-
+class BookOnApplication :
+    Application(),
+    Configuration.Provider {
     @Inject lateinit var hiltWorkerFactory: HiltWorkerFactory
+
     @Inject lateinit var notificationChannelInstaller: BookOnNotificationChannelInstaller
 
     override val workManagerConfiguration: Configuration
-        get() = Configuration.Builder()
-            .setWorkerFactory(hiltWorkerFactory)
-            .build()
+        get() =
+            Configuration
+                .Builder()
+                .setWorkerFactory(hiltWorkerFactory)
+                .build()
 
     override fun onCreate() {
         super.onCreate()

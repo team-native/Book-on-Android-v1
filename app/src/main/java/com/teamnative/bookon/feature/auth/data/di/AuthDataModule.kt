@@ -13,10 +13,14 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-@Module @InstallIn(SingletonComponent::class)
+@Module
+@InstallIn(SingletonComponent::class)
 abstract class AuthDataModule {
     @Binds abstract fun bindAuthRemoteDataSource(impl: AuthRemoteDataSourceImpl): AuthRemoteDataSource
+
     @Binds abstract fun bindAuthRepository(impl: AuthRepositoryImpl): AuthRepository
+
     @Binds abstract fun bindRead365RemoteDataSource(impl: Read365RemoteDataSourceImpl): Read365RemoteDataSource
+
     @Binds abstract fun bindRead365Repository(impl: Read365RepositoryImpl): Read365Repository
 }

@@ -4,9 +4,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Button
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -33,9 +33,12 @@ fun BookOnHomeScreen(
     onRetryClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val userName = uiState.userName.takeIf { name -> name.isNotBlank() }?.let { name ->
-        stringResource(R.string.user_name_suffix, name)
-    }.orEmpty()
+    val userName =
+        uiState.userName
+            .takeIf { name -> name.isNotBlank() }
+            ?.let { name ->
+                stringResource(R.string.user_name_suffix, name)
+            }.orEmpty()
 
     Scaffold(
         modifier = modifier,
@@ -44,12 +47,13 @@ fun BookOnHomeScreen(
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier.padding(innerPadding),
-            contentPadding = PaddingValues(
-                start = AppSpacing.HomeHorizontal,
-                top = AppSpacing.ScreenVertical,
-                end = AppSpacing.HomeHorizontal,
-                bottom = AppSpacing.Section,
-            ),
+            contentPadding =
+                PaddingValues(
+                    start = AppSpacing.HomeHorizontal,
+                    top = AppSpacing.ScreenVertical,
+                    end = AppSpacing.HomeHorizontal,
+                    bottom = AppSpacing.Section,
+                ),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Section),
         ) {
             uiState.errorMessage?.let { errorMessage ->
@@ -62,9 +66,10 @@ fun BookOnHomeScreen(
             // 특정 섹션(공지 등)이 실패해도 상단 탐색 UI는 항상 노출한다.
             item {
                 BookOnHomeHeader(
-                    greeting = uiState.greeting.ifBlank {
-                        stringResource(R.string.home_greeting_evening)
-                    },
+                    greeting =
+                        uiState.greeting.ifBlank {
+                            stringResource(R.string.home_greeting_evening)
+                        },
                     userName = userName,
                     notificationContentDescription = stringResource(R.string.home_notification_description),
                     profileContentDescription = stringResource(R.string.home_profile_description),

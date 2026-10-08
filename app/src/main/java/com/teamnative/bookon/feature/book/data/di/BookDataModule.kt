@@ -9,8 +9,10 @@ import dagger.Module
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 
-@Module @InstallIn(SingletonComponent::class)
+@Module
+@InstallIn(SingletonComponent::class)
 abstract class BookDataModule {
     @Binds abstract fun bindBookRemoteDataSource(implementation: BookRemoteDataSourceImpl): BookRemoteDataSource
+
     @Binds abstract fun bindBookRepository(implementation: BookRepositoryImpl): BookRepository
 }

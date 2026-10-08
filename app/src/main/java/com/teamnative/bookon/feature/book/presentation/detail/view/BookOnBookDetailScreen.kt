@@ -48,18 +48,20 @@ fun BookOnBookDetailScreen(
 ) {
     val content = state.content
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.surface),
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.surface),
     ) {
         if (MaterialTheme.colorScheme.surface.luminance() > 0.5f) {
             Image(
                 painter = painterResource(R.drawable.book_detail_glow),
                 contentDescription = null,
                 contentScale = ContentScale.FillBounds,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .aspectRatio(392f / 360f),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .aspectRatio(392f / 360f),
             )
         }
         Scaffold(
@@ -85,23 +87,26 @@ fun BookOnBookDetailScreen(
                     isLoading = state.isInitialLoading,
                     errorMessage = state.errorMessage,
                     onRetryClick = { onEvent(BookOnBookDetailScreenEvent.RetryClicked) },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(innerPadding)
-                        .padding(AppSpacing.ScreenHorizontal),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(innerPadding)
+                            .padding(AppSpacing.ScreenHorizontal),
                 )
             } else {
                 LazyColumn(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(innerPadding)
-                        .testTag("book_detail_content"),
-                    contentPadding = PaddingValues(
-                        start = AppSpacing.ScreenHorizontal,
-                        end = AppSpacing.ScreenHorizontal,
-                        top = AppSpacing.Small,
-                        bottom = AppSpacing.Section,
-                    ),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(innerPadding)
+                            .testTag("book_detail_content"),
+                    contentPadding =
+                        PaddingValues(
+                            start = AppSpacing.ScreenHorizontal,
+                            end = AppSpacing.ScreenHorizontal,
+                            top = AppSpacing.Small,
+                            bottom = AppSpacing.Section,
+                        ),
                     verticalArrangement = Arrangement.spacedBy(AppSpacing.Content),
                 ) {
                     if (state.isRefreshing) {
@@ -123,9 +128,10 @@ fun BookOnBookDetailScreen(
                         BookOnBookDetailHeading(
                             title = content.title,
                             author = content.author,
-                            modifier = Modifier.padding(
-                                top = AppSpacing.BookDetailCoverToTitle - AppSpacing.Content,
-                            ),
+                            modifier =
+                                Modifier.padding(
+                                    top = AppSpacing.BookDetailCoverToTitle - AppSpacing.Content,
+                                ),
                         )
                     }
                     item {
@@ -139,9 +145,10 @@ fun BookOnBookDetailScreen(
                     item {
                         BookOnBookDetailIntroduction(
                             intro = content.intro,
-                            modifier = Modifier.padding(
-                                top = AppSpacing.BookDetailIntroTop - AppSpacing.Content,
-                            ),
+                            modifier =
+                                Modifier.padding(
+                                    top = AppSpacing.BookDetailIntroTop - AppSpacing.Content,
+                                ),
                         )
                     }
                 }
@@ -155,10 +162,11 @@ fun BookOnBookDetailScreen(
 private fun BookOnBookDetailScreenPreview() {
     BookOnTheme {
         BookOnBookDetailScreen(
-            state = BookOnBookDetailState(
-                content = sampleBookDetailUiState(true),
-                isInitialLoading = false,
-            ),
+            state =
+                BookOnBookDetailState(
+                    content = sampleBookDetailUiState(true),
+                    isInitialLoading = false,
+                ),
             onEvent = {},
         )
     }

@@ -1,11 +1,10 @@
 package com.teamnative.bookon.feature.book.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -13,10 +12,10 @@ import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.teamnative.bookon.core.ui.component.textfield.BookOnTextField
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
+import com.teamnative.bookon.core.ui.component.textfield.BookOnTextField
 
 /**
  * 검색 화면 상단의 검색 입력 바이다.
@@ -49,10 +48,11 @@ private fun SearchIcon() {
             color = iconColor,
             radius = size.minDimension * 0.32f,
             center = Offset(size.width * 0.43f, size.height * 0.43f),
-            style = androidx.compose.ui.graphics.drawscope.Stroke(
-                width = strokeWidth,
-                cap = StrokeCap.Round,
-            ),
+            style =
+                androidx.compose.ui.graphics.drawscope.Stroke(
+                    width = strokeWidth,
+                    cap = StrokeCap.Round,
+                ),
         )
         drawLine(
             color = iconColor,

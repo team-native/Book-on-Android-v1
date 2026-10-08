@@ -9,10 +9,10 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.model.BookOnPasswordFieldUiModel
 import com.teamnative.bookon.core.ui.model.BookOnTextFieldUiModel
@@ -34,25 +34,29 @@ fun BookOnReadingMarathonLinkRoute(
     var password by rememberSaveable { mutableStateOf("") }
     var agreementChecked by rememberSaveable { mutableStateOf(false) }
     val defaultState = defaultReadingMarathonLinkUiState()
-    val uiState = defaultState.copy(
-        marathonId = BookOnTextFieldUiModel(
-            value = marathonId,
-            label = stringResource(R.string.reading_marathon_id),
-            placeholder = stringResource(R.string.reading_marathon_id),
-        ),
-        password = BookOnPasswordFieldUiModel(
-            value = password,
-            label = stringResource(R.string.password),
-            placeholder = stringResource(R.string.password),
-            errorText = null,
-        ),
-        agreement = defaultState.agreement.copy(checked = agreementChecked),
-        linkEnabled = marathonId.isNotBlank() &&
-            password.isNotBlank() &&
-            agreementChecked && !linkState.isLoading,
-        errorText = linkState.errorText,
-        isLoading = linkState.isLoading,
-    )
+    val uiState =
+        defaultState.copy(
+            marathonId =
+                BookOnTextFieldUiModel(
+                    value = marathonId,
+                    label = stringResource(R.string.reading_marathon_id),
+                    placeholder = stringResource(R.string.reading_marathon_id),
+                ),
+            password =
+                BookOnPasswordFieldUiModel(
+                    value = password,
+                    label = stringResource(R.string.password),
+                    placeholder = stringResource(R.string.password),
+                    errorText = null,
+                ),
+            agreement = defaultState.agreement.copy(checked = agreementChecked),
+            linkEnabled =
+                marathonId.isNotBlank() &&
+                    password.isNotBlank() &&
+                    agreementChecked && !linkState.isLoading,
+            errorText = linkState.errorText,
+            isLoading = linkState.isLoading,
+        )
 
     BookOnReadingMarathonLinkScreen(
         uiState = uiState,
@@ -69,10 +73,11 @@ fun BookOnReadingMarathonLinkRoute(
 
 /** Read365 웹사이트를 Chrome에서 우선 열고, Chrome이 없으면 기본 브라우저로 연다. */
 private fun openRead365Website(context: Context) {
-    val read365Intent = Intent(
-        Intent.ACTION_VIEW,
-        Uri.parse(READ365_WEB_URL),
-    )
+    val read365Intent =
+        Intent(
+            Intent.ACTION_VIEW,
+            Uri.parse(READ365_WEB_URL),
+        )
     val chromeIntent = Intent(read365Intent).setPackage(CHROME_PACKAGE_NAME)
 
     try {

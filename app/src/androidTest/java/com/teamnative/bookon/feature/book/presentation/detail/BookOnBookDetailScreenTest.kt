@@ -23,10 +23,11 @@ class BookOnBookDetailScreenTest {
         composeTestRule.setContent {
             BookOnTheme {
                 BookOnBookDetailScreen(
-                    state = BookOnBookDetailState(
-                        isInitialLoading = false,
-                        content = sampleBookDetailUiState(loanAvailable = true),
-                    ),
+                    state =
+                        BookOnBookDetailState(
+                            isInitialLoading = false,
+                            content = sampleBookDetailUiState(loanAvailable = true),
+                        ),
                     onEvent = { event ->
                         if (event == BookOnBookDetailScreenEvent.FavoriteClicked) {
                             favoriteClicks++
@@ -47,12 +48,14 @@ class BookOnBookDetailScreenTest {
         composeTestRule.setContent {
             BookOnTheme {
                 BookOnBookDetailScreen(
-                    state = BookOnBookDetailState(
-                        isInitialLoading = false,
-                        content = sampleBookDetailUiState(loanAvailable = true).copy(
-                            isFavoriteSubmitting = true,
+                    state =
+                        BookOnBookDetailState(
+                            isInitialLoading = false,
+                            content =
+                                sampleBookDetailUiState(loanAvailable = true).copy(
+                                    isFavoriteSubmitting = true,
+                                ),
                         ),
-                    ),
                     onEvent = {},
                 )
             }

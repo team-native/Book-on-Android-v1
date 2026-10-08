@@ -1,9 +1,9 @@
 package com.teamnative.bookon.feature.ranking.presentation.ranking
 
 import androidx.compose.runtime.Immutable
+import com.teamnative.bookon.core.ui.model.BookOnUiMessage
 import com.teamnative.bookon.feature.ranking.presentation.model.BookOnRankingListUiModel
 import com.teamnative.bookon.feature.ranking.presentation.model.BookOnRankingPodiumUiModel
-import com.teamnative.bookon.core.ui.model.BookOnUiMessage
 
 @Immutable
 data class BookOnRankingScreenUiState(

@@ -9,9 +9,10 @@ internal fun BookOnMainBottomBar(
     current: BookOnDestination?,
     onDestinationSelected: (BookOnDestination) -> Unit,
 ) {
-    val selectedIndex = mainDestinations
-        .indexOfFirst { destination -> destination == current }
-        .coerceAtLeast(0)
+    val selectedIndex =
+        mainDestinations
+            .indexOfFirst { destination -> destination == current }
+            .coerceAtLeast(0)
 
     BookOnBottomNavigationBar(
         items = defaultBookOnNavigationItems(),

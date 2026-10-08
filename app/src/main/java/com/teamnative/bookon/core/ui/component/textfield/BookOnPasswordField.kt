@@ -1,7 +1,5 @@
 package com.teamnative.bookon.core.ui.component.textfield
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -22,6 +20,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -29,20 +28,20 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.semantics.error
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
@@ -105,22 +104,24 @@ fun BookOnPasswordField(
     val showPasswordText = hiddenLabel ?: stringResource(R.string.action_show_password)
     val hidePasswordText = visibleLabel ?: stringResource(R.string.action_hide_password)
     val toggleDescription = if (passwordVisible) hidePasswordText else showPasswordText
-    val toggleIconRes = if (passwordVisible) {
-        R.drawable.password_hide
-    } else {
-        R.drawable.pawward_visible
-    }
+    val toggleIconRes =
+        if (passwordVisible) {
+            R.drawable.password_hide
+        } else {
+            R.drawable.pawward_visible
+        }
     val toggleInteractionSource = remember { MutableInteractionSource() }
     val textFieldInteractionSource = remember { MutableInteractionSource() }
     val isFocused by textFieldInteractionSource.collectIsFocusedAsState()
     val isError = errorText != null
     val shape = RoundedCornerShape(AppRadius.Field)
     val borderColor by animateColorAsState(
-        targetValue = when {
-            isError -> MaterialTheme.colorScheme.errorContainer
-            isFocused -> MaterialTheme.colorScheme.primary
-            else -> MaterialTheme.colorScheme.surface
-        },
+        targetValue =
+            when {
+                isError -> MaterialTheme.colorScheme.errorContainer
+                isFocused -> MaterialTheme.colorScheme.primary
+                else -> MaterialTheme.colorScheme.surface
+            },
     )
     val containerColor by animateColorAsState(
         targetValue = if (isError) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surface,
@@ -135,48 +136,48 @@ fun BookOnPasswordField(
             )
 
             Spacer(modifier = Modifier.height(AppSpacing.Small))
-
         }
 
         BasicTextField(
             value = value,
             onValueChange = { value -> onValueChange(value.take(maxLength)) },
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(AppComponentSize.FieldHeight)
-                .shadow(
-                    elevation = AppElevation.Field,
-                    shape = shape,
-                )
-                .clip(shape)
-                .background(containerColor)
-                .border(
-                    width = AppComponentSize.FieldBorderWidth,
-                    color = borderColor,
-                    shape = shape,
-                )
-                .semantics {
-                    if (errorText != null) error(errorText)
-                },
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(AppComponentSize.FieldHeight)
+                    .shadow(
+                        elevation = AppElevation.Field,
+                        shape = shape,
+                    ).clip(shape)
+                    .background(containerColor)
+                    .border(
+                        width = AppComponentSize.FieldBorderWidth,
+                        color = borderColor,
+                        shape = shape,
+                    ).semantics {
+                        if (errorText != null) error(errorText)
+                    },
             enabled = enabled,
             singleLine = true,
             textStyle = bookOnTypography.fieldText.copy(color = MaterialTheme.colorScheme.onSurface),
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
-            visualTransformation = if (passwordVisible) {
-                VisualTransformation.None
-            } else {
-                PasswordVisualTransformation()
-            },
+            visualTransformation =
+                if (passwordVisible) {
+                    VisualTransformation.None
+                } else {
+                    PasswordVisualTransformation()
+                },
             cursorBrush = SolidColor(MaterialTheme.colorScheme.primary),
             interactionSource = textFieldInteractionSource,
             decorationBox = { innerTextField ->
                 Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(
-                            start = AppSpacing.FieldHorizontal,
-                            end = AppSpacing.FieldHorizontal,
-                        ),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(
+                                start = AppSpacing.FieldHorizontal,
+                                end = AppSpacing.FieldHorizontal,
+                            ),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (leadingIcon != null) {
@@ -188,7 +189,6 @@ fun BookOnPasswordField(
                         }
 
                         Spacer(modifier = Modifier.width(AppSpacing.Content))
-
                     }
 
                     Box(modifier = Modifier.weight(1f)) {
@@ -208,22 +208,22 @@ fun BookOnPasswordField(
                         painter = painterResource(id = toggleIconRes),
                         contentDescription = toggleDescription,
                         tint = Color.Unspecified,
-                        modifier = Modifier
-                            .size(AppIconSize.Small)
-                            .combinedClickable(
-                                interactionSource = toggleInteractionSource,
-                                indication = null,
-                                enabled = enabled,
-                                role = Role.Button,
-                                onClick = { passwordVisible = !passwordVisible },
-                            ),
+                        modifier =
+                            Modifier
+                                .size(AppIconSize.Small)
+                                .combinedClickable(
+                                    interactionSource = toggleInteractionSource,
+                                    indication = null,
+                                    enabled = enabled,
+                                    role = Role.Button,
+                                    onClick = { passwordVisible = !passwordVisible },
+                                ),
                     )
                 }
             },
         )
 
         if (errorText != null) {
-
             Spacer(modifier = Modifier.height(AppSpacing.Small))
 
             Text(

@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -15,6 +13,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.IconButtonDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -97,15 +96,17 @@ private fun BookOnHomeIconButton(
     IconButton(
         onClick = { onClick?.invoke() },
         enabled = onClick != null,
-        modifier = modifier
-            .size(AppComponentSize.HomeActionButton)
-            .clip(RoundedCornerShape(AppRadius.IconButton)),
-        colors = IconButtonDefaults.iconButtonColors(
-            containerColor = Color.Transparent,
-            disabledContainerColor = Color.Transparent,
-            contentColor = MaterialTheme.colorScheme.onSurface,
-            disabledContentColor = MaterialTheme.colorScheme.onSurface,
-        ),
+        modifier =
+            modifier
+                .size(AppComponentSize.HomeActionButton)
+                .clip(RoundedCornerShape(AppRadius.IconButton)),
+        colors =
+            IconButtonDefaults.iconButtonColors(
+                containerColor = Color.Transparent,
+                disabledContainerColor = Color.Transparent,
+                contentColor = MaterialTheme.colorScheme.onSurface,
+                disabledContentColor = MaterialTheme.colorScheme.onSurface,
+            ),
     ) {
         Image(
             modifier = Modifier.fillMaxSize(),

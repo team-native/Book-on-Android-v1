@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
@@ -10,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -45,10 +44,11 @@ internal fun BookOnThirdPartyAgreementRow(
         verticalAlignment = Alignment.Top,
     ) {
         Image(
-            modifier = Modifier
-                .size(ThirdPartyAgreementCheckIconSize)
-                .clip(RoundedCornerShape(AppRadius.Progress))
-                .clickable(role = Role.Checkbox, onClick = { onCheckedChange(!checked) }),
+            modifier =
+                Modifier
+                    .size(ThirdPartyAgreementCheckIconSize)
+                    .clip(RoundedCornerShape(AppRadius.Progress))
+                    .clickable(role = Role.Checkbox, onClick = { onCheckedChange(!checked) }),
             painter = painterResource(if (checked) R.drawable.authority_check else R.drawable.authority_not_check),
             contentDescription = stringResource(R.string.reading_marathon_agreement_check_description),
             contentScale = ContentScale.Fit,
@@ -58,26 +58,30 @@ internal fun BookOnThirdPartyAgreementRow(
 
         Text(
             modifier = Modifier.weight(1f),
-            text = buildAnnotatedString {
-                append(stringResource(R.string.reading_marathon_third_party_agreement_prefix))
-                withLink(
-                    link = LinkAnnotation.Clickable(
-                        tag = ThirdPartyAgreementAnnotationTag,
-                        styles = TextLinkStyles(
-                            style = SpanStyle(
-                                color = MaterialTheme.colorScheme.primary,
-                                fontWeight = FontWeight.Bold,
+            text =
+                buildAnnotatedString {
+                    append(stringResource(R.string.reading_marathon_third_party_agreement_prefix))
+                    withLink(
+                        link =
+                            LinkAnnotation.Clickable(
+                                tag = ThirdPartyAgreementAnnotationTag,
+                                styles =
+                                    TextLinkStyles(
+                                        style =
+                                            SpanStyle(
+                                                color = MaterialTheme.colorScheme.primary,
+                                                fontWeight = FontWeight.Bold,
+                                            ),
+                                    ),
+                                linkInteractionListener = {
+                                    // 개인정보 제3자 제공 안내 팝업이 준비되면 이 이벤트에 연결한다.
+                                },
                             ),
-                        ),
-                        linkInteractionListener = {
-                            // 개인정보 제3자 제공 안내 팝업이 준비되면 이 이벤트에 연결한다.
-                        },
-                    ),
-                ) {
-                    append(stringResource(R.string.reading_marathon_third_party_agreement_highlight))
-                }
-                append(stringResource(R.string.reading_marathon_third_party_agreement_suffix))
-            },
+                    ) {
+                        append(stringResource(R.string.reading_marathon_third_party_agreement_highlight))
+                    }
+                    append(stringResource(R.string.reading_marathon_third_party_agreement_suffix))
+                },
             style = bookOnTypography.caption,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

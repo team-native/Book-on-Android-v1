@@ -8,12 +8,12 @@ import androidx.activity.SystemBarStyle
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.runtime.mutableStateOf
-import dagger.hilt.android.AndroidEntryPoint
 import com.teamnative.bookon.app.BookOnApp
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.notification.BookOnNotificationDisplayer
 import com.teamnative.bookon.navigation.BookOnPendingDeepLink
 import com.teamnative.bookon.navigation.toPendingDeepLinkDestination
+import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
@@ -52,9 +52,10 @@ class MainActivity : ComponentActivity() {
      * FCM SDK가 원본 data 페이로드를 그대로 실어 주는 extra가 동일한 키("type")를 쓰므로 한 경로로 처리된다.
      */
     private fun Intent.toPendingDeepLink(): BookOnPendingDeepLink? {
-        val destination = getStringExtra(BookOnNotificationDisplayer.NotificationTypeExtraKey)
-            .toPendingDeepLinkDestination()
-            ?: return null
+        val destination =
+            getStringExtra(BookOnNotificationDisplayer.NotificationTypeExtraKey)
+                .toPendingDeepLinkDestination()
+                ?: return null
         return BookOnPendingDeepLink(destination, token = System.nanoTime())
     }
 }

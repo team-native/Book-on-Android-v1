@@ -6,4 +6,6 @@ interface HealthRepository {
     suspend fun health(): NetworkResult<HealthStatus>
 }
 
-data class HealthStatus(val status: String)
+data class HealthStatus(
+    val status: String,
+)

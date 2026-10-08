@@ -1,13 +1,12 @@
 package com.teamnative.bookon.feature.auth.presentation.login
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -44,15 +43,19 @@ fun BookOnLoginScreen(
         containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
         Column(
-            modifier = Modifier
-                .padding(innerPadding)
-                .padding(horizontal = AppSpacing.AuthHorizontal)
-                .fillMaxSize(),
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .padding(horizontal = AppSpacing.AuthHorizontal)
+                    .fillMaxSize(),
         ) {
-
             Spacer(modifier = Modifier.height(LoginTitleTopSpacing))
 
-            Text(text = uiState.title, style = bookOnTypography.screenTitle, color = MaterialTheme.colorScheme.onSurface)
+            Text(
+                text = uiState.title,
+                style = bookOnTypography.screenTitle,
+                color = MaterialTheme.colorScheme.onSurface,
+            )
 
             Spacer(modifier = Modifier.height(AppSpacing.Small))
 
@@ -71,10 +74,11 @@ fun BookOnLoginScreen(
             BookOnAuthPasswordField(uiState = uiState.password, onValueChange = onPasswordChange)
 
             Text(
-                modifier = Modifier
-                    .align(Alignment.End)
-                    .padding(top = AppSpacing.Item)
-                    .clickable(role = Role.Button, onClick = onForgotPasswordClick),
+                modifier =
+                    Modifier
+                        .align(Alignment.End)
+                        .padding(top = AppSpacing.Item)
+                        .clickable(role = Role.Button, onClick = onForgotPasswordClick),
                 text = stringResource(R.string.forgot_password),
                 style = bookOnTypography.caption,
                 color = MaterialTheme.colorScheme.primary,
@@ -92,16 +96,16 @@ fun BookOnLoginScreen(
             Spacer(modifier = Modifier.height(AppSpacing.Section))
 
             Text(
-                modifier = Modifier
-                    .align(Alignment.CenterHorizontally)
-                    .clickable(role = Role.Button, onClick = onSignupClick),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterHorizontally)
+                        .clickable(role = Role.Button, onClick = onSignupClick),
                 text = stringResource(R.string.go_to_signup),
                 style = bookOnTypography.caption.copy(textDecoration = TextDecoration.Underline),
                 color = MaterialTheme.colorScheme.onSurface,
             )
 
             Spacer(modifier = Modifier.height(AppSpacing.Section))
-
         }
     }
 }
@@ -127,16 +131,19 @@ private fun BookOnLoginErrorScreenPreview() {
     val baseState = sampleLoginUiState()
     BookOnTheme {
         BookOnLoginScreen(
-            uiState = baseState.copy(
-                email = baseState.email.copy(
-                    value = "s20000@gsm.hs.kr",
-                    errorText = stringResource(R.string.error_invalid_email_format),
+            uiState =
+                baseState.copy(
+                    email =
+                        baseState.email.copy(
+                            value = "s20000@gsm.hs.kr",
+                            errorText = stringResource(R.string.error_invalid_email_format),
+                        ),
+                    password =
+                        baseState.password.copy(
+                            value = "12345",
+                            errorText = stringResource(R.string.error_password_min_length),
+                        ),
                 ),
-                password = baseState.password.copy(
-                    value = "12345",
-                    errorText = stringResource(R.string.error_password_min_length),
-                ),
-            ),
             onEmailChange = {},
             onPasswordChange = {},
             onLoginClick = {},

@@ -1,10 +1,9 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -36,10 +35,11 @@ fun BookOnGenderSelector(
         Row(horizontalArrangement = Arrangement.spacedBy(AppSpacing.Content)) {
             BookOnGender.entries.forEach { gender ->
                 BookOnOptionButton(
-                    text = when (gender) {
-                        BookOnGender.MALE -> stringResource(R.string.male)
-                        BookOnGender.FEMALE -> stringResource(R.string.female)
-                    },
+                    text =
+                        when (gender) {
+                            BookOnGender.MALE -> stringResource(R.string.male)
+                            BookOnGender.FEMALE -> stringResource(R.string.female)
+                        },
                     selected = selectedGender == gender,
                     onSelected = { onGenderSelected(gender) },
                     selectedTextColor = MaterialTheme.colorScheme.primary,

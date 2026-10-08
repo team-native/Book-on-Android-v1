@@ -12,16 +12,16 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupStepHeader
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnSkipTextButton
-import com.teamnative.bookon.feature.auth.presentation.component.skipReadingMarathonAnnotatedString
+import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.auth.presentation.component.AuthTitleTopSpacing
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnMarathonNoticeCard
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnMarathonToggleCard
-import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupStepHeader
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnSkipTextButton
+import com.teamnative.bookon.feature.auth.presentation.component.skipReadingMarathonAnnotatedString
 
 /**
  * 독서마라톤 안내 화면은 연동 이점과 건너뛰기/다음 액션을 표시한다.
@@ -47,7 +47,10 @@ fun BookOnReadingMarathonSignupScreen(
         },
         footer = {
             BookOnPrimaryButton(
-                text = stringResource(if (uiState.isLinked) R.string.action_next else R.string.complete_signup_with_link),
+                text =
+                    stringResource(
+                        if (uiState.isLinked) R.string.action_next else R.string.complete_signup_with_link,
+                    ),
                 onClick = onContinueClick,
                 enabled = uiState.isLinked && !progressAnimating,
             )
@@ -60,7 +63,6 @@ fun BookOnReadingMarathonSignupScreen(
             )
         },
     ) {
-
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
 
         BookOnSignupStepHeader(

@@ -13,5 +13,6 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class FcmDataModule {
     @Binds abstract fun bindFcmRemoteDataSource(impl: FcmRemoteDataSourceImpl): FcmRemoteDataSource
+
     @Binds abstract fun bindFcmRepository(impl: FcmRepositoryImpl): FcmRepository
 }

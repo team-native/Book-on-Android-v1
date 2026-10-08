@@ -49,11 +49,12 @@ fun BookOnBookDetailInfoRow(
     val fontScale = LocalDensity.current.fontScale
     BoxWithConstraints(modifier = modifier.fillMaxWidth()) {
         val tileWidth = AppComponentSize.BookDetailInfoMinWidth * fontScale
-        val columns = when {
-            maxWidth >= tileWidth * 3 + AppSpacing.Item * 2 -> 3
-            maxWidth >= tileWidth * 2 + AppSpacing.Item -> 2
-            else -> 1
-        }
+        val columns =
+            when {
+                maxWidth >= tileWidth * 3 + AppSpacing.Item * 2 -> 3
+                maxWidth >= tileWidth * 2 + AppSpacing.Item -> 2
+                else -> 1
+            }
         Column(verticalArrangement = Arrangement.spacedBy(AppSpacing.Item)) {
             items.chunked(columns).forEach { rowItems ->
                 Row(
@@ -78,19 +79,18 @@ private fun BookOnBookDetailInfoItem(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .heightIn(min = AppComponentSize.BookDetailInfoMinHeight)
-            .shadow(
-                elevation = AppElevation.Card,
-                shape = RoundedCornerShape(AppRadius.Chip),
-                ambientColor = MaterialTheme.colorScheme.onSurface.copy(alpha = DetailInfoShadowOpacity),
-                spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = DetailInfoShadowOpacity),
-            )
-            .background(
-                color = MaterialTheme.colorScheme.surface,
-                shape = RoundedCornerShape(AppRadius.Chip),
-            )
-            .padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Item),
+        modifier =
+            modifier
+                .heightIn(min = AppComponentSize.BookDetailInfoMinHeight)
+                .shadow(
+                    elevation = AppElevation.Card,
+                    shape = RoundedCornerShape(AppRadius.Chip),
+                    ambientColor = MaterialTheme.colorScheme.onSurface.copy(alpha = DetailInfoShadowOpacity),
+                    spotColor = MaterialTheme.colorScheme.onSurface.copy(alpha = DetailInfoShadowOpacity),
+                ).background(
+                    color = MaterialTheme.colorScheme.surface,
+                    shape = RoundedCornerShape(AppRadius.Chip),
+                ).padding(horizontal = AppSpacing.Small, vertical = AppSpacing.Item),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.spacedBy(AppSpacing.Small, Alignment.CenterVertically),
     ) {
@@ -103,11 +103,12 @@ private fun BookOnBookDetailInfoItem(
         Text(
             text = infoItem.value,
             style = bookOnTypography.bookDetailInfoValue,
-            color = if (infoItem.highlighted) {
-                MaterialTheme.colorScheme.secondary
-            } else {
-                MaterialTheme.colorScheme.onSurface
-            },
+            color =
+                if (infoItem.highlighted) {
+                    MaterialTheme.colorScheme.secondary
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
             textAlign = TextAlign.Center,
         )
     }

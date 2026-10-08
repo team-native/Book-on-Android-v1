@@ -15,13 +15,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupStepHeader
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.auth.presentation.component.AuthTitleTopSpacing
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthPasswordField
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthTopBar
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnPrivacyAgreementCard
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupStepHeader
 
 /**
  * 비밀번호 설정 화면은 비밀번호 입력과 개인정보 동의 상태를 표시한다.
@@ -51,18 +51,20 @@ fun BookOnPasswordSetupScreen(
             BookOnPrimaryButton(
                 text = stringResource(R.string.action_next),
                 onClick = onNextClick,
-                enabled = uiState.nextEnabled &&
-                    !uiState.isVerificationRequestInProgress &&
-                    !progressAnimating,
+                enabled =
+                    uiState.nextEnabled &&
+                        !uiState.isVerificationRequestInProgress &&
+                        !progressAnimating,
             )
         },
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                top = AuthTitleTopSpacing,
-                bottom = AppSpacing.Section,
-            ),
+            contentPadding =
+                PaddingValues(
+                    top = AuthTitleTopSpacing,
+                    bottom = AppSpacing.Section,
+                ),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Content),
         ) {
             item {

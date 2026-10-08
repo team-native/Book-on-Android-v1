@@ -18,7 +18,8 @@ sealed interface BookOnUiMessage {
 
 /** Composable이 ViewModel의 메시지 종류에 맞는 화면 문구를 해석한다. */
 @Composable
-fun BookOnUiMessage.resolve(): String = when (this) {
-    is BookOnUiMessage.Dynamic -> value
-    is BookOnUiMessage.Resource -> stringResource(resId, *formatArgs.toTypedArray())
-}
+fun BookOnUiMessage.resolve(): String =
+    when (this) {
+        is BookOnUiMessage.Dynamic -> value
+        is BookOnUiMessage.Resource -> stringResource(resId, *formatArgs.toTypedArray())
+    }

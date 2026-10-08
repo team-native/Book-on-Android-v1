@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.my.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,8 +25,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
-import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
+import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.my.presentation.model.BookOnMyMarathonUiModel
 
@@ -44,12 +43,16 @@ fun BookOnMyMarathonCard(
     modifier: Modifier = Modifier,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(AppRadius.Card))
-            .background(MaterialTheme.colorScheme.surface)
-            .border(AppStrokeWidth.Divider, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(AppRadius.Card))
-            .padding(AppSpacing.Content),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(AppRadius.Card))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(
+                    AppStrokeWidth.Divider,
+                    MaterialTheme.colorScheme.outlineVariant,
+                    RoundedCornerShape(AppRadius.Card),
+                ).padding(AppSpacing.Content),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -106,13 +109,14 @@ fun BookOnMyMarathonCard(
 
         MyMarathonProgressBar(
             progress = uiState.progress,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(AppSpacing.Item),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(AppSpacing.Item),
         )
 
         Spacer(modifier = Modifier.height(AppSpacing.Content))
-        
+
         Text(
             text = uiState.remainingText,
             style = bookOnTypography.caption,
@@ -129,32 +133,33 @@ private fun MyMarathonProgressBar(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(AppRadius.Progress))
-            .background(MaterialTheme.colorScheme.outlineVariant),
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(AppRadius.Progress))
+                .background(MaterialTheme.colorScheme.outlineVariant),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth(progress.coerceIn(0f, 1f))
-                .height(AppSpacing.Item)
-                .clip(RoundedCornerShape(AppRadius.Progress))
-                .background(MaterialTheme.colorScheme.primary),
+            modifier =
+                Modifier
+                    .fillMaxWidth(progress.coerceIn(0f, 1f))
+                    .height(AppSpacing.Item)
+                    .clip(RoundedCornerShape(AppRadius.Progress))
+                    .background(MaterialTheme.colorScheme.primary),
         )
     }
 }
 
 @Composable
-private fun MyMarathonStatusBadge(
-    text: String,
-) {
+private fun MyMarathonStatusBadge(text: String) {
     Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(AppRadius.Small))
-            .background(MaterialTheme.colorScheme.tertiaryContainer)
-            .padding(
-                horizontal = MyMarathonCardBadgeHorizontalPadding,
-                vertical = MyMarathonCardBadgeVerticalPadding,
-            ),
+        modifier =
+            Modifier
+                .clip(RoundedCornerShape(AppRadius.Small))
+                .background(MaterialTheme.colorScheme.tertiaryContainer)
+                .padding(
+                    horizontal = MyMarathonCardBadgeHorizontalPadding,
+                    vertical = MyMarathonCardBadgeVerticalPadding,
+                ),
         contentAlignment = Alignment.Center,
     ) {
         Text(

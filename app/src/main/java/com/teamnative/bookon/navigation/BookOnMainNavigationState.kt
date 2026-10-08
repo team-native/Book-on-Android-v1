@@ -2,20 +2,20 @@ package com.teamnative.bookon.navigation
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.runtime.toMutableStateList
+import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 import androidx.navigation3.runtime.NavBackStack
 import androidx.navigation3.runtime.NavEntry
 import androidx.navigation3.runtime.NavKey
 import androidx.navigation3.runtime.rememberDecoratedNavEntries
 import androidx.navigation3.runtime.rememberNavBackStack
 import androidx.navigation3.runtime.rememberSaveableStateHolderNavEntryDecorator
-import androidx.lifecycle.viewmodel.navigation3.rememberViewModelStoreNavEntryDecorator
 
 /**
  * 하단 탭(Home/Ranking/Library/My)마다 독립된 back stack을 유지한다.
@@ -67,20 +67,22 @@ internal fun BookOnMainNavigationState.toEntries(
     val viewModelStoreDecorator = rememberViewModelStoreNavEntryDecorator<NavKey>()
     val savedStateDecorator = rememberSaveableStateHolderNavEntryDecorator<NavKey>()
 
-    val decoratedEntries = backStacks.mapValues { (_, stack) ->
-        rememberDecoratedNavEntries(
-            backStack = stack,
-            entryDecorators = listOf(savedStateDecorator, viewModelStoreDecorator),
-            entryProvider = entryProvider,
-        )
-    }
+    val decoratedEntries =
+        backStacks.mapValues { (_, stack) ->
+            rememberDecoratedNavEntries(
+                backStack = stack,
+                entryDecorators = listOf(savedStateDecorator, viewModelStoreDecorator),
+                entryProvider = entryProvider,
+            )
+        }
 
     return decoratedEntries.getValue(topLevelRoute).toMutableStateList()
 }
 
 /** 탭 전환/화면 push/pop을 담당한다. NavController를 대체한다. */
-internal class BookOnMainNavigator(private val state: BookOnMainNavigationState) {
-
+internal class BookOnMainNavigator(
+    private val state: BookOnMainNavigationState,
+) {
     /** 하단 탭 선택 시 호출한다. 같은 탭을 다시 누르면 아무 일도 하지 않는다. */
     fun navigateToTab(destination: BookOnDestination) {
         if (destination in state.backStacks.keys) {

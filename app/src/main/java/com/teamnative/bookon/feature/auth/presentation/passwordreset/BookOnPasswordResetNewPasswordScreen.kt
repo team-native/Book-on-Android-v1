@@ -1,7 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.passwordreset
 
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material3.MaterialTheme
@@ -51,10 +51,11 @@ fun BookOnPasswordResetNewPasswordScreen(
     ) {
         LazyColumn(
             modifier = Modifier.fillMaxSize(),
-            contentPadding = PaddingValues(
-                top = AuthTitleTopSpacing,
-                bottom = AppSpacing.Section,
-            ),
+            contentPadding =
+                PaddingValues(
+                    top = AuthTitleTopSpacing,
+                    bottom = AppSpacing.Section,
+                ),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Content),
         ) {
             item {
@@ -103,10 +104,11 @@ fun BookOnPasswordResetNewPasswordScreen(
 private fun BookOnPasswordResetNewPasswordScreenPreview() {
     BookOnTheme {
         BookOnPasswordResetNewPasswordScreen(
-            uiState = defaultPasswordResetUiState().copy(
-                title = stringResource(R.string.password_reset_new_password_title),
-                description = stringResource(R.string.password_reset_new_password_description),
-            ),
+            uiState =
+                defaultPasswordResetUiState().copy(
+                    title = stringResource(R.string.password_reset_new_password_title),
+                    description = stringResource(R.string.password_reset_new_password_description),
+                ),
             onEvent = {},
         )
     }

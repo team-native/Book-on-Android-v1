@@ -7,14 +7,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
+import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
+import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
+import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
+import com.teamnative.bookon.feature.auth.presentation.component.AuthTitleTopSpacing
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupStepHeader
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnVerificationCodeField
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnVerificationStatus
-import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
-import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
-import com.teamnative.bookon.feature.auth.presentation.component.AuthTitleTopSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 
 /**
  * 인증번호 화면은 6자리 코드 입력과 만료/재전송 상태를 표시한다.
@@ -40,7 +40,6 @@ fun BookOnVerificationCodeScreen(
             )
         },
     ) {
-
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
 
         BookOnSignupStepHeader(
@@ -69,7 +68,10 @@ private fun BookOnVerificationCodeScreenPreview() {
     BookOnTheme {
         BookOnVerificationCodeScreen(
             uiState = defaultVerificationCodeUiState(),
-            onBackClick = {}, onCodeChange = {}, onResendClick = {}, onConfirmClick = {},
+            onBackClick = {},
+            onCodeChange = {},
+            onResendClick = {},
+            onConfirmClick = {},
         )
     }
 }

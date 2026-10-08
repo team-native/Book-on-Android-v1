@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -10,6 +8,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -49,10 +48,11 @@ fun BookOnVerificationCodeField(
         },
         modifier = modifier.fillMaxWidth(),
         singleLine = true,
-        textStyle = bookOnTypography.sectionTitle.copy(
-            color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0f),
-            textAlign = TextAlign.Center,
-        ),
+        textStyle =
+            bookOnTypography.sectionTitle.copy(
+                color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0f),
+                textAlign = TextAlign.Center,
+            ),
         keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
         cursorBrush = SolidColor(MaterialTheme.colorScheme.primary.copy(alpha = 0f)),
         decorationBox = { innerTextField ->
@@ -65,25 +65,26 @@ fun BookOnVerificationCodeField(
                 ) {
                     repeat(VerificationCodeLength) { index ->
                         val character = code.getOrNull(index)?.toString().orEmpty()
-                        val underlineColor = when {
-                            isError -> MaterialTheme.colorScheme.error
-                            index < code.length -> MaterialTheme.colorScheme.onSurface
-                            else -> MaterialTheme.colorScheme.onSurfaceVariant
-                        }
+                        val underlineColor =
+                            when {
+                                isError -> MaterialTheme.colorScheme.error
+                                index < code.length -> MaterialTheme.colorScheme.onSurface
+                                else -> MaterialTheme.colorScheme.onSurfaceVariant
+                            }
 
                         Box(
-                            modifier = Modifier
-                                .weight(1f)
-                                .height(VerificationFieldHeight)
-                                .drawBehind {
-                                    val underlineHeight = VerificationUnderlineWidth.toPx()
-                                    drawRect(
-                                        color = underlineColor,
-                                        topLeft = Offset(x = 0f, y = size.height - underlineHeight),
-                                        size = Size(width = size.width, height = underlineHeight),
-                                    )
-                                }
-                                .padding(horizontal = AppSpacing.Small),
+                            modifier =
+                                Modifier
+                                    .weight(1f)
+                                    .height(VerificationFieldHeight)
+                                    .drawBehind {
+                                        val underlineHeight = VerificationUnderlineWidth.toPx()
+                                        drawRect(
+                                            color = underlineColor,
+                                            topLeft = Offset(x = 0f, y = size.height - underlineHeight),
+                                            size = Size(width = size.width, height = underlineHeight),
+                                        )
+                                    }.padding(horizontal = AppSpacing.Small),
                             contentAlignment = Alignment.Center,
                         ) {
                             Text(

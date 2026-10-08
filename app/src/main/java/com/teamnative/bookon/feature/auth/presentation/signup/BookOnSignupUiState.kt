@@ -1,7 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.signup
 
-import androidx.compose.runtime.Immutable
 import androidx.annotation.StringRes
+import androidx.compose.runtime.Immutable
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.model.BookOnTextFieldUiModel
 import com.teamnative.bookon.feature.auth.presentation.model.BookOnDropdownFieldUiModel
@@ -13,7 +13,9 @@ enum class BookOnGender {
 }
 
 /** 회원가입에서 한 가지만 선택할 수 있는 학과 목록이다. */
-enum class BookOnDepartment(@param:StringRes val textResId: Int) {
+enum class BookOnDepartment(
+    @param:StringRes val textResId: Int,
+) {
     SOFTWARE_DEVELOPMENT(R.string.department_software),
     IOT(R.string.department_iot),
     AI(R.string.department_ai),

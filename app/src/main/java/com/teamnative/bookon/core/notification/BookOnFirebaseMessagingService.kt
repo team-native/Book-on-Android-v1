@@ -7,8 +7,8 @@ import javax.inject.Inject
 
 @AndroidEntryPoint
 class BookOnFirebaseMessagingService : FirebaseMessagingService() {
-
     @Inject lateinit var notificationChannelInstaller: BookOnNotificationChannelInstaller
+
     @Inject lateinit var notificationDisplayer: BookOnNotificationDisplayer
 
     /** Firebase가 새 등록 토큰을 발급·갱신할 때 호출되며, 서버 동기화를 WorkManager에 위임한다(네트워크 직접 호출 금지). */

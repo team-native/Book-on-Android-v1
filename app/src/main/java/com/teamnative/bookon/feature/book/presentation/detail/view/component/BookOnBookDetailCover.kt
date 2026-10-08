@@ -37,11 +37,12 @@ fun BookOnBookDetailCover(
         contentAlignment = Alignment.Center,
     ) {
         BoxWithConstraints(
-            modifier = Modifier
-                .widthIn(max = AppComponentSize.BookDetailCoverWidth)
-                .fillMaxWidth()
-                .aspectRatio(2f / 3f)
-                .testTag("book_detail_cover"),
+            modifier =
+                Modifier
+                    .widthIn(max = AppComponentSize.BookDetailCoverWidth)
+                    .fillMaxWidth()
+                    .aspectRatio(2f / 3f)
+                    .testTag("book_detail_cover"),
             contentAlignment = Alignment.Center,
         ) {
             val context = LocalContext.current
@@ -51,32 +52,38 @@ fun BookOnBookDetailCover(
             val slotWidthPx = with(density) { slotWidth.roundToPx() }
             val slotHeightPx = with(density) { slotHeight.roundToPx() }
             key(coverImageUrl, slotWidthPx, slotHeightPx) {
-                val request = remember(context, coverImageUrl, slotWidthPx, slotHeightPx) {
-                    ImageRequest.Builder(context)
-                        .data(coverImageUrl)
-                        .size(slotWidthPx.coerceAtLeast(1), slotHeightPx.coerceAtLeast(1))
-                        .scale(Scale.FIT)
-                        .build()
-                }
+                val request =
+                    remember(context, coverImageUrl, slotWidthPx, slotHeightPx) {
+                        ImageRequest
+                            .Builder(context)
+                            .data(coverImageUrl)
+                            .size(slotWidthPx.coerceAtLeast(1), slotHeightPx.coerceAtLeast(1))
+                            .scale(Scale.FIT)
+                            .build()
+                    }
                 val painter = rememberAsyncImagePainter(request)
-                val intrinsicSize = (painter.state as? AsyncImagePainter.State.Success)
-                    ?.painter?.intrinsicSize
-                val hasImageBounds = intrinsicSize != null &&
-                    intrinsicSize.width.isFinite() && intrinsicSize.height.isFinite() &&
-                    intrinsicSize.width > 0f && intrinsicSize.height > 0f
-                val imageModifier = if (hasImageBounds) {
-                    val imageRatio = intrinsicSize.width / intrinsicSize.height
-                    val fittedWidth = minOf(slotWidth, slotHeight * imageRatio)
-                    Modifier
-                        .size(fittedWidth, fittedWidth / imageRatio)
-                        .shadow(AppElevation.BookCover)
-                        .testTag("book_detail_cover_image")
-                } else {
-                    Modifier
-                        .fillMaxSize()
-                        .background(MaterialTheme.colorScheme.tertiaryContainer)
-                        .testTag("book_detail_cover_placeholder")
-                }
+                val intrinsicSize =
+                    (painter.state as? AsyncImagePainter.State.Success)
+                        ?.painter
+                        ?.intrinsicSize
+                val hasImageBounds =
+                    intrinsicSize != null &&
+                        intrinsicSize.width.isFinite() && intrinsicSize.height.isFinite() &&
+                        intrinsicSize.width > 0f && intrinsicSize.height > 0f
+                val imageModifier =
+                    if (hasImageBounds) {
+                        val imageRatio = intrinsicSize.width / intrinsicSize.height
+                        val fittedWidth = minOf(slotWidth, slotHeight * imageRatio)
+                        Modifier
+                            .size(fittedWidth, fittedWidth / imageRatio)
+                            .shadow(AppElevation.BookCover)
+                            .testTag("book_detail_cover_image")
+                    } else {
+                        Modifier
+                            .fillMaxSize()
+                            .background(MaterialTheme.colorScheme.tertiaryContainer)
+                            .testTag("book_detail_cover_placeholder")
+                    }
                 Image(
                     painter = painter,
                     contentDescription = null,

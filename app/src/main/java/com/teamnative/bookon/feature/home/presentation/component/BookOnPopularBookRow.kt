@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -13,6 +11,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -63,23 +62,24 @@ fun BookOnPopularBookRow(
     coverImageUrl: String? = null,
 ) {
     Row(
-        modifier = modifier
-            .width(PopularBookRowWidth)
-            .height(PopularBookRowHeight)
-            .shadow(
-                elevation = AppElevation.Card,
-                shape = RoundedCornerShape(AppRadius.Chip),
-            )
-            .clip(RoundedCornerShape(AppRadius.Chip))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(AppSpacing.Small),
+        modifier =
+            modifier
+                .width(PopularBookRowWidth)
+                .height(PopularBookRowHeight)
+                .shadow(
+                    elevation = AppElevation.Card,
+                    shape = RoundedCornerShape(AppRadius.Chip),
+                ).clip(RoundedCornerShape(AppRadius.Chip))
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(AppSpacing.Small),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier
-                .width(AppComponentSize.PopularBookCoverWidth)
-                .height(AppComponentSize.PopularBookCoverHeight)
-                .clip(RoundedCornerShape(AppRadius.IconButton)),
+            modifier =
+                Modifier
+                    .width(AppComponentSize.PopularBookCoverWidth)
+                    .height(AppComponentSize.PopularBookCoverHeight)
+                    .clip(RoundedCornerShape(AppRadius.IconButton)),
             contentAlignment = Alignment.Center,
         ) {
             BookOnRemoteBookCover(
@@ -91,9 +91,10 @@ fun BookOnPopularBookRow(
         Spacer(modifier = Modifier.width(AppSpacing.Small))
 
         Column(
-            modifier = Modifier
-                .weight(1f)
-                .fillMaxHeight(),
+            modifier =
+                Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
             verticalArrangement = Arrangement.Center,
         ) {
             Text(

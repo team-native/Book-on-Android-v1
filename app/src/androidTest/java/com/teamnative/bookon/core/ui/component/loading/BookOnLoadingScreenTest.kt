@@ -14,7 +14,6 @@ import org.junit.runner.RunWith
 
 @RunWith(AndroidJUnit4::class)
 class BookOnLoadingScreenTest {
-
     @get:Rule
     val composeRule = createAndroidComposeRule<ComponentActivity>()
 
@@ -34,7 +33,6 @@ class BookOnLoadingScreenTest {
                     SemanticsProperties.StateDescription,
                     loadingDescription,
                 ),
-            )
-            .assertIsDisplayed()
+            ).assertIsDisplayed()
     }
 }

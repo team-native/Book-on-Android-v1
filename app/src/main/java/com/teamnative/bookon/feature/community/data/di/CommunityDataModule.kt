@@ -13,5 +13,6 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class CommunityDataModule {
     @Binds abstract fun bindCommunityRemoteDataSource(impl: CommunityRemoteDataSourceImpl): CommunityRemoteDataSource
+
     @Binds abstract fun bindCommunityRepository(impl: CommunityRepositoryImpl): CommunityRepository
 }

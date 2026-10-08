@@ -1,7 +1,7 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
@@ -37,10 +37,11 @@ fun BookOnPopularBooksSection(
             items(books) { book ->
                 BookOnPopularBookRow(
                     uiState = book,
-                    modifier = Modifier.clickable(
-                        role = Role.Button,
-                        onClick = { onBookClick(book.id) },
-                    ),
+                    modifier =
+                        Modifier.clickable(
+                            role = Role.Button,
+                            onClick = { onBookClick(book.id) },
+                        ),
                 )
             }
         }

@@ -3,6 +3,7 @@ package com.teamnative.bookon.feature.my.data
 import com.teamnative.bookon.core.network.ApiEnvelope
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
+import okhttp3.RequestBody
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -10,7 +11,6 @@ import retrofit2.http.GET
 import retrofit2.http.PATCH
 import retrofit2.http.POST
 import retrofit2.http.Query
-import okhttp3.RequestBody
 
 interface MyApiService {
     @GET("me")
@@ -55,6 +55,7 @@ interface MyApiService {
         @Query("size") size: Int? = null,
     ): Response<ApiEnvelope<FavoriteBookPageDto>>
 }
+
 @Serializable
 data class MyPageDto(
     @SerialName("user") val user: UserDto,

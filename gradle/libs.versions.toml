@@ -1,4 +1,6 @@
 [versions]
+spotless = "8.10.3"
+ktlint = "1.8.0"
 agp = "9.2.1"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -68,3 +70,4 @@ kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", versi
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 google-services = { id = "com.google.gms.google-services", version.ref = "googleServices" }
+spotless = { id = "com.diffplug.spotless", version.ref = "spotless" }
