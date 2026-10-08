@@ -2,13 +2,13 @@ package com.teamnative.bookon.feature.my.presentation.main
 
 import com.teamnative.bookon.core.network.NetworkError
 import com.teamnative.bookon.core.network.NetworkResult
+import com.teamnative.bookon.core.notification.FcmTokenProvider
 import com.teamnative.bookon.core.ui.model.BookOnUiMessage
 import com.teamnative.bookon.feature.fcm.domain.ClearFcmTokenOnLogoutUseCase
 import com.teamnative.bookon.feature.fcm.domain.FcmRepository
 import com.teamnative.bookon.feature.fcm.domain.FcmTokenRegistration
 import com.teamnative.bookon.feature.fcm.domain.FcmTokenUnregistration
 import com.teamnative.bookon.feature.fcm.domain.UnregisterFcmTokenUseCase
-import com.teamnative.bookon.core.notification.FcmTokenProvider
 import com.teamnative.bookon.feature.marathon.domain.GetRead365MyInfoUseCase
 import com.teamnative.bookon.feature.marathon.domain.MarathonRepository
 import com.teamnative.bookon.feature.marathon.domain.Read365MyInfo
@@ -25,8 +25,6 @@ import com.teamnative.bookon.feature.my.domain.ProfileImage
 import com.teamnative.bookon.feature.my.domain.RequestAccountDeletionUseCase
 import com.teamnative.bookon.feature.my.domain.UpdateNotificationSettingsUseCase
 import com.teamnative.bookon.feature.my.domain.UploadProfileImageUseCase
-import java.util.concurrent.atomic.AtomicInteger
-import java.util.concurrent.atomic.AtomicReference
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.UnconfinedTestDispatcher
@@ -41,6 +39,8 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
+import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.AtomicReference
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class BookOnMyViewModelTest {
@@ -57,181 +57,214 @@ class BookOnMyViewModelTest {
     }
 
     @Test
-    fun `프로필 조회 성공 시 서버 프로필 이미지 URL을 화면 상태에 반영한다`() = runTest {
-        val repository = MyRepositoryFake(
-            profileResult = NetworkResult.Success(
-                profile().copy(profileImageUrl = "https://example.com/profile.jpg"),
-            ),
-        )
-        val viewModel = createViewModel(repository)
+    fun `프로필 조회 성공 시 서버 프로필 이미지 URL을 화면 상태에 반영한다`() =
+        runTest {
+            val repository =
+                MyRepositoryFake(
+                    profileResult =
+                        NetworkResult.Success(
+                            profile().copy(profileImageUrl = "https://example.com/profile.jpg"),
+                        ),
+                )
+            val viewModel = createViewModel(repository)
 
-        advanceUntilIdle()
+            advanceUntilIdle()
 
-        assertEquals(
-            "https://example.com/profile.jpg",
-            viewModel.uiState.value.profileImageUrl,
-        )
-        assertEquals("홍길동", viewModel.uiState.value.userNameText)
-    }
-
-    @Test
-    fun `Read365 연동 성공 시 샘플 진행률 없이 연동 상태만 반영한다`() = runTest {
-        val viewModel = createViewModel(
-            repository = MyRepositoryFake(),
-            marathonRepository = MarathonRepositoryFake(),
-        )
-
-        advanceUntilIdle()
-
-        assertTrue(viewModel.uiState.value.isReadingMarathonLinked)
-        assertEquals("", viewModel.uiState.value.marathon.progressText)
-        assertEquals(0f, viewModel.uiState.value.marathon.progress)
-    }
+            assertEquals(
+                "https://example.com/profile.jpg",
+                viewModel.uiState.value.profileImageUrl,
+            )
+            assertEquals("홍길동", viewModel.uiState.value.userNameText)
+        }
 
     @Test
-    fun `재시도 시 프로필과 Read365 연동 상태를 함께 다시 조회한다`() = runTest {
-        val profileCallCount = AtomicInteger(0)
-        val read365CallCount = AtomicInteger(0)
-        val viewModel = createViewModel(
-            repository = MyRepositoryFake(
-                onProfile = { profileCallCount.incrementAndGet() },
-            ),
-            marathonRepository = MarathonRepositoryFake(
-                onRead365MyInfo = { read365CallCount.incrementAndGet() },
-            ),
-        )
+    fun `Read365 연동 성공 시 샘플 진행률 없이 연동 상태만 반영한다`() =
+        runTest {
+            val viewModel =
+                createViewModel(
+                    repository = MyRepositoryFake(),
+                    marathonRepository = MarathonRepositoryFake(),
+                )
 
-        advanceUntilIdle()
-        viewModel.refresh()
-        advanceUntilIdle()
+            advanceUntilIdle()
 
-        assertEquals(2, profileCallCount.get())
-        assertEquals(2, read365CallCount.get())
-    }
+            assertTrue(viewModel.uiState.value.isReadingMarathonLinked)
+            assertEquals("", viewModel.uiState.value.marathon.progressText)
+            assertEquals(0f, viewModel.uiState.value.marathon.progress)
+        }
 
     @Test
-    fun `프로필 이미지 업로드 성공 시 반환 URL과 업로드 완료 상태를 반영한다`() = runTest {
-        val uploadedBytes = AtomicReference<ByteArray>()
-        val repository = MyRepositoryFake(
-            uploadProfileImageResult = NetworkResult.Success(
-                ProfileImage("https://example.com/new-profile.jpg"),
-            ),
-            onUploadProfileImage = { _, imageBytes -> uploadedBytes.set(imageBytes) },
-        )
-        val viewModel = createViewModel(repository)
-        val imageBytes = byteArrayOf(1, 2, 3)
+    fun `재시도 시 프로필과 Read365 연동 상태를 함께 다시 조회한다`() =
+        runTest {
+            val profileCallCount = AtomicInteger(0)
+            val read365CallCount = AtomicInteger(0)
+            val viewModel =
+                createViewModel(
+                    repository =
+                        MyRepositoryFake(
+                            onProfile = { profileCallCount.incrementAndGet() },
+                        ),
+                    marathonRepository =
+                        MarathonRepositoryFake(
+                            onRead365MyInfo = { read365CallCount.incrementAndGet() },
+                        ),
+                )
 
-        advanceUntilIdle()
-        viewModel.uploadProfileImage("image/jpeg", imageBytes)
-        advanceUntilIdle()
+            advanceUntilIdle()
+            viewModel.refresh()
+            advanceUntilIdle()
 
-        assertEquals(
-            "https://example.com/new-profile.jpg",
-            viewModel.uiState.value.profileImageUrl,
-        )
-        assertFalse(viewModel.uiState.value.isProfileImageUploading)
-        assertArrayEquals(imageBytes, uploadedBytes.get())
-    }
-
-    @Test
-    fun `프로필 이미지 업로드 실패 시 오류 상태를 표시하고 업로드 상태를 종료한다`() = runTest {
-        val repository = MyRepositoryFake(
-            uploadProfileImageResult = NetworkResult.Failure(
-                NetworkError.Network(IllegalStateException("network")),
-            ),
-        )
-        val viewModel = createViewModel(repository)
-
-        advanceUntilIdle()
-        viewModel.uploadProfileImage("image/jpeg", byteArrayOf(1))
-        advanceUntilIdle()
-
-        assertFalse(viewModel.uiState.value.isProfileImageUploading)
-        assertTrue(viewModel.uiState.value.profileImageErrorMessage is BookOnUiMessage.Resource)
-    }
+            assertEquals(2, profileCallCount.get())
+            assertEquals(2, read365CallCount.get())
+        }
 
     @Test
-    fun `회원 탈퇴 요청 성공 시 FCM 토큰을 해제하고 onSuccess를 호출한다`() = runTest {
-        val fcmRepository = RecordingFcmRepository()
-        val onSuccessCallCount = AtomicInteger(0)
-        val viewModel = createViewModel(
-            repository = MyRepositoryFake(
-                requestAccountDeletionResult = NetworkResult.Success(
-                    AccountDeletion(requestId = 1L, status = "PENDING", requestedAt = "2026-09-07T00:00:00Z"),
-                ),
-            ),
-            fcmRepository = fcmRepository,
-        )
+    fun `프로필 이미지 업로드 성공 시 반환 URL과 업로드 완료 상태를 반영한다`() =
+        runTest {
+            val uploadedBytes = AtomicReference<ByteArray>()
+            val repository =
+                MyRepositoryFake(
+                    uploadProfileImageResult =
+                        NetworkResult.Success(
+                            ProfileImage("https://example.com/new-profile.jpg"),
+                        ),
+                    onUploadProfileImage = { _, imageBytes -> uploadedBytes.set(imageBytes) },
+                )
+            val viewModel = createViewModel(repository)
+            val imageBytes = byteArrayOf(1, 2, 3)
 
-        advanceUntilIdle()
-        viewModel.requestAccountDeletion(reason = "테스트 사유") { onSuccessCallCount.incrementAndGet() }
-        advanceUntilIdle()
+            advanceUntilIdle()
+            viewModel.uploadProfileImage("image/jpeg", imageBytes)
+            advanceUntilIdle()
 
-        assertTrue(fcmRepository.unregisterInvoked)
-        assertEquals(1, onSuccessCallCount.get())
-        assertFalse(viewModel.uiState.value.isAccountDeletionInProgress)
-    }
-
-    @Test
-    fun `회원 탈퇴 요청 실패 시 오류 상태를 표시하고 onSuccess를 호출하지 않는다`() = runTest {
-        val onSuccessCallCount = AtomicInteger(0)
-        val viewModel = createViewModel(
-            repository = MyRepositoryFake(
-                requestAccountDeletionResult = NetworkResult.Failure(
-                    NetworkError.Http(404, 4040, "요청하신 API를 찾을 수 없습니다."),
-                ),
-            ),
-        )
-
-        advanceUntilIdle()
-        viewModel.requestAccountDeletion { onSuccessCallCount.incrementAndGet() }
-        advanceUntilIdle()
-
-        assertEquals(0, onSuccessCallCount.get())
-        assertFalse(viewModel.uiState.value.isAccountDeletionInProgress)
-        assertTrue(viewModel.uiState.value.accountDeletionErrorMessage is BookOnUiMessage.Dynamic)
-    }
+            assertEquals(
+                "https://example.com/new-profile.jpg",
+                viewModel.uiState.value.profileImageUrl,
+            )
+            assertFalse(viewModel.uiState.value.isProfileImageUploading)
+            assertArrayEquals(imageBytes, uploadedBytes.get())
+        }
 
     @Test
-    fun `회원 탈퇴 요청 실패 시 FCM 토큰을 해제하지 않는다`() = runTest {
-        val fcmRepository = RecordingFcmRepository()
-        val viewModel = createViewModel(
-            repository = MyRepositoryFake(
-                requestAccountDeletionResult = NetworkResult.Failure(
-                    NetworkError.Network(IllegalStateException("network")),
-                ),
-            ),
-            fcmRepository = fcmRepository,
-        )
+    fun `프로필 이미지 업로드 실패 시 오류 상태를 표시하고 업로드 상태를 종료한다`() =
+        runTest {
+            val repository =
+                MyRepositoryFake(
+                    uploadProfileImageResult =
+                        NetworkResult.Failure(
+                            NetworkError.Network(IllegalStateException("network")),
+                        ),
+                )
+            val viewModel = createViewModel(repository)
 
-        advanceUntilIdle()
-        viewModel.requestAccountDeletion { }
-        advanceUntilIdle()
+            advanceUntilIdle()
+            viewModel.uploadProfileImage("image/jpeg", byteArrayOf(1))
+            advanceUntilIdle()
 
-        assertFalse(fcmRepository.unregisterInvoked)
-    }
+            assertFalse(viewModel.uiState.value.isProfileImageUploading)
+            assertTrue(viewModel.uiState.value.profileImageErrorMessage is BookOnUiMessage.Resource)
+        }
+
+    @Test
+    fun `회원 탈퇴 요청 성공 시 FCM 토큰을 해제하고 onSuccess를 호출한다`() =
+        runTest {
+            val fcmRepository = RecordingFcmRepository()
+            val onSuccessCallCount = AtomicInteger(0)
+            val viewModel =
+                createViewModel(
+                    repository =
+                        MyRepositoryFake(
+                            requestAccountDeletionResult =
+                                NetworkResult.Success(
+                                    AccountDeletion(
+                                        requestId = 1L,
+                                        status = "PENDING",
+                                        requestedAt = "2026-09-07T00:00:00Z",
+                                    ),
+                                ),
+                        ),
+                    fcmRepository = fcmRepository,
+                )
+
+            advanceUntilIdle()
+            viewModel.requestAccountDeletion(reason = "테스트 사유") { onSuccessCallCount.incrementAndGet() }
+            advanceUntilIdle()
+
+            assertTrue(fcmRepository.unregisterInvoked)
+            assertEquals(1, onSuccessCallCount.get())
+            assertFalse(viewModel.uiState.value.isAccountDeletionInProgress)
+        }
+
+    @Test
+    fun `회원 탈퇴 요청 실패 시 오류 상태를 표시하고 onSuccess를 호출하지 않는다`() =
+        runTest {
+            val onSuccessCallCount = AtomicInteger(0)
+            val viewModel =
+                createViewModel(
+                    repository =
+                        MyRepositoryFake(
+                            requestAccountDeletionResult =
+                                NetworkResult.Failure(
+                                    NetworkError.Http(404, 4040, "요청하신 API를 찾을 수 없습니다."),
+                                ),
+                        ),
+                )
+
+            advanceUntilIdle()
+            viewModel.requestAccountDeletion { onSuccessCallCount.incrementAndGet() }
+            advanceUntilIdle()
+
+            assertEquals(0, onSuccessCallCount.get())
+            assertFalse(viewModel.uiState.value.isAccountDeletionInProgress)
+            assertTrue(viewModel.uiState.value.accountDeletionErrorMessage is BookOnUiMessage.Dynamic)
+        }
+
+    @Test
+    fun `회원 탈퇴 요청 실패 시 FCM 토큰을 해제하지 않는다`() =
+        runTest {
+            val fcmRepository = RecordingFcmRepository()
+            val viewModel =
+                createViewModel(
+                    repository =
+                        MyRepositoryFake(
+                            requestAccountDeletionResult =
+                                NetworkResult.Failure(
+                                    NetworkError.Network(IllegalStateException("network")),
+                                ),
+                        ),
+                    fcmRepository = fcmRepository,
+                )
+
+            advanceUntilIdle()
+            viewModel.requestAccountDeletion { }
+            advanceUntilIdle()
+
+            assertFalse(fcmRepository.unregisterInvoked)
+        }
 
     private fun createViewModel(
         repository: MyRepositoryFake,
         marathonRepository: MarathonRepository = MarathonRepositoryFake(),
         fcmRepository: FcmRepository = RecordingFcmRepository(),
         fcmTokenProvider: FcmTokenProvider = FakeFcmTokenProvider(),
-    ): BookOnMyViewModel {
-        return BookOnMyViewModel(
+    ): BookOnMyViewModel =
+        BookOnMyViewModel(
             getMyProfile = GetMyProfileUseCase(repository),
             updateNotificationSettings = UpdateNotificationSettingsUseCase(repository),
             getRead365MyInfo = GetRead365MyInfoUseCase(marathonRepository),
             uploadProfileImageUseCase = UploadProfileImageUseCase(repository),
             requestAccountDeletionUseCase = RequestAccountDeletionUseCase(repository),
-            clearFcmTokenOnLogoutUseCase = ClearFcmTokenOnLogoutUseCase(
-                fcmTokenProvider,
-                UnregisterFcmTokenUseCase(fcmRepository),
-            ),
+            clearFcmTokenOnLogoutUseCase =
+                ClearFcmTokenOnLogoutUseCase(
+                    fcmTokenProvider,
+                    UnregisterFcmTokenUseCase(fcmRepository),
+                ),
         )
-    }
 }
 
-private class FakeFcmTokenProvider(private val token: String? = "fake-fcm-token") : FcmTokenProvider {
+private class FakeFcmTokenProvider(
+    private val token: String? = "fake-fcm-token",
+) : FcmTokenProvider {
     override suspend fun currentToken(): String? = token
 }
 
@@ -239,7 +272,10 @@ private class RecordingFcmRepository : FcmRepository {
     var unregisterInvoked = false
         private set
 
-    override suspend fun registerToken(token: String, platform: String): NetworkResult<FcmTokenRegistration> {
+    override suspend fun registerToken(
+        token: String,
+        platform: String,
+    ): NetworkResult<FcmTokenRegistration> {
         error("not used")
     }
 
@@ -249,19 +285,21 @@ private class RecordingFcmRepository : FcmRepository {
     }
 }
 
-private fun profile() = MyProfile(
-    name = "홍길동",
-    department = "AI과",
-    profileImageUrl = null,
-    currentLoanCount = 3,
-    overdueCount = 2,
-    totalLoanCount = 23,
-    notificationSettings = NotificationSettings(
-        dueDateReminder = false,
-        newBookReminder = false,
-        noticeReminder = false,
-    ),
-)
+private fun profile() =
+    MyProfile(
+        name = "홍길동",
+        department = "AI과",
+        profileImageUrl = null,
+        currentLoanCount = 3,
+        overdueCount = 2,
+        totalLoanCount = 23,
+        notificationSettings =
+            NotificationSettings(
+                dueDateReminder = false,
+                newBookReminder = false,
+                noticeReminder = false,
+            ),
+    )
 
 private class MarathonRepositoryFake(
     private val onRead365MyInfo: () -> Unit = {},
@@ -276,14 +314,16 @@ private class MarathonRepositoryFake(
 
 private class MyRepositoryFake(
     private val profileResult: NetworkResult<MyProfile> = NetworkResult.Success(profile()),
-    private val uploadProfileImageResult: NetworkResult<ProfileImage> = NetworkResult.Success(
-        ProfileImage("https://example.com/profile.jpg"),
-    ),
+    private val uploadProfileImageResult: NetworkResult<ProfileImage> =
+        NetworkResult.Success(
+            ProfileImage("https://example.com/profile.jpg"),
+        ),
     private val onUploadProfileImage: (String, ByteArray) -> Unit = { _, _ -> },
     private val onProfile: () -> Unit = {},
-    private val requestAccountDeletionResult: NetworkResult<AccountDeletion> = NetworkResult.Success(
-        AccountDeletion(requestId = 1L, status = "PENDING", requestedAt = "2026-09-07T00:00:00Z"),
-    ),
+    private val requestAccountDeletionResult: NetworkResult<AccountDeletion> =
+        NetworkResult.Success(
+            AccountDeletion(requestId = 1L, status = "PENDING", requestedAt = "2026-09-07T00:00:00Z"),
+        ),
 ) : MyRepository {
     override suspend fun profile(): NetworkResult<MyProfile> {
         onProfile()
@@ -294,9 +334,8 @@ private class MyRepositoryFake(
         dueDateReminder: Boolean,
         newBookReminder: Boolean,
         noticeReminder: Boolean,
-    ): NetworkResult<NotificationSettings> {
-        return NetworkResult.Success(NotificationSettings(dueDateReminder, newBookReminder, noticeReminder))
-    }
+    ): NetworkResult<NotificationSettings> =
+        NetworkResult.Success(NotificationSettings(dueDateReminder, newBookReminder, noticeReminder))
 
     override suspend fun updateProfile(
         name: String?,
@@ -308,9 +347,8 @@ private class MyRepositoryFake(
         error("not used")
     }
 
-    override suspend fun requestAccountDeletion(reason: String?): NetworkResult<AccountDeletion> {
-        return requestAccountDeletionResult
-    }
+    override suspend fun requestAccountDeletion(reason: String?): NetworkResult<AccountDeletion> =
+        requestAccountDeletionResult
 
     override suspend fun uploadProfileImage(
         contentType: String,
@@ -336,7 +374,10 @@ private class MyRepositoryFake(
         error("not used")
     }
 
-    override suspend fun favorites(page: Int, size: Int): NetworkResult<FavoriteBookPage> {
+    override suspend fun favorites(
+        page: Int,
+        size: Int,
+    ): NetworkResult<FavoriteBookPage> {
         error("not used")
     }
 }

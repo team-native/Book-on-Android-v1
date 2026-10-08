@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.my.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,6 +13,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Switch
 import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
@@ -30,16 +29,16 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.semantics
+import androidx.compose.ui.semantics.stateDescription
 import androidx.compose.ui.semantics.testTag
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import com.teamnative.bookon.R
-import com.teamnative.bookon.core.designsystem.theme.AppRadius
-import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.AppAnimationDuration
+import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
+import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.feature.my.presentation.model.BookOnMyMarathonUiModel
 import kotlinx.coroutines.delay
@@ -68,12 +67,16 @@ fun BookOnMyUnlinkedMarathonCard(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .clip(RoundedCornerShape(AppRadius.Card))
-            .background(MaterialTheme.colorScheme.surface)
-            .border(AppStrokeWidth.Divider, MaterialTheme.colorScheme.outlineVariant, RoundedCornerShape(AppRadius.Card))
-            .padding(AppSpacing.Content),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(AppRadius.Card))
+                .background(MaterialTheme.colorScheme.surface)
+                .border(
+                    AppStrokeWidth.Divider,
+                    MaterialTheme.colorScheme.outlineVariant,
+                    RoundedCornerShape(AppRadius.Card),
+                ).padding(AppSpacing.Content),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
@@ -101,15 +104,17 @@ fun BookOnMyUnlinkedMarathonCard(
                 onCheckedChange = { isChecked ->
                     if (isChecked) isLinkSwitchChecked = true
                 },
-                modifier = Modifier.semantics {
-                    stateDescription = toggleStateDescription
-                    testTag = "my_marathon_link_switch"
-                },
-                colors = SwitchDefaults.colors(
-                    uncheckedThumbColor = MaterialTheme.colorScheme.surface,
-                    uncheckedTrackColor = MaterialTheme.colorScheme.outlineVariant,
-                    uncheckedBorderColor = MaterialTheme.colorScheme.outlineVariant,
-                ),
+                modifier =
+                    Modifier.semantics {
+                        stateDescription = toggleStateDescription
+                        testTag = "my_marathon_link_switch"
+                    },
+                colors =
+                    SwitchDefaults.colors(
+                        uncheckedThumbColor = MaterialTheme.colorScheme.surface,
+                        uncheckedTrackColor = MaterialTheme.colorScheme.outlineVariant,
+                        uncheckedBorderColor = MaterialTheme.colorScheme.outlineVariant,
+                    ),
             )
         }
 
@@ -142,9 +147,10 @@ fun BookOnMyUnlinkedMarathonCard(
 
         MyMarathonProgressBar(
             progress = uiState.progress,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(AppSpacing.Item),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(AppSpacing.Item),
         )
 
         Spacer(modifier = Modifier.height(AppSpacing.Content))
@@ -166,16 +172,18 @@ private fun MyMarathonProgressBar(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .clip(RoundedCornerShape(AppRadius.Progress))
-            .background(MaterialTheme.colorScheme.outlineVariant),
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(AppRadius.Progress))
+                .background(MaterialTheme.colorScheme.outlineVariant),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth(progress.coerceIn(0f, 1f))
-                .height(AppSpacing.Item)
-                .clip(RoundedCornerShape(AppRadius.Progress))
-                .background(MaterialTheme.colorScheme.primary),
+            modifier =
+                Modifier
+                    .fillMaxWidth(progress.coerceIn(0f, 1f))
+                    .height(AppSpacing.Item)
+                    .clip(RoundedCornerShape(AppRadius.Progress))
+                    .background(MaterialTheme.colorScheme.primary),
         )
     }
 }

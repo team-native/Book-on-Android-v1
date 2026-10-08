@@ -13,5 +13,6 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class HomeDataModule {
     @Binds abstract fun bindHomeRemoteDataSource(implementation: HomeRemoteDataSourceImpl): HomeRemoteDataSource
+
     @Binds abstract fun bindHomeRepository(implementation: HomeRepositoryImpl): HomeRepository
 }

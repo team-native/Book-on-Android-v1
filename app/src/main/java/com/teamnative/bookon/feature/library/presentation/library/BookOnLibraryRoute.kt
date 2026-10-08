@@ -5,8 +5,6 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamnative.bookon.core.ui.component.loading.BookOnLoadingScreen
 
-
-
 /**
  * 도서실 Route는 ViewModel의 서버 목록 상태를 Screen에 전달한다.
  */

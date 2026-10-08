@@ -1,7 +1,5 @@
 package com.teamnative.bookon.core.ui.component.card
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -14,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -42,20 +41,20 @@ fun BookOnStatSummaryCard(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(AppComponentSize.StatSummaryCardHeight)
-            .shadow(
-                elevation = AppElevation.StrongCard,
-                shape = RoundedCornerShape(AppRadius.Card),
-            )
-            .clip(RoundedCornerShape(AppRadius.Card))
-            .background(
-                brush = Brush.horizontalGradient(
-                    colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary),
-                ),
-            )
-            .padding(vertical = AppSpacing.Content),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(AppComponentSize.StatSummaryCardHeight)
+                .shadow(
+                    elevation = AppElevation.StrongCard,
+                    shape = RoundedCornerShape(AppRadius.Card),
+                ).clip(RoundedCornerShape(AppRadius.Card))
+                .background(
+                    brush =
+                        Brush.horizontalGradient(
+                            colors = listOf(MaterialTheme.colorScheme.primary, MaterialTheme.colorScheme.secondary),
+                        ),
+                ).padding(vertical = AppSpacing.Content),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         items.forEachIndexed { index, item ->
@@ -81,10 +80,11 @@ fun BookOnStatSummaryCard(
 
             if (index < items.lastIndex) {
                 Box(
-                    modifier = Modifier
-                        .width(AppStrokeWidth.Divider)
-                        .fillMaxHeight()
-                        .background(MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.45f)),
+                    modifier =
+                        Modifier
+                            .width(AppStrokeWidth.Divider)
+                            .fillMaxHeight()
+                            .background(MaterialTheme.colorScheme.tertiaryContainer.copy(alpha = 0.45f)),
                 )
             }
         }
@@ -96,11 +96,12 @@ fun BookOnStatSummaryCard(
 private fun BookOnStatSummaryCardPreview() {
     BookOnTheme {
         BookOnStatSummaryCard(
-            items = listOf(
-                BookOnStatItemUiModel("대출 중", "3권"),
-                BookOnStatItemUiModel("반납 임박", "2권"),
-                BookOnStatItemUiModel("누적 대출", "23권"),
-            ),
+            items =
+                listOf(
+                    BookOnStatItemUiModel("대출 중", "3권"),
+                    BookOnStatItemUiModel("반납 임박", "2권"),
+                    BookOnStatItemUiModel("누적 대출", "23권"),
+                ),
         )
     }
 }

@@ -1,7 +1,5 @@
 package com.teamnative.bookon.core.ui.component.book
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -14,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -77,30 +76,30 @@ fun BookOnBookListItem(
     trailingContent: (@Composable () -> Unit)? = null,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(AppComponentSize.BookListItemHeight)
-            .shadow(
-                elevation = AppElevation.Card,
-                shape = RoundedCornerShape(AppRadius.Card),
-            )
-            .clip(RoundedCornerShape(AppRadius.Card))
-            .background(MaterialTheme.colorScheme.surface)
-            .then(
-                if (onClick != null) {
-                    Modifier.clickable(role = Role.Button, onClick = onClick)
-                } else {
-                    Modifier
-                },
-            )
-            .padding(horizontal = AppSpacing.Content, vertical = AppSpacing.Small),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(AppComponentSize.BookListItemHeight)
+                .shadow(
+                    elevation = AppElevation.Card,
+                    shape = RoundedCornerShape(AppRadius.Card),
+                ).clip(RoundedCornerShape(AppRadius.Card))
+                .background(MaterialTheme.colorScheme.surface)
+                .then(
+                    if (onClick != null) {
+                        Modifier.clickable(role = Role.Button, onClick = onClick)
+                    } else {
+                        Modifier
+                    },
+                ).padding(horizontal = AppSpacing.Content, vertical = AppSpacing.Small),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Box(
-            modifier = Modifier
-                .width(coverWidth)
-                .height(coverHeight)
-                .clip(RoundedCornerShape(AppRadius.IconButton)),
+            modifier =
+                Modifier
+                    .width(coverWidth)
+                    .height(coverHeight)
+                    .clip(RoundedCornerShape(AppRadius.IconButton)),
             contentAlignment = Alignment.Center,
         ) {
             BookOnRemoteBookCover(
@@ -134,7 +133,6 @@ fun BookOnBookListItem(
             )
         }
         if (statusText != null) {
-
             Spacer(modifier = Modifier.width(AppSpacing.Item))
 
             BookStatusBadge(
@@ -143,7 +141,6 @@ fun BookOnBookListItem(
             )
         }
         if (trailingContent != null) {
-
             Spacer(modifier = Modifier.width(AppSpacing.Small))
 
             trailingContent()
@@ -158,17 +155,17 @@ private fun BookStatusBadge(
     modifier: Modifier = Modifier,
 ) {
     Box(
-        modifier = modifier
-            .height(AppComponentSize.SmallChipHeight)
-            .clip(RoundedCornerShape(AppRadius.Chip))
-            .background(
-                if (available) {
-                    MaterialTheme.colorScheme.tertiaryContainer
-                } else {
-                    MaterialTheme.colorScheme.surfaceVariant
-                },
-            )
-            .padding(horizontal = AppSpacing.Item),
+        modifier =
+            modifier
+                .height(AppComponentSize.SmallChipHeight)
+                .clip(RoundedCornerShape(AppRadius.Chip))
+                .background(
+                    if (available) {
+                        MaterialTheme.colorScheme.tertiaryContainer
+                    } else {
+                        MaterialTheme.colorScheme.surfaceVariant
+                    },
+                ).padding(horizontal = AppSpacing.Item),
         contentAlignment = Alignment.Center,
     ) {
         Text(

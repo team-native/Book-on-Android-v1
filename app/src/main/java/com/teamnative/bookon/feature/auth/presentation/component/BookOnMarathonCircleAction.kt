@@ -36,10 +36,6 @@ private const val MarathonGoogleContentDescription = "구글"
  * 독서마라톤 연동 화면의 원형 아이콘 선택 버튼이다.
  * Figma의 44dp OAuth 원형 아이콘을 그대로 표시하고 실제 기능은 onSelected로 위임한다.
  */
-/**
- * 독서마라톤 연동 화면의 원형 아이콘 선택 버튼이다.
- * Figma의 44dp OAuth 원형 아이콘을 그대로 표시하고 실제 기능은 onSelected로 위임한다.
- */
 @Composable
 fun BookOnMarathonCircleAction(
     @DrawableRes iconRes: Int,
@@ -49,15 +45,15 @@ fun BookOnMarathonCircleAction(
     enabled: Boolean = true,
 ) {
     Box(
-        modifier = modifier
-            .size(MarathonCircleActionSize)
-            .clip(CircleShape)
-            .clickable(
-                enabled = enabled,
-                role = Role.Button,
-                onClick = onSelected,
-            )
-            .alpha(if (enabled) MarathonComponentEnabledAlpha else MarathonComponentDisabledAlpha),
+        modifier =
+            modifier
+                .size(MarathonCircleActionSize)
+                .clip(CircleShape)
+                .clickable(
+                    enabled = enabled,
+                    role = Role.Button,
+                    onClick = onSelected,
+                ).alpha(if (enabled) MarathonComponentEnabledAlpha else MarathonComponentDisabledAlpha),
         contentAlignment = Alignment.Center,
     ) {
         Image(

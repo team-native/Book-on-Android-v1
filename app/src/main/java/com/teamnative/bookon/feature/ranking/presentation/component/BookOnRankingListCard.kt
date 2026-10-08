@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.ranking.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -9,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -53,15 +52,15 @@ fun BookOnRankingListCard(
     }
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .shadow(
-                elevation = AppElevation.Card,
-                shape = RoundedCornerShape(AppRadius.Card),
-            )
-            .clip(RoundedCornerShape(AppRadius.Card))
-            .background(MaterialTheme.colorScheme.surface)
-            .padding(horizontal = AppSpacing.Content),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = AppElevation.Card,
+                    shape = RoundedCornerShape(AppRadius.Card),
+                ).clip(RoundedCornerShape(AppRadius.Card))
+                .background(MaterialTheme.colorScheme.surface)
+                .padding(horizontal = AppSpacing.Content),
     ) {
         members.forEachIndexed { index, member ->
             BookOnRankingRow(
@@ -70,10 +69,11 @@ fun BookOnRankingListCard(
             )
             if (index < members.lastIndex) {
                 Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(RankingListDividerHeight)
-                        .background(MaterialTheme.colorScheme.outlineVariant),
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .height(RankingListDividerHeight)
+                            .background(MaterialTheme.colorScheme.outlineVariant),
                 )
             }
         }
@@ -85,11 +85,12 @@ fun BookOnRankingListCard(
 private fun BookOnRankingListCardPreview() {
     BookOnTheme {
         BookOnRankingListCard(
-            members = listOf(
-                BookOnRankingMemberUiModel(4, "정길동", "2학년 · 소프트웨어 개발과", "31권"),
-                BookOnRankingMemberUiModel(5, "최길동", "1학년 · AI과", "28권"),
-                BookOnRankingMemberUiModel(6, "한길동", "2학년 · 소프트웨어 개발과", "20권"),
-            ),
+            members =
+                listOf(
+                    BookOnRankingMemberUiModel(4, "정길동", "2학년 · 소프트웨어 개발과", "31권"),
+                    BookOnRankingMemberUiModel(5, "최길동", "1학년 · AI과", "28권"),
+                    BookOnRankingMemberUiModel(6, "한길동", "2학년 · 소프트웨어 개발과", "20권"),
+                ),
             modifier = Modifier.padding(AppSpacing.ScreenHorizontal),
         )
     }

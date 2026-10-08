@@ -1,7 +1,5 @@
 package com.teamnative.bookon.core.ui.component.row
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +9,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,16 +39,17 @@ fun BookOnMenuRow(
 ) {
     Column(modifier = modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(AppComponentSize.MenuRowHeight)
-                .then(
-                    if (onClick != null) {
-                        Modifier.clickable(role = Role.Button, onClick = onClick)
-                    } else {
-                        Modifier
-                    },
-                ),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(AppComponentSize.MenuRowHeight)
+                    .then(
+                        if (onClick != null) {
+                            Modifier.clickable(role = Role.Button, onClick = onClick)
+                        } else {
+                            Modifier
+                        },
+                    ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
@@ -62,10 +62,11 @@ fun BookOnMenuRow(
         }
         if (showDivider) {
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(AppStrokeWidth.Divider)
-                    .background(MaterialTheme.colorScheme.outlineVariant),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(AppStrokeWidth.Divider)
+                        .background(MaterialTheme.colorScheme.outlineVariant),
             )
         }
     }

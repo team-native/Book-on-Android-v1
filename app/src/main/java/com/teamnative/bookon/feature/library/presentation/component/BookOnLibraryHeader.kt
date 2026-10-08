@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.library.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -12,6 +10,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -40,38 +39,44 @@ fun BookOnLibraryHeader(
         Spacer(modifier = Modifier.weight(1f))
 
         Row(
-            modifier = Modifier
-                .width(AppComponentSize.LibrarySortToggleWidth)
-                .height(AppComponentSize.LibrarySortToggleHeight)
-                .clip(RoundedCornerShape(AppRadius.Button))
-                .background(MaterialTheme.colorScheme.surfaceVariant)
-                .padding(AppSpacing.Tiny),
+            modifier =
+                Modifier
+                    .width(AppComponentSize.LibrarySortToggleWidth)
+                    .height(AppComponentSize.LibrarySortToggleHeight)
+                    .clip(RoundedCornerShape(AppRadius.Button))
+                    .background(MaterialTheme.colorScheme.surfaceVariant)
+                    .padding(AppSpacing.Tiny),
             horizontalArrangement = Arrangement.spacedBy(AppSpacing.Tiny),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             sortOptions.forEachIndexed { index, option ->
                 Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(AppComponentSize.LibrarySortOptionHeight)
-                        .clip(RoundedCornerShape(AppRadius.Button))
-                        .then(
-                            if (option.selected) {
-                                Modifier
-                                    .shadow(AppElevation.Field, RoundedCornerShape(AppRadius.Button))
-                                    .background(MaterialTheme.colorScheme.surface)
-                            } else {
-                                Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
-                            },
-                        )
-                        .clickable(role = Role.Button, onClick = { onSortClick(index) })
-                        .padding(horizontal = AppSpacing.Small),
+                    modifier =
+                        Modifier
+                            .weight(1f)
+                            .height(AppComponentSize.LibrarySortOptionHeight)
+                            .clip(RoundedCornerShape(AppRadius.Button))
+                            .then(
+                                if (option.selected) {
+                                    Modifier
+                                        .shadow(AppElevation.Field, RoundedCornerShape(AppRadius.Button))
+                                        .background(MaterialTheme.colorScheme.surface)
+                                } else {
+                                    Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
+                                },
+                            ).clickable(role = Role.Button, onClick = { onSortClick(index) })
+                            .padding(horizontal = AppSpacing.Small),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
                         text = option.text,
                         style = bookOnTypography.caption,
-                        color = if (option.selected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                        color =
+                            if (option.selected) {
+                                MaterialTheme.colorScheme.onSurface
+                            } else {
+                                MaterialTheme.colorScheme.onSurfaceVariant
+                            },
                     )
                 }
             }

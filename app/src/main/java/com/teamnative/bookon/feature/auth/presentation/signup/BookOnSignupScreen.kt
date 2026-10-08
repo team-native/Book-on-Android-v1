@@ -12,15 +12,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnDropdownField
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnGenderSelector
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupStepHeader
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.auth.presentation.component.AuthTitleTopSpacing
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthTopBar
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnDropdownField
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnEmailField
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnGenderSelector
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnNameField
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupStepHeader
 
 /**
  * 회원가입 화면은 학교 이메일, 이름, 성별, 학과 입력 컴포넌트를 조립한다.
@@ -49,7 +49,6 @@ fun BookOnSignupScreen(
             )
         },
     ) {
-
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
 
         BookOnSignupStepHeader(

@@ -1,9 +1,8 @@
 package com.teamnative.bookon.feature.my.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -26,9 +25,10 @@ fun BookOnLogoutButton(
     modifier: Modifier = Modifier,
 ) {
     Text(
-        modifier = modifier
-            .clip(RoundedCornerShape(AppRadius.Small))
-            .clickable(role = Role.Button, onClick = onLogoutRequest),
+        modifier =
+            modifier
+                .clip(RoundedCornerShape(AppRadius.Small))
+                .clickable(role = Role.Button, onClick = onLogoutRequest),
         text = stringResource(R.string.action_logout),
         style = bookOnTypography.bodySemiBold,
         color = MaterialTheme.colorScheme.error,

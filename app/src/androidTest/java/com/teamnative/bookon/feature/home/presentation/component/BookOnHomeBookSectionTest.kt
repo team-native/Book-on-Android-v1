@@ -11,7 +11,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class BookOnHomeBookSectionTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -23,13 +22,14 @@ class BookOnHomeBookSectionTest {
             BookOnTheme {
                 BookOnBookSection(
                     title = "AI 추천",
-                    books = listOf(
-                        BookOnBookCardUiModel(
-                            title = "소프트웨어 공학",
-                            author = "저자",
-                            id = 8013595087L,
+                    books =
+                        listOf(
+                            BookOnBookCardUiModel(
+                                title = "소프트웨어 공학",
+                                author = "저자",
+                                id = 8013595087L,
+                            ),
                         ),
-                    ),
                     onBookClick = { bookId -> clickedBookId = bookId },
                 )
             }
@@ -50,13 +50,14 @@ class BookOnHomeBookSectionTest {
             BookOnTheme {
                 BookOnPopularBooksSection(
                     title = "우리 학교 인기 책",
-                    books = listOf(
-                        BookOnPopularBookRowUiModel(
-                            id = 8013595088L,
-                            title = "데미안",
-                            metaText = "헤르만 헤세 · 대출가능",
+                    books =
+                        listOf(
+                            BookOnPopularBookRowUiModel(
+                                id = 8013595088L,
+                                title = "데미안",
+                                metaText = "헤르만 헤세 · 대출가능",
+                            ),
                         ),
-                    ),
                     onBookClick = { bookId -> clickedBookId = bookId },
                 )
             }

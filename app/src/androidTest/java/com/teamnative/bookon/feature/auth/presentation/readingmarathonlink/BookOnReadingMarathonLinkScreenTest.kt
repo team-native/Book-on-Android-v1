@@ -12,7 +12,6 @@ import org.junit.Rule
 import org.junit.Test
 
 class BookOnReadingMarathonLinkScreenTest {
-
     @get:Rule
     val composeTestRule = createComposeRule()
 
@@ -45,23 +44,27 @@ class BookOnReadingMarathonLinkScreenTest {
         }
     }
 
-    private fun createReadingMarathonLinkUiState() = BookOnReadingMarathonLinkUiState(
-        stepText = "STEP 3 / 3",
-        title = "계정연동",
-        description = "독서마라톤 아이디와 비밀번호를 입력해 주세요",
-        marathonId = BookOnTextFieldUiModel(
-            value = "",
-            label = "독서마라톤 아이디",
-            placeholder = "독서마라톤 아이디",
-        ),
-        password = BookOnPasswordFieldUiModel(
-            value = "",
-            label = "비밀번호",
-            placeholder = "비밀번호",
-        ),
-        agreement = BookOnMarathonAgreementUiModel(
-            text = "독서마라톤 계정 연동을 위한 개인정보 제3자 제공에 동의합니다.",
-            checked = false,
-        ),
-    )
+    private fun createReadingMarathonLinkUiState() =
+        BookOnReadingMarathonLinkUiState(
+            stepText = "STEP 3 / 3",
+            title = "계정연동",
+            description = "독서마라톤 아이디와 비밀번호를 입력해 주세요",
+            marathonId =
+                BookOnTextFieldUiModel(
+                    value = "",
+                    label = "독서마라톤 아이디",
+                    placeholder = "독서마라톤 아이디",
+                ),
+            password =
+                BookOnPasswordFieldUiModel(
+                    value = "",
+                    label = "비밀번호",
+                    placeholder = "비밀번호",
+                ),
+            agreement =
+                BookOnMarathonAgreementUiModel(
+                    text = "독서마라톤 계정 연동을 위한 개인정보 제3자 제공에 동의합니다.",
+                    checked = false,
+                ),
+        )
 }

@@ -14,34 +14,37 @@ fun BookOnBookDetailMetadata(
 ) {
     val unknown = stringResource(R.string.book_detail_unknown)
     BookOnBookDetailInfoRow(
-        items = listOf(
-            BookOnBookDetailInfoItemUiModel(
-                label = stringResource(R.string.book_library_number),
-                value = libraryNumber.ifBlank { unknown },
-            ),
-            BookOnBookDetailInfoItemUiModel(
-                label = stringResource(R.string.book_stock_count),
-                value = stringResource(
-                    R.string.book_detail_stock_pair,
-                    totalQuantity?.let {
-                        stringResource(R.string.book_detail_quantity, it)
-                    } ?: unknown,
-                    availableQuantity?.let {
-                        stringResource(R.string.book_detail_quantity, it)
-                    } ?: unknown,
+        items =
+            listOf(
+                BookOnBookDetailInfoItemUiModel(
+                    label = stringResource(R.string.book_library_number),
+                    value = libraryNumber.ifBlank { unknown },
+                ),
+                BookOnBookDetailInfoItemUiModel(
+                    label = stringResource(R.string.book_stock_count),
+                    value =
+                        stringResource(
+                            R.string.book_detail_stock_pair,
+                            totalQuantity?.let {
+                                stringResource(R.string.book_detail_quantity, it)
+                            } ?: unknown,
+                            availableQuantity?.let {
+                                stringResource(R.string.book_detail_quantity, it)
+                            } ?: unknown,
+                        ),
+                ),
+                BookOnBookDetailInfoItemUiModel(
+                    label = stringResource(R.string.book_loan_availability),
+                    value =
+                        stringResource(
+                            if (loanAvailable) {
+                                R.string.loan_available
+                            } else {
+                                R.string.loan_unavailable
+                            },
+                        ),
+                    highlighted = loanAvailable,
                 ),
             ),
-            BookOnBookDetailInfoItemUiModel(
-                label = stringResource(R.string.book_loan_availability),
-                value = stringResource(
-                    if (loanAvailable) {
-                        R.string.loan_available
-                    } else {
-                        R.string.loan_unavailable
-                    },
-                ),
-                highlighted = loanAvailable,
-            ),
-        ),
     )
 }

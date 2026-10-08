@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -11,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -40,9 +39,10 @@ fun BookOnSignupCompleteSummary(
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier
-            .width(SignupSummaryCardWidth)
-            .height(SignupSummaryCardHeight),
+        modifier =
+            modifier
+                .width(SignupSummaryCardWidth)
+                .height(SignupSummaryCardHeight),
         shape = RoundedCornerShape(AppRadius.Chip),
         color = MaterialTheme.colorScheme.surfaceVariant,
         border = BorderStroke(SignupSummaryBorderWidth, MaterialTheme.colorScheme.outline),
@@ -54,11 +54,12 @@ fun BookOnSignupCompleteSummary(
                 modifier = Modifier.weight(1f),
             )
             Box(
-                modifier = Modifier
-                    .height(SignupSummaryDividerHeight)
-                    .width(SignupSummaryDividerWidth)
-                    .align(Alignment.CenterVertically)
-                    .background(MaterialTheme.colorScheme.outlineVariant),
+                modifier =
+                    Modifier
+                        .height(SignupSummaryDividerHeight)
+                        .width(SignupSummaryDividerWidth)
+                        .align(Alignment.CenterVertically)
+                        .background(MaterialTheme.colorScheme.outlineVariant),
             )
             SignupSummaryItem(
                 title = marathonStatusText,
@@ -86,7 +87,8 @@ private fun SignupSummaryItem(
             style = bookOnTypography.bodySemiBold,
             color = MaterialTheme.colorScheme.secondary,
         )
-        androidx.compose.foundation.layout.Spacer(modifier = Modifier.height(SignupSummaryTextSpacing))
+        androidx.compose.foundation.layout
+            .Spacer(modifier = Modifier.height(SignupSummaryTextSpacing))
         Text(
             text = description,
             style = bookOnTypography.privacyNotice,

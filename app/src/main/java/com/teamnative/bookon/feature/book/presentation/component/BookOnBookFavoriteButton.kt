@@ -26,16 +26,18 @@ fun BookOnBookFavoriteButton(
     ) {
         Image(
             painter = painterResource(R.drawable.common_love),
-            contentDescription = stringResource(
-                if (isFavorite) {
-                    R.string.favorite_remove_description
-                } else {
-                    R.string.favorite_add_description
-                },
-            ),
-            modifier = Modifier
-                .size(AppIconSize.Small)
-                .alpha(if (isFavorite) 1f else 0.35f),
+            contentDescription =
+                stringResource(
+                    if (isFavorite) {
+                        R.string.favorite_remove_description
+                    } else {
+                        R.string.favorite_add_description
+                    },
+                ),
+            modifier =
+                Modifier
+                    .size(AppIconSize.Small)
+                    .alpha(if (isFavorite) 1f else 0.35f),
         )
     }
 }

@@ -1,13 +1,11 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.animateColorAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
 import androidx.compose.animation.togetherWith
-import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,6 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -47,13 +46,14 @@ internal fun BookOnMarathonNoticeCard(
     )
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(MarathonNoticeHeight)
-            .shadow(AppElevation.StrongCard, RoundedCornerShape(AppRadius.Field))
-            .clip(RoundedCornerShape(AppRadius.Field))
-            .background(backgroundColor)
-            .padding(horizontal = AppSpacing.Content),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(MarathonNoticeHeight)
+                .shadow(AppElevation.StrongCard, RoundedCornerShape(AppRadius.Field))
+                .clip(RoundedCornerShape(AppRadius.Field))
+                .background(backgroundColor)
+                .padding(horizontal = AppSpacing.Content),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
@@ -76,7 +76,12 @@ internal fun BookOnMarathonNoticeCard(
             Text(
                 text = noticeText,
                 style = bookOnTypography.caption,
-                color = if (isLinked) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurfaceVariant,
+                color =
+                    if (isLinked) {
+                        MaterialTheme.colorScheme.onSurface
+                    } else {
+                        MaterialTheme.colorScheme.onSurfaceVariant
+                    },
             )
         }
     }

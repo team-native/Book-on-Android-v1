@@ -1,18 +1,17 @@
 package com.teamnative.bookon.core.ui.component.loading
 
-import androidx.compose.material3.MaterialTheme
-
 import android.content.res.Configuration
 import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateFloat
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.background
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -37,33 +36,35 @@ import com.teamnative.bookon.core.designsystem.theme.BookOnThemeMode
  * 네트워크 요청이나 화면 상태를 직접 보유하지 않아 어느 Route에서나 재사용할 수 있다.
  */
 @Composable
-fun BookOnLoadingScreen(
-    modifier: Modifier = Modifier,
-) {
+fun BookOnLoadingScreen(modifier: Modifier = Modifier) {
     val loadingDescription = stringResource(R.string.state_loading)
     val indicatorColor = MaterialTheme.colorScheme.primary
     val infiniteTransition = rememberInfiniteTransition(label = "BookOnLoadingRotation")
-    val rotationDegrees = infiniteTransition.animateFloat(
-        initialValue = 0f,
-        targetValue = 360f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(
-                durationMillis = AppAnimationDuration.LoadingRotation,
-                easing = LinearEasing,
-            ),
-        ),
-        label = "BookOnLoadingRotationDegrees",
-    )
+    val rotationDegrees =
+        infiniteTransition.animateFloat(
+            initialValue = 0f,
+            targetValue = 360f,
+            animationSpec =
+                infiniteRepeatable(
+                    animation =
+                        tween(
+                            durationMillis = AppAnimationDuration.LoadingRotation,
+                            easing = LinearEasing,
+                        ),
+                ),
+            label = "BookOnLoadingRotationDegrees",
+        )
 
     Box(
-        modifier = modifier
-            .fillMaxSize()
-            .background(MaterialTheme.colorScheme.background)
-            .semantics {
-                contentDescription = loadingDescription
-                stateDescription = loadingDescription
-                progressBarRangeInfo = ProgressBarRangeInfo.Indeterminate
-            },
+        modifier =
+            modifier
+                .fillMaxSize()
+                .background(MaterialTheme.colorScheme.background)
+                .semantics {
+                    contentDescription = loadingDescription
+                    stateDescription = loadingDescription
+                    progressBarRangeInfo = ProgressBarRangeInfo.Indeterminate
+                },
         contentAlignment = Alignment.Center,
     ) {
         Canvas(modifier = Modifier.size(AppIconSize.Loading)) {
@@ -72,10 +73,11 @@ fun BookOnLoadingScreen(
                 startAngle = rotationDegrees.value,
                 sweepAngle = LoadingArcSweepAngle,
                 useCenter = false,
-                style = Stroke(
-                    width = LoadingArcStrokeWidth.toPx(),
-                    cap = StrokeCap.Round,
-                ),
+                style =
+                    Stroke(
+                        width = LoadingArcStrokeWidth.toPx(),
+                        cap = StrokeCap.Round,
+                    ),
             )
         }
     }

@@ -1,6 +1,6 @@
 package com.teamnative.bookon.feature.library.presentation.library
 
-import androidx.compose.material3.MaterialTheme
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.height
@@ -12,22 +12,22 @@ import androidx.compose.foundation.lazy.grid.GridItemSpan
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material3.Button
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
-import androidx.compose.foundation.clickable
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
+import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
+import com.teamnative.bookon.core.designsystem.theme.AppSpacing
+import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.ui.component.card.BookOnBookCard
 import com.teamnative.bookon.core.ui.component.chip.BookOnFilterChip
 import com.teamnative.bookon.core.ui.component.loading.BookOnInlineLoadingIndicator
 import com.teamnative.bookon.core.ui.model.resolve
-import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
-import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.feature.library.presentation.component.BookOnLibraryHeader
 
 /**
@@ -49,12 +49,13 @@ fun BookOnLibraryScreen(
         LazyVerticalGrid(
             columns = GridCells.Fixed(2),
             modifier = Modifier.padding(innerPadding),
-            contentPadding = PaddingValues(
-                start = AppSpacing.ScreenHorizontal,
-                top = AppSpacing.Content,
-                end = AppSpacing.Content,
-                bottom = AppSpacing.Section,
-            ),
+            contentPadding =
+                PaddingValues(
+                    start = AppSpacing.ScreenHorizontal,
+                    top = AppSpacing.Content,
+                    end = AppSpacing.Content,
+                    bottom = AppSpacing.Section,
+                ),
             horizontalArrangement = Arrangement.spacedBy(AppSpacing.Content),
             verticalArrangement = Arrangement.spacedBy(AppSpacing.Content),
         ) {

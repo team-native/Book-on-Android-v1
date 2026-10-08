@@ -97,26 +97,29 @@ private fun ProfileImageWithEditButton(
             error = placeholderPainter,
             fallback = placeholderPainter,
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(AppIconSize.Avatar)
-                .clip(CircleShape),
+            modifier =
+                Modifier
+                    .size(AppIconSize.Avatar)
+                    .clip(CircleShape),
         )
 
         // 48dp 클릭 영역 안의 우측 하단에 작은 배지를 배치해 접근성과 시각 위치를 함께 유지한다.
         Box(
-            modifier = Modifier
-                .align(Alignment.BottomEnd)
-                .size(AppComponentSize.MinTouchTarget)
-                .clickable(
-                    enabled = !isUploading,
-                    role = Role.Button,
-                    onClick = onEditClick,
-                ),
+            modifier =
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .size(AppComponentSize.MinTouchTarget)
+                    .clickable(
+                        enabled = !isUploading,
+                        role = Role.Button,
+                        onClick = onEditClick,
+                    ),
         ) {
             Surface(
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .size(AppIconSize.ProfileEditBadge),
+                modifier =
+                    Modifier
+                        .align(Alignment.BottomEnd)
+                        .size(AppIconSize.ProfileEditBadge),
                 shape = CircleShape,
                 color = MaterialTheme.colorScheme.surface,
                 shadowElevation = AppElevation.Button,

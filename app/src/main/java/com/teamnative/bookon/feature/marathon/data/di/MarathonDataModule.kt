@@ -12,6 +12,9 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class MarathonDataModule {
-    @Binds abstract fun bindMarathonRemoteDataSource(implementation: MarathonRemoteDataSourceImpl): MarathonRemoteDataSource
-    @Binds abstract fun bindMarathonRepository(implementation: MarathonRepositoryImpl): MarathonRepository
+    @Binds
+    abstract fun bindMarathonRemoteDataSource(implementation: MarathonRemoteDataSourceImpl): MarathonRemoteDataSource
+
+    @Binds
+    abstract fun bindMarathonRepository(implementation: MarathonRepositoryImpl): MarathonRepository
 }

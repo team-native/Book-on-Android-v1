@@ -13,16 +13,16 @@ import com.teamnative.bookon.feature.auth.data.AuthApiService
 import com.teamnative.bookon.feature.auth.data.Read365ApiService
 import com.teamnative.bookon.feature.book.data.BookAuthenticatedApiService
 import com.teamnative.bookon.feature.book.data.BookPublicApiService
-import com.teamnative.bookon.feature.my.data.MyApiService
-import com.teamnative.bookon.feature.home.data.HomeApiService
-import com.teamnative.bookon.feature.marathon.data.MarathonApiService
-import com.teamnative.bookon.feature.ranking.data.RankingApiService
 import com.teamnative.bookon.feature.community.data.CommunityAuthenticatedApiService
 import com.teamnative.bookon.feature.community.data.CommunityPublicApiService
 import com.teamnative.bookon.feature.fcm.data.FcmApiService
+import com.teamnative.bookon.feature.home.data.HomeApiService
+import com.teamnative.bookon.feature.marathon.data.MarathonApiService
+import com.teamnative.bookon.feature.my.data.MyApiService
 import com.teamnative.bookon.feature.notification.data.NotificationApiService
 import com.teamnative.bookon.feature.oauth.data.OAuthAuthenticatedApiService
 import com.teamnative.bookon.feature.oauth.data.OAuthPublicApiService
+import com.teamnative.bookon.feature.ranking.data.RankingApiService
 import com.teamnative.bookon.feature.school.data.SchoolApiService
 import com.teamnative.bookon.feature.system.data.HealthApiService
 import dagger.Module
@@ -30,14 +30,14 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import javax.inject.Named
-import javax.inject.Singleton
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import java.util.concurrent.TimeUnit
+import javax.inject.Named
+import javax.inject.Singleton
 
 private val Context.authDataStore by preferencesDataStore(name = "bookon_auth_session")
 
@@ -47,10 +47,11 @@ private val Context.authDataStore by preferencesDataStore(name = "bookon_auth_se
 object NetworkModule {
     @Provides
     @Singleton
-    fun provideJson(): Json = Json {
-        ignoreUnknownKeys = true
-        explicitNulls = false
-    }
+    fun provideJson(): Json =
+        Json {
+            ignoreUnknownKeys = true
+            explicitNulls = false
+        }
 
     @Provides
     @Singleton
@@ -60,25 +61,27 @@ object NetworkModule {
 
     @Provides
     @Singleton
-    fun provideLoggingInterceptor(): HttpLoggingInterceptor = HttpLoggingInterceptor().apply {
-        level = if (BuildConfig.ENABLE_NETWORK_LOG) {
-            HttpLoggingInterceptor.Level.BODY
-        } else {
-            HttpLoggingInterceptor.Level.NONE
+    fun provideLoggingInterceptor(): HttpLoggingInterceptor =
+        HttpLoggingInterceptor().apply {
+            level =
+                if (BuildConfig.ENABLE_NETWORK_LOG) {
+                    HttpLoggingInterceptor.Level.BODY
+                } else {
+                    HttpLoggingInterceptor.Level.NONE
+                }
         }
-    }
 
     @Provides
     @Singleton
     @Named(UnauthenticatedClient)
-    fun provideUnauthenticatedOkHttpClient(
-        loggingInterceptor: HttpLoggingInterceptor,
-    ): OkHttpClient = OkHttpClient.Builder()
-        .connectTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
-        .readTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
-        .writeTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
-        .addInterceptor(loggingInterceptor)
-        .build()
+    fun provideUnauthenticatedOkHttpClient(loggingInterceptor: HttpLoggingInterceptor): OkHttpClient =
+        OkHttpClient
+            .Builder()
+            .connectTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
+            .readTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
+            .writeTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
+            .addInterceptor(loggingInterceptor)
+            .build()
 
     @Provides
     @Singleton
@@ -86,14 +89,16 @@ object NetworkModule {
         authorizationInterceptor: AuthorizationInterceptor,
         sessionAuthenticator: SessionAuthenticator,
         loggingInterceptor: HttpLoggingInterceptor,
-    ): OkHttpClient = OkHttpClient.Builder()
-        .connectTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
-        .readTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
-        .writeTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
-        .addInterceptor(authorizationInterceptor)
-        .authenticator(sessionAuthenticator)
-        .addInterceptor(loggingInterceptor)
-        .build()
+    ): OkHttpClient =
+        OkHttpClient
+            .Builder()
+            .connectTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
+            .readTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
+            .writeTimeout(BuildConfig.NETWORK_TIMEOUT_SECONDS.toLong(), TimeUnit.SECONDS)
+            .addInterceptor(authorizationInterceptor)
+            .authenticator(sessionAuthenticator)
+            .addInterceptor(loggingInterceptor)
+            .build()
 
     @Provides
     @Singleton
@@ -101,11 +106,13 @@ object NetworkModule {
     fun provideRefreshRetrofit(
         @Named(UnauthenticatedClient) okHttpClient: OkHttpClient,
         json: Json,
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(BuildConfig.BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(json.asConverterFactory(JsonContentType))
-        .build()
+    ): Retrofit =
+        Retrofit
+            .Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(JsonContentType))
+            .build()
 
     @Provides
     @Singleton
@@ -113,11 +120,13 @@ object NetworkModule {
     fun providePublicRetrofit(
         @Named(UnauthenticatedClient) okHttpClient: OkHttpClient,
         json: Json,
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(BuildConfig.BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(json.asConverterFactory(JsonContentType))
-        .build()
+    ): Retrofit =
+        Retrofit
+            .Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(JsonContentType))
+            .build()
 
     @Provides
     @Singleton
@@ -130,48 +139,82 @@ object NetworkModule {
     fun provideRetrofit(
         okHttpClient: OkHttpClient,
         json: Json,
-    ): Retrofit = Retrofit.Builder()
-        .baseUrl(BuildConfig.BASE_URL)
-        .client(okHttpClient)
-        .addConverterFactory(json.asConverterFactory(JsonContentType))
-        .build()
+    ): Retrofit =
+        Retrofit
+            .Builder()
+            .baseUrl(BuildConfig.BASE_URL)
+            .client(okHttpClient)
+            .addConverterFactory(json.asConverterFactory(JsonContentType))
+            .build()
 
     @Provides @Singleton
-    fun provideAuthApiService(@Named(PublicRetrofit) retrofit: Retrofit): AuthApiService = retrofit.create(AuthApiService::class.java)
+    fun provideAuthApiService(
+        @Named(PublicRetrofit) retrofit: Retrofit,
+    ): AuthApiService = retrofit.create(AuthApiService::class.java)
+
     @Provides @Singleton
     fun provideRead365ApiService(retrofit: Retrofit): Read365ApiService = retrofit.create(Read365ApiService::class.java)
+
     @Provides @Singleton
     fun provideBookPublicApiService(
         @Named(PublicRetrofit) retrofit: Retrofit,
     ): BookPublicApiService = retrofit.create(BookPublicApiService::class.java)
+
     @Provides @Singleton
-    fun provideBookAuthenticatedApiService(
-        retrofit: Retrofit,
-    ): BookAuthenticatedApiService = retrofit.create(BookAuthenticatedApiService::class.java)
+    fun provideBookAuthenticatedApiService(retrofit: Retrofit): BookAuthenticatedApiService =
+        retrofit.create(BookAuthenticatedApiService::class.java)
+
     @Provides @Singleton
     fun provideMyApiService(retrofit: Retrofit): MyApiService = retrofit.create(MyApiService::class.java)
+
     @Provides @Singleton
-    fun provideHomeApiService(@Named(PublicRetrofit) retrofit: Retrofit): HomeApiService = retrofit.create(HomeApiService::class.java)
+    fun provideHomeApiService(
+        @Named(PublicRetrofit) retrofit: Retrofit,
+    ): HomeApiService = retrofit.create(HomeApiService::class.java)
+
     @Provides @Singleton
-    fun provideMarathonApiService(retrofit: Retrofit): MarathonApiService = retrofit.create(MarathonApiService::class.java)
+    fun provideMarathonApiService(retrofit: Retrofit): MarathonApiService =
+        retrofit.create(MarathonApiService::class.java)
+
     @Provides @Singleton
-    fun provideRankingApiService(@Named(PublicRetrofit) retrofit: Retrofit): RankingApiService = retrofit.create(RankingApiService::class.java)
+    fun provideRankingApiService(
+        @Named(PublicRetrofit) retrofit: Retrofit,
+    ): RankingApiService = retrofit.create(RankingApiService::class.java)
+
     @Provides @Singleton
-    fun provideHealthApiService(@Named(PublicRetrofit) retrofit: Retrofit): HealthApiService = retrofit.create(HealthApiService::class.java)
+    fun provideHealthApiService(
+        @Named(PublicRetrofit) retrofit: Retrofit,
+    ): HealthApiService = retrofit.create(HealthApiService::class.java)
+
     @Provides @Singleton
-    fun provideSchoolApiService(@Named(PublicRetrofit) retrofit: Retrofit): SchoolApiService = retrofit.create(SchoolApiService::class.java)
+    fun provideSchoolApiService(
+        @Named(PublicRetrofit) retrofit: Retrofit,
+    ): SchoolApiService = retrofit.create(SchoolApiService::class.java)
+
     @Provides @Singleton
-    fun provideOAuthAuthenticatedApiService(retrofit: Retrofit): OAuthAuthenticatedApiService = retrofit.create(OAuthAuthenticatedApiService::class.java)
+    fun provideOAuthAuthenticatedApiService(retrofit: Retrofit): OAuthAuthenticatedApiService =
+        retrofit.create(OAuthAuthenticatedApiService::class.java)
+
     @Provides @Singleton
-    fun provideOAuthPublicApiService(@Named(PublicRetrofit) retrofit: Retrofit): OAuthPublicApiService = retrofit.create(OAuthPublicApiService::class.java)
+    fun provideOAuthPublicApiService(
+        @Named(PublicRetrofit) retrofit: Retrofit,
+    ): OAuthPublicApiService = retrofit.create(OAuthPublicApiService::class.java)
+
     @Provides @Singleton
-    fun provideNotificationApiService(retrofit: Retrofit): NotificationApiService = retrofit.create(NotificationApiService::class.java)
+    fun provideNotificationApiService(retrofit: Retrofit): NotificationApiService =
+        retrofit.create(NotificationApiService::class.java)
+
     @Provides @Singleton
     fun provideFcmApiService(retrofit: Retrofit): FcmApiService = retrofit.create(FcmApiService::class.java)
+
     @Provides @Singleton
-    fun provideCommunityAuthenticatedApiService(retrofit: Retrofit): CommunityAuthenticatedApiService = retrofit.create(CommunityAuthenticatedApiService::class.java)
+    fun provideCommunityAuthenticatedApiService(retrofit: Retrofit): CommunityAuthenticatedApiService =
+        retrofit.create(CommunityAuthenticatedApiService::class.java)
+
     @Provides @Singleton
-    fun provideCommunityPublicApiService(@Named(PublicRetrofit) retrofit: Retrofit): CommunityPublicApiService = retrofit.create(CommunityPublicApiService::class.java)
+    fun provideCommunityPublicApiService(
+        @Named(PublicRetrofit) retrofit: Retrofit,
+    ): CommunityPublicApiService = retrofit.create(CommunityPublicApiService::class.java)
 
     private const val UnauthenticatedClient = "unauthenticated_client"
     private const val RefreshRetrofit = "refresh_retrofit"

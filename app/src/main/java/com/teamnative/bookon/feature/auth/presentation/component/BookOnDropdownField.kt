@@ -1,9 +1,7 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
-import androidx.compose.foundation.background
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -12,6 +10,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -71,23 +70,28 @@ fun BookOnDropdownField(
     enabled: Boolean = true,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(AppComponentSize.FieldHeight)
-            .shadow(
-                elevation = AppElevation.Field,
-                shape = RoundedCornerShape(AppRadius.Field),
-            )
-            .clip(RoundedCornerShape(AppRadius.Field))
-            .background(MaterialTheme.colorScheme.surface)
-            .alpha(if (enabled) 1f else 0.55f)
-            .padding(horizontal = AppSpacing.Content),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(AppComponentSize.FieldHeight)
+                .shadow(
+                    elevation = AppElevation.Field,
+                    shape = RoundedCornerShape(AppRadius.Field),
+                ).clip(RoundedCornerShape(AppRadius.Field))
+                .background(MaterialTheme.colorScheme.surface)
+                .alpha(if (enabled) 1f else 0.55f)
+                .padding(horizontal = AppSpacing.Content),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(
             text = text.ifEmpty { placeholder },
             style = bookOnTypography.fieldText,
-            color = if (text.isEmpty()) MaterialTheme.colorScheme.onSurfaceVariant else MaterialTheme.colorScheme.onSurface,
+            color =
+                if (text.isEmpty()) {
+                    MaterialTheme.colorScheme.onSurfaceVariant
+                } else {
+                    MaterialTheme.colorScheme.onSurface
+                },
             maxLines = 1,
             overflow = TextOverflow.Ellipsis,
         )
@@ -100,18 +104,20 @@ fun BookOnDropdownField(
             onClick = onClick,
         ) {
             Image(
-                modifier = Modifier.size(
-                    width = DropdownIndicatorWidth,
-                    height = DropdownIndicatorHeight,
-                ),
+                modifier =
+                    Modifier.size(
+                        width = DropdownIndicatorWidth,
+                        height = DropdownIndicatorHeight,
+                    ),
                 painter = painterResource(if (expanded) R.drawable.up_arrow else R.drawable.down_arrow),
-                contentDescription = stringResource(
-                    if (expanded) {
-                        R.string.department_dropdown_collapse_description
-                    } else {
-                        R.string.department_dropdown_expand_description
-                    },
-                ),
+                contentDescription =
+                    stringResource(
+                        if (expanded) {
+                            R.string.department_dropdown_collapse_description
+                        } else {
+                            R.string.department_dropdown_expand_description
+                        },
+                    ),
                 contentScale = ContentScale.Fit,
             )
         }

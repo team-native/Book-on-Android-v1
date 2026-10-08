@@ -6,141 +6,165 @@ import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.feature.auth.domain.ResetPasswordUseCase
 import com.teamnative.bookon.feature.auth.domain.SendPasswordResetEmailUseCase
 import dagger.hilt.android.lifecycle.HiltViewModel
-import javax.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 private const val GsmEmailDomain = "@gsm.hs.kr"
 
 @HiltViewModel
-class BookOnPasswordResetViewModel @Inject constructor(
-    private val sendEmail: SendPasswordResetEmailUseCase,
-    private val resetPassword: ResetPasswordUseCase,
-) : ViewModel() {
-    private val mutableState = MutableStateFlow(PasswordResetFormState())
-    val state: StateFlow<PasswordResetFormState> = mutableState.asStateFlow()
+class BookOnPasswordResetViewModel
+    @Inject
+    constructor(
+        private val sendEmail: SendPasswordResetEmailUseCase,
+        private val resetPassword: ResetPasswordUseCase,
+    ) : ViewModel() {
+        private val mutableState = MutableStateFlow(PasswordResetFormState())
+        val state: StateFlow<PasswordResetFormState> = mutableState.asStateFlow()
 
-    /** 이메일 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
-    fun updateEmail(email: String) {
-        mutableState.value = mutableState.value.copy(
-            email = email,
-            error = null,
-        )
-    }
+        /** 이메일 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
+        fun updateEmail(email: String) {
+            mutableState.value =
+                mutableState.value.copy(
+                    email = email,
+                    error = null,
+                )
+        }
 
-    /** 인증번호 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
-    fun updateVerificationCode(code: String) {
-        mutableState.value = mutableState.value.copy(
-            code = code,
-            error = null,
-        )
-    }
+        /** 인증번호 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
+        fun updateVerificationCode(code: String) {
+            mutableState.value =
+                mutableState.value.copy(
+                    code = code,
+                    error = null,
+                )
+        }
 
-    /** 새 비밀번호 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
-    fun updatePassword(password: String) {
-        mutableState.value = mutableState.value.copy(
-            password = password,
-            error = null,
-        )
-    }
+        /** 새 비밀번호 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
+        fun updatePassword(password: String) {
+            mutableState.value =
+                mutableState.value.copy(
+                    password = password,
+                    error = null,
+                )
+        }
 
-    /** 비밀번호 확인 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
-    fun updatePasswordConfirm(passwordConfirm: String) {
-        mutableState.value = mutableState.value.copy(
-            confirm = passwordConfirm,
-            error = null,
-        )
-    }
+        /** 비밀번호 확인 입력 이벤트에서 호출되며, 이전 요청 오류를 지운다. */
+        fun updatePasswordConfirm(passwordConfirm: String) {
+            mutableState.value =
+                mutableState.value.copy(
+                    confirm = passwordConfirm,
+                    error = null,
+                )
+        }
 
-    /** 이메일 화면의 다음 클릭에서 인증번호 발송을 요청하고 성공 시 다음 화면으로 이동한다. */
-    fun sendVerificationCode(onSuccess: () -> Unit) {
-        viewModelScope.launch {
-            val value = mutableState.value
-            val requestEmail = value.email.toGsmEmailAddress()
-            mutableState.value = value.copy(isLoading = true, error = null)
+        /** 이메일 화면의 다음 클릭에서 인증번호 발송을 요청하고 성공 시 다음 화면으로 이동한다. */
+        fun sendVerificationCode(onSuccess: () -> Unit) {
+            viewModelScope.launch {
+                val value = mutableState.value
+                val requestEmail = value.email.toGsmEmailAddress()
+                mutableState.value = value.copy(isLoading = true, error = null)
 
-            when (sendEmail(requestEmail)) {
-                is NetworkResult.Success -> {
-                    mutableState.value = value.copy(
-                        email = requestEmail,
-                        isLoading = false,
-                    )
-                    onSuccess()
+                when (sendEmail(requestEmail)) {
+                    is NetworkResult.Success -> {
+                        mutableState.value =
+                            value.copy(
+                                email = requestEmail,
+                                isLoading = false,
+                            )
+                        onSuccess()
+                    }
+
+                    is NetworkResult.Failure -> {
+                        fail(value)
+                    }
+                }
+            }
+        }
+
+        /** 인증번호 화면의 재전송 클릭에서 발송 요청을 다시 수행한다. */
+        fun resendVerificationCode() {
+            viewModelScope.launch {
+                val value = mutableState.value
+                val requestEmail = value.email.toGsmEmailAddress()
+                mutableState.value = value.copy(isLoading = true, error = null)
+
+                when (sendEmail(requestEmail)) {
+                    is NetworkResult.Success -> {
+                        mutableState.value =
+                            value.copy(
+                                email = requestEmail,
+                                code = "",
+                                error = null,
+                                isLoading = false,
+                            )
+                    }
+
+                    is NetworkResult.Failure -> {
+                        fail(value)
+                    }
+                }
+            }
+        }
+
+        /** 새 비밀번호 화면의 완료 클릭에서 재설정을 요청하고 성공 시 로그인 화면으로 이동한다. */
+        fun resetPassword(onSuccess: () -> Unit) {
+            viewModelScope.launch {
+                val value = mutableState.value
+                val requestEmail = value.email.toGsmEmailAddress()
+                mutableState.value = value.copy(isLoading = true, error = null)
+
+                when (resetPassword(requestEmail, value.code, value.password, value.confirm)) {
+                    is NetworkResult.Success -> {
+                        mutableState.value =
+                            value.copy(
+                                email = requestEmail,
+                                isLoading = false,
+                            )
+                        onSuccess()
+                    }
+
+                    is NetworkResult.Failure -> {
+                        fail(value)
+                    }
+                }
+            }
+        }
+
+        /** 입력값이 아이디 부분이면 학교 이메일 도메인을 추가해 API 요청용 주소를 만든다. */
+        private fun String.toGsmEmailAddress(): String {
+            val trimmedEmail = trim()
+            val emailDomain = trimmedEmail.substringAfterLast('@', missingDelimiterValue = "")
+
+            return when {
+                trimmedEmail.isEmpty() -> {
+                    trimmedEmail
                 }
 
-                is NetworkResult.Failure -> fail(value)
-            }
-        }
-    }
-
-    /** 인증번호 화면의 재전송 클릭에서 발송 요청을 다시 수행한다. */
-    fun resendVerificationCode() {
-        viewModelScope.launch {
-            val value = mutableState.value
-            val requestEmail = value.email.toGsmEmailAddress()
-            mutableState.value = value.copy(isLoading = true, error = null)
-
-            when (sendEmail(requestEmail)) {
-                is NetworkResult.Success -> {
-                    mutableState.value = value.copy(
-                        email = requestEmail,
-                        code = "",
-                        error = null,
-                        isLoading = false,
-                    )
+                emailDomain.equals(GsmEmailDomain.removePrefix("@"), ignoreCase = true) -> {
+                    trimmedEmail.substringBeforeLast('@') + GsmEmailDomain
                 }
 
-                is NetworkResult.Failure -> fail(value)
-            }
-        }
-    }
-
-    /** 새 비밀번호 화면의 완료 클릭에서 재설정을 요청하고 성공 시 로그인 화면으로 이동한다. */
-    fun resetPassword(onSuccess: () -> Unit) {
-        viewModelScope.launch {
-            val value = mutableState.value
-            val requestEmail = value.email.toGsmEmailAddress()
-            mutableState.value = value.copy(isLoading = true, error = null)
-
-            when (resetPassword(requestEmail, value.code, value.password, value.confirm)) {
-                is NetworkResult.Success -> {
-                    mutableState.value = value.copy(
-                        email = requestEmail,
-                        isLoading = false,
-                    )
-                    onSuccess()
+                '@' in trimmedEmail -> {
+                    trimmedEmail
                 }
 
-                is NetworkResult.Failure -> fail(value)
+                else -> {
+                    trimmedEmail + GsmEmailDomain
+                }
             }
         }
-    }
 
-    /** 입력값이 아이디 부분이면 학교 이메일 도메인을 추가해 API 요청용 주소를 만든다. */
-    private fun String.toGsmEmailAddress(): String {
-        val trimmedEmail = trim()
-        val emailDomain = trimmedEmail.substringAfterLast('@', missingDelimiterValue = "")
-
-        return when {
-            trimmedEmail.isEmpty() -> trimmedEmail
-            emailDomain.equals(GsmEmailDomain.removePrefix("@"), ignoreCase = true) -> {
-                trimmedEmail.substringBeforeLast('@') + GsmEmailDomain
-            }
-
-            '@' in trimmedEmail -> trimmedEmail
-            else -> trimmedEmail + GsmEmailDomain
+        private fun fail(value: PasswordResetFormState) {
+            mutableState.value =
+                value.copy(
+                    isLoading = false,
+                    error = PasswordResetError.RequestFailed,
+                )
         }
     }
-
-    private fun fail(value: PasswordResetFormState) {
-        mutableState.value = value.copy(
-            isLoading = false,
-            error = PasswordResetError.RequestFailed,
-        )
-    }
-}
 
 /** 비밀번호 재설정 요청 실패를 UI 리소스로 변환하기 전 표현한다. */
 enum class PasswordResetError {

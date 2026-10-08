@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.auth.presentation.signupcomplete
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +7,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +18,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
+import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupCompleteCheckIcon
@@ -28,7 +28,6 @@ import com.teamnative.bookon.feature.auth.presentation.component.SignupCompleteB
 import com.teamnative.bookon.feature.auth.presentation.component.SignupCompleteContentTopSpacing
 import com.teamnative.bookon.feature.auth.presentation.component.SignupCompleteSummarySpacing
 import com.teamnative.bookon.feature.auth.presentation.component.SignupCompleteTitleSpacing
-import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 
 /**
  * 가입 완료 화면은 Figma 시안에 맞춰 완료 상태와 사용자 요약을 표시한다.
@@ -44,18 +43,19 @@ fun BookOnSignupCompleteScreen(
         containerColor = MaterialTheme.colorScheme.background,
     ) { innerPadding ->
         Box(
-            modifier = Modifier
-                .padding(innerPadding)
-                .fillMaxSize(),
+            modifier =
+                Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize(),
         ) {
             BookOnSignupCompleteHeroBackground()
             Column(
-                modifier = Modifier
-                    .padding(horizontal = AppSpacing.AuthHorizontal)
-                    .fillMaxSize(),
+                modifier =
+                    Modifier
+                        .padding(horizontal = AppSpacing.AuthHorizontal)
+                        .fillMaxSize(),
                 horizontalAlignment = Alignment.CenterHorizontally,
             ) {
-
                 Spacer(modifier = Modifier.height(SignupCompleteContentTopSpacing))
 
                 BookOnSignupCompleteCheckIcon()
@@ -96,7 +96,6 @@ fun BookOnSignupCompleteScreen(
                 )
 
                 Spacer(modifier = Modifier.height(SignupCompleteBottomSpacing))
-
             }
         }
     }

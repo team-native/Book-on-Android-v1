@@ -25,26 +25,44 @@ import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 fun BookOnBookDetailTopBar(onBackClick: () -> Unit) {
     val surface = MaterialTheme.colorScheme.surface
     val foreground = MaterialTheme.colorScheme.onSurface
-    val darkFilter = if (surface.luminance() < 0.5f) {
-        ColorFilter.colorMatrix(
-            ColorMatrix(
-                floatArrayOf(
-                    surface.red - foreground.red, 0f, 0f, 0f, foreground.red * 255f,
-                    0f, surface.green - foreground.green, 0f, 0f, foreground.green * 255f,
-                    0f, 0f, surface.blue - foreground.blue, 0f, foreground.blue * 255f,
-                    0f, 0f, 0f, 1f, 0f,
+    val darkFilter =
+        if (surface.luminance() < 0.5f) {
+            ColorFilter.colorMatrix(
+                ColorMatrix(
+                    floatArrayOf(
+                        surface.red - foreground.red,
+                        0f,
+                        0f,
+                        0f,
+                        foreground.red * 255f,
+                        0f,
+                        surface.green - foreground.green,
+                        0f,
+                        0f,
+                        foreground.green * 255f,
+                        0f,
+                        0f,
+                        surface.blue - foreground.blue,
+                        0f,
+                        foreground.blue * 255f,
+                        0f,
+                        0f,
+                        0f,
+                        1f,
+                        0f,
+                    ),
                 ),
-            ),
-        )
-    } else {
-        null
-    }
+            )
+        } else {
+            null
+        }
     Box(
-        modifier = Modifier
-            .statusBarsPadding()
-            .fillMaxWidth()
-            .height(AppComponentSize.TopBarHeight)
-            .padding(horizontal = AppSpacing.Tiny),
+        modifier =
+            Modifier
+                .statusBarsPadding()
+                .fillMaxWidth()
+                .height(AppComponentSize.TopBarHeight)
+                .padding(horizontal = AppSpacing.Tiny),
         contentAlignment = Alignment.CenterStart,
     ) {
         IconButton(onClick = onBackClick) {
@@ -52,10 +70,11 @@ fun BookOnBookDetailTopBar(onBackClick: () -> Unit) {
                 painter = painterResource(R.drawable.book_detail_back),
                 contentDescription = stringResource(R.string.book_detail_back),
                 colorFilter = darkFilter,
-                modifier = Modifier.size(
-                    width = AppComponentSize.BookDetailBackWidth,
-                    height = AppComponentSize.BookDetailBackHeight,
-                ),
+                modifier =
+                    Modifier.size(
+                        width = AppComponentSize.BookDetailBackWidth,
+                        height = AppComponentSize.BookDetailBackHeight,
+                    ),
             )
         }
     }

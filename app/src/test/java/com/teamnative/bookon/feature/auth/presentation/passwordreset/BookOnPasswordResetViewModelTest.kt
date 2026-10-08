@@ -4,9 +4,9 @@ import com.teamnative.bookon.core.network.NetworkError
 import com.teamnative.bookon.core.network.NetworkResult
 import com.teamnative.bookon.feature.auth.domain.AuthRepository
 import com.teamnative.bookon.feature.auth.domain.LoginSession
+import com.teamnative.bookon.feature.auth.domain.RegisteredUser
 import com.teamnative.bookon.feature.auth.domain.RegistrationDraft
 import com.teamnative.bookon.feature.auth.domain.RegistrationSession
-import com.teamnative.bookon.feature.auth.domain.RegisteredUser
 import com.teamnative.bookon.feature.auth.domain.ResetPasswordUseCase
 import com.teamnative.bookon.feature.auth.domain.SendPasswordResetEmailUseCase
 import kotlinx.coroutines.Dispatchers
@@ -37,79 +37,83 @@ class BookOnPasswordResetViewModelTest {
     }
 
     @Test
-    fun `인증 메일 발송에 성공하면 다음 화면 이동을 요청한다`() = runTest {
-        val repository = PasswordResetRepository()
-        val viewModel = createViewModel(repository)
-        var navigated = false
+    fun `인증 메일 발송에 성공하면 다음 화면 이동을 요청한다`() =
+        runTest {
+            val repository = PasswordResetRepository()
+            val viewModel = createViewModel(repository)
+            var navigated = false
 
-        viewModel.updateEmail("s26031")
-        viewModel.sendVerificationCode { navigated = true }
+            viewModel.updateEmail("s26031")
+            viewModel.sendVerificationCode { navigated = true }
 
-        assertEquals("s26031@gsm.hs.kr", repository.lastEmail)
-        assertEquals("s26031@gsm.hs.kr", viewModel.state.value.email)
-        assertTrue(navigated)
-        assertFalse(viewModel.state.value.isLoading)
-        assertEquals(null, viewModel.state.value.error)
-    }
-
-    @Test
-    fun `이미 학교 이메일을 입력한 경우 도메인을 중복으로 추가하지 않는다`() = runTest {
-        val repository = PasswordResetRepository()
-        val viewModel = createViewModel(repository)
-
-        viewModel.updateEmail("s26031@gsm.hs.kr")
-        viewModel.sendVerificationCode {}
-
-        assertEquals("s26031@gsm.hs.kr", repository.lastEmail)
-    }
+            assertEquals("s26031@gsm.hs.kr", repository.lastEmail)
+            assertEquals("s26031@gsm.hs.kr", viewModel.state.value.email)
+            assertTrue(navigated)
+            assertFalse(viewModel.state.value.isLoading)
+            assertEquals(null, viewModel.state.value.error)
+        }
 
     @Test
-    fun `인증 메일 재전송은 입력 코드를 비우고 실패는 오류 상태로 표시한다`() = runTest {
-        val repository = PasswordResetRepository()
-        val viewModel = createViewModel(repository)
+    fun `이미 학교 이메일을 입력한 경우 도메인을 중복으로 추가하지 않는다`() =
+        runTest {
+            val repository = PasswordResetRepository()
+            val viewModel = createViewModel(repository)
 
-        viewModel.updateEmail("s26031")
-        viewModel.updateVerificationCode("123456")
-        viewModel.resendVerificationCode()
+            viewModel.updateEmail("s26031@gsm.hs.kr")
+            viewModel.sendVerificationCode {}
 
-        assertEquals("", viewModel.state.value.code)
-        assertEquals("s26031@gsm.hs.kr", repository.lastEmail)
-        assertEquals(1, repository.sendEmailRequestCount)
-
-        repository.sendEmailResult = NetworkResult.Failure(
-            NetworkError.Network(IllegalStateException("network")),
-        )
-        viewModel.resendVerificationCode()
-
-        assertEquals(PasswordResetError.RequestFailed, viewModel.state.value.error)
-        assertFalse(viewModel.state.value.isLoading)
-    }
+            assertEquals("s26031@gsm.hs.kr", repository.lastEmail)
+        }
 
     @Test
-    fun `비밀번호 재설정에 성공하면 로그인 복귀 콜백을 호출한다`() = runTest {
-        val repository = PasswordResetRepository()
-        val viewModel = createViewModel(repository)
-        var completed = false
+    fun `인증 메일 재전송은 입력 코드를 비우고 실패는 오류 상태로 표시한다`() =
+        runTest {
+            val repository = PasswordResetRepository()
+            val viewModel = createViewModel(repository)
 
-        viewModel.updateEmail("s26031")
-        viewModel.updateVerificationCode("123456")
-        viewModel.updatePassword("Password1!")
-        viewModel.updatePasswordConfirm("Password1!")
-        viewModel.resetPassword { completed = true }
+            viewModel.updateEmail("s26031")
+            viewModel.updateVerificationCode("123456")
+            viewModel.resendVerificationCode()
 
-        assertEquals("s26031@gsm.hs.kr", repository.resetEmail)
-        assertEquals("123456", repository.resetCode)
-        assertEquals("Password1!", repository.resetPassword)
-        assertTrue(completed)
-        assertFalse(viewModel.state.value.isLoading)
-    }
+            assertEquals("", viewModel.state.value.code)
+            assertEquals("s26031@gsm.hs.kr", repository.lastEmail)
+            assertEquals(1, repository.sendEmailRequestCount)
 
-    private fun createViewModel(repository: PasswordResetRepository): BookOnPasswordResetViewModel {
-        return BookOnPasswordResetViewModel(
+            repository.sendEmailResult =
+                NetworkResult.Failure(
+                    NetworkError.Network(IllegalStateException("network")),
+                )
+            viewModel.resendVerificationCode()
+
+            assertEquals(PasswordResetError.RequestFailed, viewModel.state.value.error)
+            assertFalse(viewModel.state.value.isLoading)
+        }
+
+    @Test
+    fun `비밀번호 재설정에 성공하면 로그인 복귀 콜백을 호출한다`() =
+        runTest {
+            val repository = PasswordResetRepository()
+            val viewModel = createViewModel(repository)
+            var completed = false
+
+            viewModel.updateEmail("s26031")
+            viewModel.updateVerificationCode("123456")
+            viewModel.updatePassword("Password1!")
+            viewModel.updatePasswordConfirm("Password1!")
+            viewModel.resetPassword { completed = true }
+
+            assertEquals("s26031@gsm.hs.kr", repository.resetEmail)
+            assertEquals("123456", repository.resetCode)
+            assertEquals("Password1!", repository.resetPassword)
+            assertTrue(completed)
+            assertFalse(viewModel.state.value.isLoading)
+        }
+
+    private fun createViewModel(repository: PasswordResetRepository): BookOnPasswordResetViewModel =
+        BookOnPasswordResetViewModel(
             sendEmail = SendPasswordResetEmailUseCase(repository),
             resetPassword = ResetPasswordUseCase(repository),
         )
-    }
 }
 
 private class PasswordResetRepository : AuthRepository {
@@ -149,7 +153,10 @@ private class PasswordResetRepository : AuthRepository {
         error("not used")
     }
 
-    override suspend fun login(loginId: String, password: String): NetworkResult<LoginSession> {
+    override suspend fun login(
+        loginId: String,
+        password: String,
+    ): NetworkResult<LoginSession> {
         error("not used")
     }
 
@@ -157,7 +164,10 @@ private class PasswordResetRepository : AuthRepository {
         error("not used")
     }
 
-    override suspend fun linkRead365(id: String, password: String): NetworkResult<Unit> {
+    override suspend fun linkRead365(
+        id: String,
+        password: String,
+    ): NetworkResult<Unit> {
         error("not used")
     }
 }

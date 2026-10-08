@@ -1,12 +1,11 @@
 package com.teamnative.bookon.core.ui.component.loading
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -20,19 +19,18 @@ import com.teamnative.bookon.core.designsystem.theme.AppSpacing
 
 /** 목록의 다음 페이지 요청처럼 기존 콘텐츠를 유지해야 할 때 표시하는 진행 상태다. */
 @Composable
-fun BookOnInlineLoadingIndicator(
-    modifier: Modifier = Modifier,
-) {
+fun BookOnInlineLoadingIndicator(modifier: Modifier = Modifier) {
     val loadingDescription = stringResource(R.string.state_loading)
 
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(vertical = AppSpacing.Content)
-            .semantics {
-                contentDescription = loadingDescription
-                progressBarRangeInfo = ProgressBarRangeInfo.Indeterminate
-            },
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .padding(vertical = AppSpacing.Content)
+                .semantics {
+                    contentDescription = loadingDescription
+                    progressBarRangeInfo = ProgressBarRangeInfo.Indeterminate
+                },
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically,
     ) {

@@ -7,11 +7,11 @@ package com.teamnative.bookon.feature.auth.presentation.component
 internal object BookOnPasswordPolicy {
     const val MaxLength = 15
     private const val MinLength = 6
-    private val validPasswordRegex = Regex(
-        "^(?=\\S{$MinLength,$MaxLength}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9\\s]).*$",
-    )
+    private val validPasswordRegex =
+        Regex(
+            "^(?=\\S{$MinLength,$MaxLength}$)(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9\\s]).*$",
+        )
 
     /** 사용자가 입력한 비밀번호가 서비스 정책을 만족하는지 반환한다. */
     fun isValid(password: String): Boolean = validPasswordRegex.matches(password)
-
 }

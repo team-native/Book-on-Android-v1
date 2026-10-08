@@ -3,7 +3,11 @@ package com.teamnative.bookon.feature.auth.domain
 import com.teamnative.bookon.core.network.NetworkResult
 
 interface Read365Repository {
-    suspend fun login(id: String, password: String): NetworkResult<Read365Session>
+    suspend fun login(
+        id: String,
+        password: String,
+    ): NetworkResult<Read365Session>
+
     suspend fun registerSession(
         cookieHeader: String,
         read365Id: String? = null,

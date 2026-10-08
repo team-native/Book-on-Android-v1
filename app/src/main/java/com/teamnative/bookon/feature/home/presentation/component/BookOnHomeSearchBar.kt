@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,17 +40,17 @@ fun BookOnHomeSearchBar(
     modifier: Modifier = Modifier,
 ) {
     Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(AppComponentSize.HomeSearchHeight)
-            .shadow(
-                elevation = AppElevation.Field,
-                shape = RoundedCornerShape(AppRadius.Search),
-            )
-            .clip(RoundedCornerShape(AppRadius.Search))
-            .background(MaterialTheme.colorScheme.surface)
-            .clickable(role = Role.Button, onClick = onClick)
-            .padding(horizontal = AppSpacing.Item),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(AppComponentSize.HomeSearchHeight)
+                .shadow(
+                    elevation = AppElevation.Field,
+                    shape = RoundedCornerShape(AppRadius.Search),
+                ).clip(RoundedCornerShape(AppRadius.Search))
+                .background(MaterialTheme.colorScheme.surface)
+                .clickable(role = Role.Button, onClick = onClick)
+                .padding(horizontal = AppSpacing.Item),
         verticalAlignment = Alignment.CenterVertically,
     ) {
         Text(

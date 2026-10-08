@@ -15,19 +15,19 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupStepHeader
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnSkipTextButton
-import com.teamnative.bookon.feature.auth.presentation.component.skipReadingMarathonAnnotatedString
+import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.ui.component.bar.BookOnTopBar
 import com.teamnative.bookon.core.ui.component.button.BookOnPrimaryButton
-import com.teamnative.bookon.feature.auth.presentation.component.BookOnMarathonCircleAction
 import com.teamnative.bookon.core.ui.component.textfield.BookOnTextField
 import com.teamnative.bookon.feature.auth.presentation.component.AuthOauthTopSpacing
 import com.teamnative.bookon.feature.auth.presentation.component.AuthTitleTopSpacing
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthFormScaffold
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnAuthPasswordField
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnMarathonCircleAction
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnSignupStepHeader
+import com.teamnative.bookon.feature.auth.presentation.component.BookOnSkipTextButton
 import com.teamnative.bookon.feature.auth.presentation.component.BookOnThirdPartyAgreementRow
-import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
+import com.teamnative.bookon.feature.auth.presentation.component.skipReadingMarathonAnnotatedString
 
 /**
  * 독서마라톤 계정 연동 화면은 아이디, 비밀번호, 개인정보 제공 동의와 Read365 웹 접속을 제공한다.
@@ -75,7 +75,6 @@ fun BookOnReadingMarathonLinkScreen(
             )
         },
     ) {
-
         Spacer(modifier = Modifier.height(AuthTitleTopSpacing))
 
         BookOnSignupStepHeader(

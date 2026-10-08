@@ -36,13 +36,19 @@ fun BookOnBookDetailRoute(
     LaunchedEffect(viewModel, lifecycleOwner, resources) {
         lifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
             viewModel.effects.collect { message ->
-                val text = when (message) {
-                    is BookOnUiMessage.Dynamic -> message.value
-                    is BookOnUiMessage.Resource -> resources.getString(
-                        message.resId,
-                        *message.formatArgs.toTypedArray(),
-                    )
-                }
+                val text =
+                    when (message) {
+                        is BookOnUiMessage.Dynamic -> {
+                            message.value
+                        }
+
+                        is BookOnUiMessage.Resource -> {
+                            resources.getString(
+                                message.resId,
+                                *message.formatArgs.toTypedArray(),
+                            )
+                        }
+                    }
                 snackbarHostState.showSnackbar(text)
             }
         }

@@ -1,7 +1,5 @@
 package com.teamnative.bookon.core.ui.component.textfield
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.animation.animateColorAsState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -15,12 +13,13 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -105,11 +104,12 @@ fun BookOnTextField(
     val interactionSource = remember { MutableInteractionSource() }
     val isFocused by interactionSource.collectIsFocusedAsState()
     val borderColor by animateColorAsState(
-        targetValue = when {
-            isError -> MaterialTheme.colorScheme.errorContainer
-            isFocused -> MaterialTheme.colorScheme.primary
-            else -> MaterialTheme.colorScheme.surface
-        },
+        targetValue =
+            when {
+                isError -> MaterialTheme.colorScheme.errorContainer
+                isFocused -> MaterialTheme.colorScheme.primary
+                else -> MaterialTheme.colorScheme.surface
+            },
     )
     val containerColor by animateColorAsState(
         targetValue = if (isError) MaterialTheme.colorScheme.errorContainer else MaterialTheme.colorScheme.surface,
@@ -124,29 +124,27 @@ fun BookOnTextField(
             )
 
             Spacer(modifier = Modifier.height(AppSpacing.Small))
-
         }
 
         BasicTextField(
             value = value,
             onValueChange = onValueChange,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(AppComponentSize.FieldHeight)
-                .shadow(
-                    elevation = AppElevation.Field,
-                    shape = shape,
-                )
-                .clip(shape)
-                .background(containerColor)
-                .border(
-                    width = AppComponentSize.FieldBorderWidth,
-                    color = borderColor,
-                    shape = shape,
-                )
-                .semantics {
-                    if (isError && errorText != null) error(errorText)
-                },
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(AppComponentSize.FieldHeight)
+                    .shadow(
+                        elevation = AppElevation.Field,
+                        shape = shape,
+                    ).clip(shape)
+                    .background(containerColor)
+                    .border(
+                        width = AppComponentSize.FieldBorderWidth,
+                        color = borderColor,
+                        shape = shape,
+                    ).semantics {
+                        if (isError && errorText != null) error(errorText)
+                    },
             enabled = enabled,
             singleLine = singleLine,
             textStyle = textStyle.copy(color = MaterialTheme.colorScheme.onSurface),
@@ -156,9 +154,10 @@ fun BookOnTextField(
             interactionSource = interactionSource,
             decorationBox = { innerTextField ->
                 Row(
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .padding(horizontal = AppSpacing.FieldHorizontal),
+                    modifier =
+                        Modifier
+                            .fillMaxSize()
+                            .padding(horizontal = AppSpacing.FieldHorizontal),
                     verticalAlignment = Alignment.CenterVertically,
                 ) {
                     if (leadingIcon != null) {
@@ -170,7 +169,6 @@ fun BookOnTextField(
                         }
 
                         Spacer(modifier = Modifier.width(AppSpacing.Content))
-
                     }
 
                     Box(modifier = Modifier.weight(1f)) {
@@ -185,7 +183,6 @@ fun BookOnTextField(
                     }
 
                     if (suffixText != null) {
-
                         Spacer(modifier = Modifier.width(AppSpacing.Item))
 
                         Text(
@@ -196,14 +193,14 @@ fun BookOnTextField(
                     }
 
                     if (trailingIcon != null) {
-
                         Spacer(modifier = Modifier.width(AppSpacing.Item))
 
                         Box(
-                            modifier = Modifier.sizeIn(
-                                minWidth = AppComponentSize.MinTouchTarget,
-                                minHeight = AppComponentSize.MinTouchTarget,
-                            ),
+                            modifier =
+                                Modifier.sizeIn(
+                                    minWidth = AppComponentSize.MinTouchTarget,
+                                    minHeight = AppComponentSize.MinTouchTarget,
+                                ),
                             contentAlignment = Alignment.Center,
                         ) {
                             trailingIcon()
@@ -214,7 +211,6 @@ fun BookOnTextField(
         )
 
         if (errorText != null) {
-
             Spacer(modifier = Modifier.height(AppSpacing.Small))
 
             Text(

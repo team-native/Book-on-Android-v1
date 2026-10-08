@@ -13,8 +13,6 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
-import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
-import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.blur
@@ -22,6 +20,8 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
+import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.teamnative.bookon.R
 
 private const val DepartmentRadioButtonScale = 0.7f
@@ -36,24 +36,30 @@ fun BookOnSignupRoute(
 ) {
     val registrationState by viewModel.state.collectAsStateWithLifecycle()
     var isDepartmentMenuExpanded by rememberSaveable { mutableStateOf(false) }
-    val selectedDepartmentText = registrationState.department?.let { department ->
-        stringResource(department.textResId)
-    }.orEmpty()
-    val emailErrorText = when (registrationState.emailError) {
-        BookOnRegistrationEmailError.AlreadyUsed -> {
-            stringResource(R.string.error_signup_email_already_used)
-        }
+    val selectedDepartmentText =
+        registrationState.department
+            ?.let { department ->
+                stringResource(department.textResId)
+            }.orEmpty()
+    val emailErrorText =
+        when (registrationState.emailError) {
+            BookOnRegistrationEmailError.AlreadyUsed -> {
+                stringResource(R.string.error_signup_email_already_used)
+            }
 
-        null -> null
-    }
-    val uiState = defaultSignupUiState(
-        email = registrationState.email,
-        emailErrorText = emailErrorText,
-        name = registrationState.name,
-        selectedGender = registrationState.gender,
-        selectedDepartmentText = selectedDepartmentText,
-        isDepartmentMenuExpanded = isDepartmentMenuExpanded,
-    )
+            null -> {
+                null
+            }
+        }
+    val uiState =
+        defaultSignupUiState(
+            email = registrationState.email,
+            emailErrorText = emailErrorText,
+            name = registrationState.name,
+            selectedGender = registrationState.gender,
+            selectedDepartmentText = selectedDepartmentText,
+            isDepartmentMenuExpanded = isDepartmentMenuExpanded,
+        )
 
     BookOnSignupScreen(
         modifier = if (isDepartmentMenuExpanded) Modifier.blur(radius = 8.dp) else Modifier,

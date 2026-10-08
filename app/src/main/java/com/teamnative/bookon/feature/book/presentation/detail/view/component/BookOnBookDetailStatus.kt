@@ -25,10 +25,11 @@ fun BookOnBookDetailStatus(
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.spacedBy(
-            space = AppSpacing.Content,
-            alignment = Alignment.CenterVertically,
-        ),
+        verticalArrangement =
+            Arrangement.spacedBy(
+                space = AppSpacing.Content,
+                alignment = Alignment.CenterVertically,
+            ),
     ) {
         if (isLoading) {
             BookOnInlineLoadingIndicator()

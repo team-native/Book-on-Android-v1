@@ -1,7 +1,5 @@
 package com.teamnative.bookon.core.ui.component.bar
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -11,6 +9,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -26,6 +25,7 @@ import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
+
 /**
  * 화면 상단 제목과 뒤로가기, 우측 액션 영역을 제공한다.
 BookOnAuthTopBar * edge-to-edge 환경에서 상태 표시줄 인셋을 포함해 시스템 바와 겹치지 않게 배치한다.
@@ -39,23 +39,25 @@ fun BookOnTopBar(
     trailingContent: @Composable () -> Unit = {},
 ) {
     Box(
-        modifier = modifier
-            .statusBarsPadding()
-            .fillMaxWidth()
-            .height(AppComponentSize.TopBarHeight),
+        modifier =
+            modifier
+                .statusBarsPadding()
+                .fillMaxWidth()
+                .height(AppComponentSize.TopBarHeight),
     ) {
         if (onBackClick != null) {
             Box(
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .size(AppComponentSize.TopBarAction)
-                    .clip(RoundedCornerShape(AppRadius.IconButton))
-                    .background(MaterialTheme.colorScheme.background)
-                    .clickable(
-                        role = Role.Button,
-                        onClickLabel = backContentDescription,
-                        onClick = onBackClick,
-                    ),
+                modifier =
+                    Modifier
+                        .align(Alignment.CenterStart)
+                        .size(AppComponentSize.TopBarAction)
+                        .clip(RoundedCornerShape(AppRadius.IconButton))
+                        .background(MaterialTheme.colorScheme.background)
+                        .clickable(
+                            role = Role.Button,
+                            onClickLabel = backContentDescription,
+                            onClick = onBackClick,
+                        ),
                 contentAlignment = Alignment.Center,
             ) {
                 BackChevron()

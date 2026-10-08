@@ -7,14 +7,16 @@ import org.junit.Assert.assertTrue
 import org.junit.Test
 
 class BookApiContractSerializationTest {
-    private val json = Json {
-        ignoreUnknownKeys = true
-        explicitNulls = false
-    }
+    private val json =
+        Json {
+            ignoreUnknownKeys = true
+            explicitNulls = false
+        }
 
     @Test
     fun `실서버 도서 목록 응답을 현재 DTO로 역직렬화한다`() {
-        val responseBody = """
+        val responseBody =
+            """
             {
               "errorCode": 0,
               "message": "도서 목록 조회 성공",
@@ -43,7 +45,7 @@ class BookApiContractSerializationTest {
                 }
               }
             }
-        """.trimIndent()
+            """.trimIndent()
 
         val envelope = json.decodeFromString<ApiEnvelope<BookPageDto>>(responseBody)
         val bookPage = requireNotNull(envelope.data)
@@ -52,6 +54,7 @@ class BookApiContractSerializationTest {
         assertTrue(bookPage.items.single().loanAvailable)
         assertTrue(bookPage.pagination.hasNext)
     }
+
     @Test
     fun `상세 nullable 상태와 수량을 수신하고 누락 수량은 보존한다`() {
         val base = """{
@@ -63,11 +66,11 @@ class BookApiContractSerializationTest {
         assertEquals(null, missing.status)
         assertEquals(null, missing.totalQuantity)
         assertEquals(null, missing.availableQuantity)
-        val stocked = json.decodeFromString<BookDetailDto>(
-            base.trimEnd().dropLast(1) + ",\"totalQuantity\":3,\"availableQuantity\":0}",
-        )
+        val stocked =
+            json.decodeFromString<BookDetailDto>(
+                base.trimEnd().dropLast(1) + ",\"totalQuantity\":3,\"availableQuantity\":0}",
+            )
         assertEquals(3, stocked.totalQuantity)
         assertEquals(0, stocked.availableQuantity)
     }
-
 }

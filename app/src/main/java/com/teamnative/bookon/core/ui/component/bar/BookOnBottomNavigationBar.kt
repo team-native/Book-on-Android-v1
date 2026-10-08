@@ -1,7 +1,5 @@
 package com.teamnative.bookon.core.ui.component.bar
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -16,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,15 +28,15 @@ import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.Role
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.teamnative.bookon.R
 import com.teamnative.bookon.core.designsystem.theme.AppComponentSize
 import com.teamnative.bookon.core.designsystem.theme.AppIconSize
 import com.teamnative.bookon.core.designsystem.theme.AppRadius
 import com.teamnative.bookon.core.designsystem.theme.AppSpacing
+import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.BookOnTheme
 import com.teamnative.bookon.core.designsystem.theme.LocalBookOnExtraColors
-import com.teamnative.bookon.core.designsystem.theme.AppStrokeWidth
 import com.teamnative.bookon.core.designsystem.theme.bookOnTypography
-import com.teamnative.bookon.R
 import com.teamnative.bookon.core.ui.model.BookOnNavigationItemUiModel
 
 /**
@@ -52,47 +51,51 @@ fun BookOnBottomNavigationBar(
     modifier: Modifier = Modifier,
 ) {
     Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(AppComponentSize.NavigationHeight),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .height(AppComponentSize.NavigationHeight),
         color = MaterialTheme.colorScheme.surface,
         tonalElevation = 0.dp,
         shadowElevation = 0.dp,
     ) {
         Column(modifier = Modifier.fillMaxWidth()) {
             Spacer(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(AppStrokeWidth.Divider)
-                    .background(LocalBookOnExtraColors.current.navigationDivider),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .height(AppStrokeWidth.Divider)
+                        .background(LocalBookOnExtraColors.current.navigationDivider),
             )
 
             Spacer(modifier = Modifier.height(AppSpacing.NavigationDividerToIcon))
 
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = AppSpacing.ScreenHorizontal),
+                modifier =
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = AppSpacing.ScreenHorizontal),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top,
             ) {
                 items.forEachIndexed { index, item ->
                     val selected = index == selectedIndex
-                    val labelColor = if (selected) {
-                        MaterialTheme.colorScheme.primary
-                    } else {
-                        MaterialTheme.colorScheme.onSurface
-                    }
+                    val labelColor =
+                        if (selected) {
+                            MaterialTheme.colorScheme.primary
+                        } else {
+                            MaterialTheme.colorScheme.onSurface
+                        }
                     val label = stringResource(item.labelRes)
                     Column(
-                        modifier = Modifier
-                            .clip(RoundedCornerShape(AppRadius.Small))
-                            .selectable(
-                                selected = selected,
-                                role = Role.Tab,
-                                onClick = { onItemClick(index) },
-                            )
-                            .padding(horizontal = AppSpacing.Small),
+                        modifier =
+                            Modifier
+                                .clip(RoundedCornerShape(AppRadius.Small))
+                                .selectable(
+                                    selected = selected,
+                                    role = Role.Tab,
+                                    onClick = { onItemClick(index) },
+                                ).padding(horizontal = AppSpacing.Small),
                         horizontalAlignment = Alignment.CenterHorizontally,
                         verticalArrangement = Arrangement.spacedBy(AppSpacing.Tiny),
                     ) {
@@ -105,13 +108,14 @@ fun BookOnBottomNavigationBar(
                                 painter = painterResource(item.iconRes),
                                 contentDescription = null,
                                 contentScale = ContentScale.Fit,
-                                colorFilter = if (selected) {
-                                    ColorFilter.tint(
-                                        MaterialTheme.colorScheme.primary,
-                                    )
-                                } else {
-                                    null
-                                },
+                                colorFilter =
+                                    if (selected) {
+                                        ColorFilter.tint(
+                                            MaterialTheme.colorScheme.primary,
+                                        )
+                                    } else {
+                                        null
+                                    },
                             )
                         }
                         Text(
@@ -131,12 +135,13 @@ fun BookOnBottomNavigationBar(
 private fun BookOnBottomNavigationBarPreview() {
     BookOnTheme {
         BookOnBottomNavigationBar(
-            items = listOf(
-                BookOnNavigationItemUiModel(R.string.nav_home, R.drawable.navigation_home),
-                BookOnNavigationItemUiModel(R.string.nav_ranking, R.drawable.navigation_rank),
-                BookOnNavigationItemUiModel(R.string.nav_library, R.drawable.navigation_library),
-                BookOnNavigationItemUiModel(R.string.nav_my, R.drawable.navigation_my),
-            ),
+            items =
+                listOf(
+                    BookOnNavigationItemUiModel(R.string.nav_home, R.drawable.navigation_home),
+                    BookOnNavigationItemUiModel(R.string.nav_ranking, R.drawable.navigation_rank),
+                    BookOnNavigationItemUiModel(R.string.nav_library, R.drawable.navigation_library),
+                    BookOnNavigationItemUiModel(R.string.nav_my, R.drawable.navigation_my),
+                ),
             selectedIndex = 0,
             onItemClick = {},
         )

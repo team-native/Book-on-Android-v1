@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.home.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -80,22 +79,21 @@ fun BookOnHomeNoticeCard(
     onClick: (() -> Unit)? = null,
 ) {
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .shadow(
-                elevation = AppElevation.Card,
-                shape = RoundedCornerShape(AppRadius.LargeCard),
-            )
-            .clip(RoundedCornerShape(AppRadius.LargeCard))
-            .background(MaterialTheme.colorScheme.surface)
-            .then(
-                if (onClick != null) {
-                    Modifier.clickable(role = Role.Button, onClick = onClick)
-                } else {
-                    Modifier
-                },
-            )
-            .padding(AppSpacing.Content),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .shadow(
+                    elevation = AppElevation.Card,
+                    shape = RoundedCornerShape(AppRadius.LargeCard),
+                ).clip(RoundedCornerShape(AppRadius.LargeCard))
+                .background(MaterialTheme.colorScheme.surface)
+                .then(
+                    if (onClick != null) {
+                        Modifier.clickable(role = Role.Button, onClick = onClick)
+                    } else {
+                        Modifier
+                    },
+                ).padding(AppSpacing.Content),
     ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             Image(
@@ -127,11 +125,12 @@ fun BookOnHomeNoticeCard(
             }
             if (badgeText != null) {
                 Box(
-                    modifier = Modifier
-                        .height(AppComponentSize.SmallChipHeight)
-                        .clip(RoundedCornerShape(AppRadius.Small))
-                        .background(MaterialTheme.colorScheme.primary)
-                        .padding(horizontal = AppSpacing.Item),
+                    modifier =
+                        Modifier
+                            .height(AppComponentSize.SmallChipHeight)
+                            .clip(RoundedCornerShape(AppRadius.Small))
+                            .background(MaterialTheme.colorScheme.primary)
+                            .padding(horizontal = AppSpacing.Item),
                     contentAlignment = Alignment.Center,
                 ) {
                     Text(
@@ -163,7 +162,6 @@ fun BookOnHomeNoticeCard(
             overflow = TextOverflow.Ellipsis,
         )
         if (actionText != null) {
-
             Spacer(modifier = Modifier.height(AppSpacing.Item))
 
             Text(

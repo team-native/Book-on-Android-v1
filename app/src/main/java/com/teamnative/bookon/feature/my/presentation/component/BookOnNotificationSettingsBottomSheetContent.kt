@@ -1,10 +1,8 @@
 package com.teamnative.bookon.feature.my.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -13,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.HorizontalDivider
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -41,49 +40,52 @@ fun BookOnNotificationSettingsBottomSheetContent(
     onCompleteClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
-    val notificationRows = listOf(
-        NotificationSettingRow(
-            title = stringResource(R.string.return_notification),
-            description = stringResource(R.string.return_notification_description),
-        ),
-        NotificationSettingRow(
-            title = stringResource(R.string.library_notice_notification),
-            description = stringResource(R.string.library_notice_notification_description),
-        ),
-    )
+    val notificationRows =
+        listOf(
+            NotificationSettingRow(
+                title = stringResource(R.string.return_notification),
+                description = stringResource(R.string.return_notification_description),
+            ),
+            NotificationSettingRow(
+                title = stringResource(R.string.library_notice_notification),
+                description = stringResource(R.string.library_notice_notification_description),
+            ),
+        )
 
     Column(
-        modifier = modifier
-            .fillMaxWidth()
-            .navigationBarsPadding()
-            .padding(horizontal = AppSpacing.ScreenHorizontal)
-            .padding(bottom = AppSpacing.Section),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .navigationBarsPadding()
+                .padding(horizontal = AppSpacing.ScreenHorizontal)
+                .padding(bottom = AppSpacing.Section),
     ) {
         Box(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(top = AppSpacing.Item)
-                .height(AppSpacing.Tiny),
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .padding(top = AppSpacing.Item)
+                    .height(AppSpacing.Tiny),
         ) {
-
             Spacer(
-                modifier = Modifier
-                    .align(Alignment.Center)
-                    .size(width = AppComponentSize.BottomSheetHandleWidth, height = AppSpacing.Tiny)
-                    .clip(RoundedCornerShape(percent = 50))
-                    .background(MaterialTheme.colorScheme.surfaceVariant),
+                modifier =
+                    Modifier
+                        .align(Alignment.Center)
+                        .size(width = AppComponentSize.BottomSheetHandleWidth, height = AppSpacing.Tiny)
+                        .clip(RoundedCornerShape(percent = 50))
+                        .background(MaterialTheme.colorScheme.surfaceVariant),
             )
-
         }
 
         Spacer(modifier = Modifier.height(AppSpacing.Large))
 
         Text(
             text = stringResource(R.string.notification_settings),
-            style = bookOnTypography.sectionTitle.copy(
-                fontWeight = FontWeight.Bold,
-                lineHeight = 24.sp,
-            ),
+            style =
+                bookOnTypography.sectionTitle.copy(
+                    fontWeight = FontWeight.Bold,
+                    lineHeight = 24.sp,
+                ),
             color = MaterialTheme.colorScheme.onSurface,
         )
 

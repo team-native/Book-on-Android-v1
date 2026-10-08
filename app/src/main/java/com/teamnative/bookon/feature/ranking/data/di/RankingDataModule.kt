@@ -12,6 +12,9 @@ import dagger.hilt.components.SingletonComponent
 @Module
 @InstallIn(SingletonComponent::class)
 abstract class RankingDataModule {
-    @Binds abstract fun bindRankingRemoteDataSource(implementation: RankingRemoteDataSourceImpl): RankingRemoteDataSource
-    @Binds abstract fun bindRankingRepository(implementation: RankingRepositoryImpl): RankingRepository
+    @Binds
+    abstract fun bindRankingRemoteDataSource(implementation: RankingRemoteDataSourceImpl): RankingRemoteDataSource
+
+    @Binds
+    abstract fun bindRankingRepository(implementation: RankingRepositoryImpl): RankingRepository
 }

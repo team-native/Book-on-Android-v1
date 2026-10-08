@@ -17,25 +17,33 @@ fun BookOnPasswordResetEmailRoute(
     viewModel: BookOnPasswordResetViewModel,
 ) {
     val form by viewModel.state.collectAsStateWithLifecycle()
-    val uiState = defaultPasswordResetUiState().copy(
-        title = stringResource(R.string.password_reset_email_title),
-        description = stringResource(R.string.password_reset_email_description),
-        email = BookOnTextFieldUiModel(
-            value = form.email,
-            label = stringResource(R.string.school_email),
-            placeholder = stringResource(R.string.email_address),
-        ),
-        nextEnabled = form.email.isNotBlank(),
-        errorText = form.error?.asText(),
-        isLoading = form.isLoading,
-    )
+    val uiState =
+        defaultPasswordResetUiState().copy(
+            title = stringResource(R.string.password_reset_email_title),
+            description = stringResource(R.string.password_reset_email_description),
+            email =
+                BookOnTextFieldUiModel(
+                    value = form.email,
+                    label = stringResource(R.string.school_email),
+                    placeholder = stringResource(R.string.email_address),
+                ),
+            nextEnabled = form.email.isNotBlank(),
+            errorText = form.error?.asText(),
+            isLoading = form.isLoading,
+        )
 
     BookOnPasswordResetEmailScreen(
         uiState = uiState,
         onEvent = { event ->
             when (event) {
-                BookOnPasswordResetScreenEvent.BackClicked -> onNavigateBack()
-                is BookOnPasswordResetScreenEvent.EmailChanged -> viewModel.updateEmail(event.email)
+                BookOnPasswordResetScreenEvent.BackClicked -> {
+                    onNavigateBack()
+                }
+
+                is BookOnPasswordResetScreenEvent.EmailChanged -> {
+                    viewModel.updateEmail(event.email)
+                }
+
                 BookOnPasswordResetScreenEvent.ContinueClicked -> {
                     if (uiState.nextEnabled && !uiState.isLoading) {
                         viewModel.sendVerificationCode(onNavigateToVerification)
@@ -45,7 +53,10 @@ fun BookOnPasswordResetEmailRoute(
                 is BookOnPasswordResetScreenEvent.VerificationCodeChanged,
                 is BookOnPasswordResetScreenEvent.PasswordChanged,
                 is BookOnPasswordResetScreenEvent.PasswordConfirmChanged,
-                BookOnPasswordResetScreenEvent.ResendClicked -> Unit
+                BookOnPasswordResetScreenEvent.ResendClicked,
+                -> {
+                    Unit
+                }
             }
         },
     )
@@ -59,23 +70,28 @@ fun BookOnPasswordResetVerificationRoute(
     viewModel: BookOnPasswordResetViewModel,
 ) {
     val form by viewModel.state.collectAsStateWithLifecycle()
-    val uiState = defaultPasswordResetUiState().copy(
-        title = stringResource(R.string.password_reset_verification_title),
-        description = stringResource(
-            R.string.password_reset_verification_description,
-            form.email,
-        ),
-        verificationCode = form.code,
-        nextEnabled = form.code.length == PasswordResetVerificationCodeLength,
-        errorText = form.error?.asText(),
-        isLoading = form.isLoading,
-    )
+    val uiState =
+        defaultPasswordResetUiState().copy(
+            title = stringResource(R.string.password_reset_verification_title),
+            description =
+                stringResource(
+                    R.string.password_reset_verification_description,
+                    form.email,
+                ),
+            verificationCode = form.code,
+            nextEnabled = form.code.length == PasswordResetVerificationCodeLength,
+            errorText = form.error?.asText(),
+            isLoading = form.isLoading,
+        )
 
     BookOnPasswordResetVerificationScreen(
         uiState = uiState,
         onEvent = { event ->
             when (event) {
-                BookOnPasswordResetScreenEvent.BackClicked -> onNavigateBack()
+                BookOnPasswordResetScreenEvent.BackClicked -> {
+                    onNavigateBack()
+                }
+
                 is BookOnPasswordResetScreenEvent.VerificationCodeChanged -> {
                     viewModel.updateVerificationCode(event.code)
                 }
@@ -83,6 +99,7 @@ fun BookOnPasswordResetVerificationRoute(
                 BookOnPasswordResetScreenEvent.ResendClicked -> {
                     if (!uiState.isLoading) viewModel.resendVerificationCode()
                 }
+
                 BookOnPasswordResetScreenEvent.ContinueClicked -> {
                     if (uiState.nextEnabled && !uiState.isLoading) {
                         onNavigateToNewPassword()
@@ -91,7 +108,10 @@ fun BookOnPasswordResetVerificationRoute(
 
                 is BookOnPasswordResetScreenEvent.EmailChanged,
                 is BookOnPasswordResetScreenEvent.PasswordChanged,
-                is BookOnPasswordResetScreenEvent.PasswordConfirmChanged -> Unit
+                is BookOnPasswordResetScreenEvent.PasswordConfirmChanged,
+                -> {
+                    Unit
+                }
             }
         },
     )
@@ -105,46 +125,55 @@ fun BookOnPasswordResetNewPasswordRoute(
     viewModel: BookOnPasswordResetViewModel,
 ) {
     val form by viewModel.state.collectAsStateWithLifecycle()
-    val passwordError = form.password
-        .takeIf { password ->
-            password.isNotEmpty() && !BookOnPasswordPolicy.isValid(password)
-        }
-        ?.let {
-            stringResource(R.string.error_password_rule)
-        }
-    val passwordConfirmError = form.confirm
-        .takeIf { passwordConfirm ->
-            passwordConfirm.isNotEmpty() && passwordConfirm != form.password
-        }
-        ?.let {
-            stringResource(R.string.error_password_mismatch)
-        }
-    val uiState = defaultPasswordResetUiState().copy(
-        title = stringResource(R.string.password_reset_new_password_title),
-        description = stringResource(R.string.password_reset_new_password_description),
-        password = BookOnPasswordFieldUiModel(
-            value = form.password,
-            label = stringResource(R.string.password),
-            placeholder = stringResource(R.string.password),
-            errorText = passwordError,
-        ),
-        passwordConfirm = BookOnPasswordFieldUiModel(
-            value = form.confirm,
-            label = stringResource(R.string.password_confirm_short),
-            placeholder = stringResource(R.string.password_confirm),
-            errorText = passwordConfirmError,
-        ),
-        nextEnabled = BookOnPasswordPolicy.isValid(form.password) && form.password == form.confirm,
-        errorText = form.error?.asText(),
-        isLoading = form.isLoading,
-    )
+    val passwordError =
+        form.password
+            .takeIf { password ->
+                password.isNotEmpty() && !BookOnPasswordPolicy.isValid(password)
+            }?.let {
+                stringResource(R.string.error_password_rule)
+            }
+    val passwordConfirmError =
+        form.confirm
+            .takeIf { passwordConfirm ->
+                passwordConfirm.isNotEmpty() && passwordConfirm != form.password
+            }?.let {
+                stringResource(R.string.error_password_mismatch)
+            }
+    val uiState =
+        defaultPasswordResetUiState().copy(
+            title = stringResource(R.string.password_reset_new_password_title),
+            description = stringResource(R.string.password_reset_new_password_description),
+            password =
+                BookOnPasswordFieldUiModel(
+                    value = form.password,
+                    label = stringResource(R.string.password),
+                    placeholder = stringResource(R.string.password),
+                    errorText = passwordError,
+                ),
+            passwordConfirm =
+                BookOnPasswordFieldUiModel(
+                    value = form.confirm,
+                    label = stringResource(R.string.password_confirm_short),
+                    placeholder = stringResource(R.string.password_confirm),
+                    errorText = passwordConfirmError,
+                ),
+            nextEnabled = BookOnPasswordPolicy.isValid(form.password) && form.password == form.confirm,
+            errorText = form.error?.asText(),
+            isLoading = form.isLoading,
+        )
 
     BookOnPasswordResetNewPasswordScreen(
         uiState = uiState,
         onEvent = { event ->
             when (event) {
-                BookOnPasswordResetScreenEvent.BackClicked -> onNavigateBack()
-                is BookOnPasswordResetScreenEvent.PasswordChanged -> viewModel.updatePassword(event.password)
+                BookOnPasswordResetScreenEvent.BackClicked -> {
+                    onNavigateBack()
+                }
+
+                is BookOnPasswordResetScreenEvent.PasswordChanged -> {
+                    viewModel.updatePassword(event.password)
+                }
+
                 is BookOnPasswordResetScreenEvent.PasswordConfirmChanged -> {
                     viewModel.updatePasswordConfirm(event.passwordConfirm)
                 }
@@ -157,7 +186,10 @@ fun BookOnPasswordResetNewPasswordRoute(
 
                 is BookOnPasswordResetScreenEvent.EmailChanged,
                 is BookOnPasswordResetScreenEvent.VerificationCodeChanged,
-                BookOnPasswordResetScreenEvent.ResendClicked -> Unit
+                BookOnPasswordResetScreenEvent.ResendClicked,
+                -> {
+                    Unit
+                }
             }
         },
     )
@@ -165,6 +197,7 @@ fun BookOnPasswordResetNewPasswordRoute(
 
 /** ViewModel의 재설정 오류를 화면에 표시할 리소스 문자열로 변환한다. */
 @Composable
-private fun PasswordResetError.asText(): String = when (this) {
-    PasswordResetError.RequestFailed -> stringResource(R.string.error_password_reset_request_failed)
-}
+private fun PasswordResetError.asText(): String =
+    when (this) {
+        PasswordResetError.RequestFailed -> stringResource(R.string.error_password_reset_request_failed)
+    }

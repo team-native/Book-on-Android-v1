@@ -13,5 +13,6 @@ import dagger.hilt.components.SingletonComponent
 @InstallIn(SingletonComponent::class)
 abstract class SystemDataModule {
     @Binds abstract fun bindHealthRemoteDataSource(impl: HealthRemoteDataSourceImpl): HealthRemoteDataSource
+
     @Binds abstract fun bindHealthRepository(impl: HealthRepositoryImpl): HealthRepository
 }

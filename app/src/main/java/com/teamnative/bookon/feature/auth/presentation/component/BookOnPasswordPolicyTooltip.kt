@@ -1,7 +1,5 @@
 package com.teamnative.bookon.feature.auth.presentation.component
 
-import androidx.compose.material3.MaterialTheme
-
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,6 +7,7 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.RichTooltip
 import androidx.compose.material3.Text
 import androidx.compose.material3.TooltipAnchorPosition
@@ -39,9 +38,10 @@ internal fun BookOnPasswordPolicyTooltip(modifier: Modifier = Modifier) {
     val coroutineScope = rememberCoroutineScope()
 
     TooltipBox(
-        positionProvider = TooltipDefaults.rememberTooltipPositionProvider(
-            positioning = TooltipAnchorPosition.Below,
-        ),
+        positionProvider =
+            TooltipDefaults.rememberTooltipPositionProvider(
+                positioning = TooltipAnchorPosition.Below,
+            ),
         tooltip = {
             RichTooltip(
                 title = {
@@ -53,11 +53,12 @@ internal fun BookOnPasswordPolicyTooltip(modifier: Modifier = Modifier) {
                 caretShape = null,
                 maxWidth = 240.dp,
                 shape = RoundedCornerShape(AppRadius.LargeCard),
-                colors = TooltipDefaults.richTooltipColors(
-                    containerColor = MaterialTheme.colorScheme.surface,
-                    contentColor = MaterialTheme.colorScheme.onSurface,
-                    titleContentColor = MaterialTheme.colorScheme.onSurface,
-                ),
+                colors =
+                    TooltipDefaults.richTooltipColors(
+                        containerColor = MaterialTheme.colorScheme.surface,
+                        contentColor = MaterialTheme.colorScheme.onSurface,
+                        titleContentColor = MaterialTheme.colorScheme.onSurface,
+                    ),
                 shadowElevation = AppElevation.Field,
             ) {
                 Text(text = stringResource(R.string.password_rule), style = bookOnTypography.bodyMedium)
@@ -68,18 +69,19 @@ internal fun BookOnPasswordPolicyTooltip(modifier: Modifier = Modifier) {
         enableUserInput = false,
     ) {
         Row(
-            modifier = modifier
-                .heightIn(min = AppComponentSize.MinTouchTarget)
-                .clickable(
-                    role = Role.Button,
-                    onClick = {
-                        if (tooltipState.isVisible) {
-                            tooltipState.dismiss()
-                        } else {
-                            coroutineScope.launch { tooltipState.show() }
-                        }
-                    },
-                ),
+            modifier =
+                modifier
+                    .heightIn(min = AppComponentSize.MinTouchTarget)
+                    .clickable(
+                        role = Role.Button,
+                        onClick = {
+                            if (tooltipState.isVisible) {
+                                tooltipState.dismiss()
+                            } else {
+                                coroutineScope.launch { tooltipState.show() }
+                            }
+                        },
+                    ),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
